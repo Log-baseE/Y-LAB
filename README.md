@@ -1,11 +1,16 @@
 # Y-LAB
 
 ## Overview
-**YOLO Labelling** or **Y-LAB** is a simple GUI for [YOLO](https://pjreddie.com/darknet/yolo/) to aid learning for new users and introduce them to Object Detection. This project will use [Electron.JS](https://electronjs.org/) as the interface.
+**YOLO Labelling** or **Y-LAB** is a simple GUI for [YOLO](https://pjreddie.com/darknet/yolo/) to aid learning for new users and introduce them to Object Detection. This project will use [Electron.JS](https://electronjs.org/) as the interface.<br><br>
+Language used: 
+1. HTML
+2. CSS
+3. JavaScript
+4. Python
 
 ### YOLO
 #### Setting up YOLO
->*will be updated later*
+>*This requires setting up YOLO, OpenCV, and Darkflow*
 
 ### Electron.JS
 #### Setting Up Electron
