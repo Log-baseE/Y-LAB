@@ -4,7 +4,7 @@
   "description": "**YOLO Labelling** or **Y-LAB** is a simple GUI for [YOLO](https://pjreddie.com/darknet/yolo/) to aid learning for new users and introduce them to Object Detection. This project will use [Electron.JS](https://electronjs.org/) as the interface.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron ."
   },
   "repository": {
     "type": "git",
