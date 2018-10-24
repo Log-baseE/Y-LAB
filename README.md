@@ -4,6 +4,11 @@
 **YOLO Labelling** or **Y-LAB** is a simple GUI for [YOLO](https://pjreddie.com/darknet/yolo/) to aid learning for new users and introduce them to Object Detection. This project will use [Electron.JS](https://electronjs.org/) as the interface.
 
 ### YOLO
+#### Setting Up Python3
+1. Download the latest version of the Python installer from the [Python download page](https://www.python.org/downloads/)
+2. Run the installer (make sure to check the box Add Python 3.x to PATH)
+3. The version of the installed Python can be checked by running `python3 --version`
+
 #### Setting Up OpenCV for Python
 1. Run `python -m pip install opencv-python`
 
