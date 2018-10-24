@@ -1,0 +1,22 @@
+{
+  "name": "y-lab",
+  "version": "1.0.0",
+  "description": "**YOLO Labelling** or **Y-LAB** is a simple GUI for [YOLO](https://pjreddie.com/darknet/yolo/) to aid learning for new users and introduce them to Object Detection. This project will use [Electron.JS](https://electronjs.org/) as the interface.",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Log-baseE/Y-LAB.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Log-baseE/Y-LAB/issues"
+  },
+  "homepage": "https://github.com/Log-baseE/Y-LAB#readme",
+  "devDependencies": {
+    "electron": "^3.0.5"
+  }
+}
