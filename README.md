@@ -4,7 +4,10 @@
 **YOLO Labelling** or **Y-LAB** is a simple GUI for [YOLO](https://pjreddie.com/darknet/yolo/) to aid learning for new users and introduce them to Object Detection. This project will use [Electron.JS](https://electronjs.org/) as the interface.
 
 ### YOLO
-#### Setting up Darkflow
+#### Setting Up OpenCV for Python
+1. Run `python -m pip install opencv-python`
+
+#### Setting Up Darkflow
 1. Clone the Darkflow repo by running `git clone https://github.com/thtrieu/darkflow.git`
 2. Run `cd darkflow`
 3. Install Darkflow globally by running `pip install .`
