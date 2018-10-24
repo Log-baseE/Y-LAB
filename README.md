@@ -36,7 +36,7 @@ Implementation:
 - [ ] Documentation & Manual
 
 
-## Members
+## Authors
 1. [Laurentius Dominick Logan](https://github.com/Log-baseE)
 2. [Barjuan Davis Penthalion](https://github.com/cokpsz)
 3. [Christopher Yefta](https://github.com/ChrisYef)
