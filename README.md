@@ -29,7 +29,7 @@
 2. Open the Node.js CMD and run `npm install -g electron` to install Electron
 3. Clone the repo by running `git clone https://github.com/log-basee/y-lab.git`
    - [Download the repo](https://github.com/log-basee/y-lab/archive/master.zip) if you can't clone it and extract the file
-4. Run `cd y-lab`
+4. Run `cd y-lab` (or `cd y-lab/master` if you downloaded the repo)
 5. Install the dependencies by running `npm install`
 6. Run the app with `npm start` or `electron .`
 
