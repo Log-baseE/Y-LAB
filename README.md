@@ -25,14 +25,13 @@
 
 ### Electron.JS
 #### Setting Up Electron
->*Based on the [tutorial](https://www.christianengvall.se/install-electron-tutorial-app/) by Christian Engvall*
 1. Install [Node.JS](https://nodejs.org/en/)
 2. Open the Node.js CMD and run `npm install -g electron` to install Electron
-3. Clone the repo by running `git clone https://github.com/crilleengvall/electron-tutorial-app.git`
-   - [Download the repo](https://github.com/crilleengvall/electron-tutorial-app/archive/master.zip) if you can't clone it and extract the file
-4. Run `cd electron-tutorial-app/` or `cd electron-tutorial-app-master/` (depends on your file name)
+3. Clone the repo by running `git clone https://github.com/log-basee/y-lab.git`
+   - [Download the repo](https://github.com/log-basee/y-lab/archive/master.zip) if you can't clone it and extract the file
+4. Run `cd y-lab`
 5. Install the dependencies by running `npm install`
-6. Run the tutorial app `electron .`
+6. Run the app with `npm start` or `electron .`
 
 
 ## Tasks to do
