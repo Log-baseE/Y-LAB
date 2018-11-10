@@ -1,0 +1,89 @@
+:root {
+    --primary-default: #272730;
+    --primary-light: #4F4F59;
+    --primary-dark: #1C1C20;
+    --secondary-default: #673AB7;
+    --secodary-light: #9A67EA;
+    --secondary-dark: #320B86;
+    --light: #FFFFFF;
+    --dark: #000000;
+    --grey-50: #FAFAFA;
+    --grey-100: #F5F5F5;
+    --grey-200: #EEEEEE;
+    --grey-300: #E3E3E3;
+    --grey-400: #BDBDBD;
+    --grey-500: #9E9E9E;
+    --grey-600: #757575;
+    --grey-700: #616161;
+    --grey-800: #424242;
+    --grey-900: #212121;
+    --transparent-white-90: rgba(255, 255, 255, 0.9);
+    --transparent-white-80: rgba(255, 255, 255, 0.8);
+    --transparent-white-70: rgba(255, 255, 255, 0.7);
+    --transparent-white-60: rgba(255, 255, 255, 0.6);
+    --transparent-white-50: rgba(255, 255, 255, 0.5);
+    --transparent-white-40: rgba(255, 255, 255, 0.4);
+    --transparent-white-30: rgba(255, 255, 255, 0.3);
+    --transparent-white-20: rgba(255, 255, 255, 0.2);
+    --transparent-white-10: rgba(255, 255, 255, 0.1);
+    --transparent-white-0: rgba(255, 255, 255, 0);
+    --transparent-black-90: rgba(0, 0, 0, 0.9);
+    --transparent-black-80: rgba(0, 0, 0, 0.8);
+    --transparent-black-70: rgba(0, 0, 0, 0.7);
+    --transparent-black-60: rgba(0, 0, 0, 0.6);
+    --transparent-black-50: rgba(0, 0, 0, 0.5);
+    --transparent-black-40: rgba(0, 0, 0, 0.4);
+    --transparent-black-30: rgba(0, 0, 0, 0.3);
+    --transparent-black-20: rgba(0, 0, 0, 0.2);
+    --transparent-black-10: rgba(0, 0, 0, 0.1);
+    --transparent-black-0: rgba(0, 0, 0, 0);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-rows: 5% auto;
+    grid-template-columns: 4% 96;
+    grid-template-areas: 
+        "side header"
+        "side section";
+    background-color: var(--primary-default);
+    font-family: 'Segoe UI', sans-serif;
+    font-style: normal;
+}
+
+header {
+    padding: 1.5ex 0 1.5ex 2ex;
+    grid-area: header;
+    justify-items: stretch;
+    background-color: var(--transparent-black-20);
+    border-bottom: var(--transparent-white-60) 1px solid;
+    color: var(--light);
+}
+
+aside {
+    grid-area: side;
+    height: 100%;
+    width: 4%;
+    position: fixed;
+    background-color: var(--primary-dark);
+}
+
+.side-icon {
+    display: block;
+    margin: auto;
+    margin-top: 5ex;
+    width: 24px;
+    height: 24px;
+}
+
+section {
+    grid-area: section;
+    background-color:  var(--primary-default);
+    color: var(--light);
+}
