@@ -18,7 +18,7 @@ function createWindow () {
 
     //Load HTML into window
     mainWindow.loadURL(url.format({
-        pathname:path.join(__dirname, 'main.html'),
+        pathname:path.join(__dirname, 'video.html'),
         protocol:'file',
         slashes: true
     }))
