@@ -49,12 +49,12 @@
                             </div>
                             <div class="content2">
                                 <div class="content2a">
-                                    <input type="radio" name="detection" value="normal" id="detection-normal">
-                                    <label for="detection-normal">Normal</label>
+                                    <input type="radio" name="detection" value="normal" id="normal-detection" checked>
+                                    <label for="normal-detection">Normal</label>
                                 </div>
                                 <div class="content2b">
-                                    <input type="radio" name="detection" value="traffic" id="detection-traffic">
-                                    <label for="detection-traffic">Road Traffic</label>
+                                    <input type="radio" name="detection" value="traffic" id="traffic-detection">
+                                    <label for="traffic-detection">Road Traffic</label>
                                 </div>
                             </div>
                         </div>
@@ -160,14 +160,14 @@
                             </div>
                             <div class="content2">
                                 <div class="content2a">
-                                    <input type="radio" name="threshold" id="default-threshold">
+                                    <input type="radio" name="threshold" id="default-threshold" onclick="disableCustomThreshold()" checked>
                                     <label for="default-threshold">Default - 0.1</label>
                                 </div>
                                 <div class="content2b">
-                                    <input type="radio" name="threshold" id="custom-threshold">
+                                    <input type="radio" name="threshold" id="custom-threshold" onclick="enableCustomThreshold()">
                                     <label for="custom-threshold">Custom: </label>
-                                    <input type="range" name="threshold" min="0.0" max="1.0" step="0.1" id="range-threshold">
-                                    <input type="number" name="threshold" min="0.0" max="1.0" step="0.1" id="number-threshold">
+                                    <input type="range" name="threshold" min="0.0" max="1.0" step="0.1" id="range-threshold" disabled>
+                                    <input type="number" name="threshold" min="0.0" max="1.0" step="0.1" id="number-threshold" disabled>
                                 </div>
                             </div>
                         </div>
@@ -180,14 +180,14 @@
                             </div>
                             <div class="content2">
                                 <div class="content2a">
-                                    <input type="radio" name="weight" id="weight-default">
-                                    <label for="weight-default">Default - 70%</label>
+                                    <input type="radio" name="weight" id="default-weight" onclick="disableCustomWeight()" checked>
+                                    <label for="default-weight">Default - 70%</label>
                                 </div>
                                 <div class="content2b">
-                                    <input type="radio" name="weight" id="weight-custom">
-                                    <label for="weight-custom">Custom:</label> 
-                                    <input type="range" name="weight" min="0" max="100" step="5" id="range-weight">
-                                    <input type="number" name="weight" min="0" max="100" step="5" id="number-weight">%
+                                    <input type="radio" name="weight" id="custom-weight" onclick="enableCustomWeight()">
+                                    <label for="custom-weight">Custom:</label> 
+                                    <input type="range" name="weight" min="0" max="100" step="5" id="range-weight" disabled>
+                                    <input type="number" name="weight" min="0" max="100" step="5" id="number-weight" disabled>%
                                 </div>
                             </div>
                         </div>
@@ -200,7 +200,7 @@
                             </div>
                             <div class="content2">
                                 <div class="content2a">
-                                    <input type="radio" name="filter" id="filter-default">
+                                    <input type="radio" name="filter" id="filter-default" checked>
                                     <label for="filter-default">All</label>
                                 </div>
                                 <div class="content2b">
@@ -218,7 +218,7 @@
                             </div>
                             <div class="content2">
                                 <div class="content2a">
-                                    <input type="radio" name="roi" id="roi-default">
+                                    <input type="radio" name="roi" id="roi-default" checked>
                                     <label for="roi-default">Whole frame</label>
                                 </div>
                                 <div class="content2b">
