@@ -104,8 +104,8 @@
                                 </svg>
                             </div>
                             <div class="content2">
-                                <div class="content2a">In : </div> <div class="content2b"><input type="number" placeholder="mm"> : <input type="number" placeholder="ss"></div>
-                                <div class="content2a"><br>Out : </div><div class="content2b"><br><input type="number" placeholder="mm"> : <input type="number" placeholder="ss"></div>
+                                <div class="content2a">In : </div> <div class="content2b"><input id="in-min" type="text" placeholder="mm" onchange="checkInMin()" maxlength="3" pattern="([1-9][0-9]{2}|[1-9][0-9]|[1-9]{1})"> : <input id="in-sec" type="text" placeholder="ss" onchange="checkInSec()" maxlength="2" pattern="([0-5][0-9])"></div>
+                                <div class="content2a"><br>Out : </div><div class="content2b"><br><input id="out-min" type="text" placeholder="mm" onchange="checkOutMin()" maxlength="3" pattern="([1-9][0-9]{2}|[1-9][0-9]|[1-9]{1})"> : <input id="out-sec" type="text" placeholder="ss" onchange="checkOutSec()" maxlength="2" pattern="([0-5][0-9])"></div>
                             </div>
                         </div>
                     </div>
@@ -167,7 +167,7 @@
                                     <input type="radio" name="threshold" id="custom-threshold" onclick="enableCustomThreshold()">
                                     <label for="custom-threshold">Custom: </label>
                                     <input type="range" name="threshold" min="0.0" max="1.0" step="0.1" id="range-threshold" disabled>
-                                    <input type="number" name="threshold" min="0.0" max="1.0" step="0.1" id="number-threshold" disabled>
+                                    <input type="text" name="threshold" min="0.0" max="1.0" step="0.1" id="number-threshold" onchange="checkNumThreshold()" maxlength="3" pattern="(0|0+\.[1-9]|1+\.0)" disabled>
                                 </div>
                             </div>
                         </div>
@@ -187,7 +187,7 @@
                                     <input type="radio" name="weight" id="custom-weight" onclick="enableCustomWeight()">
                                     <label for="custom-weight">Custom:</label> 
                                     <input type="range" name="weight" min="0" max="100" step="5" id="range-weight" disabled>
-                                    <input type="number" name="weight" min="0" max="100" step="5" id="number-weight" disabled>%
+                                    <input type="text" name="weight" min="0" max="100" step="5" id="number-weight" onchange="checkNumWeight()" maxlength="3" pattern="([0-9]{1,})" disabled><div id="num-unit">%</div>
                                 </div>
                             </div>
                         </div>
@@ -218,12 +218,35 @@
                             </div>
                             <div class="content2">
                                 <div class="content2a">
-                                    <input type="radio" name="roi" id="roi-default" checked>
-                                    <label for="roi-default">Whole frame</label>
+                                    <input type="radio" name="roi" id="default-roi" onclick="disableCustomROI()" checked>
+                                    <label for="default-roi">Whole frame</label>
                                 </div>
                                 <div class="content2b">
-                                    <input type="radio" name="roi" id="roi-custom">
-                                    <label for="roi-custom">Custom:</label>
+                                    <input type="radio" name="roi" id="custom-roi" onclick="enableCustomROI()">
+                                    <label for="custom-roi">Custom:</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="content2">
+                                <div class="top-left">
+                                    <input type="text" class="edit-frame-label" id="tlx" maxlength="5" disabled><div id="label-separator"> ,</div>
+                                    <input type="text" class="edit-frame-label" id="tly" maxlength="5" disabled>
+                                </div>
+                                <div class="top-right">
+                                    <input type="text" class="edit-frame-label" id="trx" maxlength="5" disabled><div id="label-separator"> ,</div>
+                                    <input type="text" class="edit-frame-label" id="try" maxlength="5" disabled>
+                                </div>  
+                                <div class="bottom-left">
+                                    <input type="text" class="edit-frame-label" id="blx" maxlength="5" disabled><div id="label-separator"> ,</div>
+                                    <input type="text" class="edit-frame-label" id="bly" maxlength="5" disabled>
+                                </div>
+                                <div class="bottom-right">
+                                    <input type="text" class="edit-frame-label" id="brx" maxlength="5" disabled><div id="label-separator"> ,</div>
+                                    <input type="text" class="edit-frame-label" id="bry" maxlength="5" disabled>
+                                </div>
+                                <div id="edit-frame">
+                                    Click to edit directly on preview frame
                                 </div>
                             </div>
                         </div>
