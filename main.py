@@ -8,184 +8,288 @@ import math
 import cv2
 import asyncio
 import multiprocessing
-# import tempfile
-# import shutil
+import tempfile
+import shutil
 import time
 import os
 
 # suppress tensorflow warning
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# coords = []
+class ObjectDetect:
+    # number of frames before old car coordinates is disposed (used for counting)
+    time_threshold = 2
+    # labels to be detected (if uninitialised, detect all objects)
+    labels = None
+    # video frame count
+    frame_count = 0
 
-# CONSTANTS
-DETECTION_THRESHOLD = 10
+    options = {
+        "model": "cfg/yolo.cfg",
+        "load": "bin/yolo.weights",
+        "threshold": 0.1,
+        "gpu": 0.5
+    }
 
-# region of interest points
-pts = np.array([[0, 720], [0, 450], [270, 250], [1110, 250], [1280, 370], [1280, 720]], np.int32)
+    def __init__(self, detection_threshold, roi, count_switch, counting_line_vertical):
+        self.detection_threshold = detection_threshold
+        self.roi = roi
+        self.count_switch = count_switch
+        self.counting_line_vertical = counting_line_vertical
+        self.init_model()
+        self.loop = asyncio.get_event_loop()
 
-class Task(object):
-    _video_detect = 0
-    _image_detect = 1
-    _car_count = 2
-
-options = {
-    "model": "cfg/yolo.cfg",
-    "load": "bin/yolo.weights",
-    "threshold": 0.5,
-    "gpu": 0.0
-}
-
-# tfnet model
-if(os.path.isfile("built_graph/yolo.pb") & os.path.isfile("built_graph/yolo.meta")):
-    # if already saved, load from existing
-    FLAGS = argHandler()
-    FLAGS.setDefaults()
-    FLAGS.pbLoad = "built_graph/yolo.pb"
-    FLAGS.metaLoad = "built_graph/yolo.meta"
-    tfnet = TFNet(FLAGS)
-else:
-    tfnet = TFNet(options)
-    tfnet.savepb()
-
-# darkflow model options
-def init_options(model_dir, weights_dir, threshold, gpu):
-    options.model = model_dir
-    options.load = weights_dir
-    options.threshold = threshold
-    options.gpu = gpu
-
-# get image with region of interest applied for further processing
-def get_roi(imgcv):
-    global pts
-    pts = pts.reshape((-1, 1, 2))
-    cv2.polylines(imgcv, [pts], True, (0, 255, 255))
-
-    mask = np.zeros_like(imgcv)
-    cv2.drawContours(mask, [pts], -1, (255, 255, 255), -1, cv2.LINE_AA)
-    masked = cv2.bitwise_and(imgcv, mask)
-    return masked
-
-# draw region of interest for final result
-def draw_roi(imgcv):
-    global pts
-    cv2.polylines(imgcv, [pts], True, (0, 255, 255))
-    # cv2.line(imgcv, (0, 385), (1280, 385), (0, 255, 0))
-    return imgcv
-
-# yolo at work - return coordinates of objects per frame
-def process_frame(frame):
-    global tfnet
-    result = tfnet.return_predict(frame)
-    # frame_count.value += 1
-    # print(frame_count.value)
-    # print(result)
-    return result
-
-# remove overlapping bounding boxes according to DETECTION_THRESHOLD
-def remove_overlap(img, coord):
-    if(len(coord) > 1):
-        pointB = coord[0]
-        for item in coord[1:]:
-            pointA = pointB
-            pointB = item
-            # detection threshold = batas selisih pixel yang dibutuhkan sehingga 2 box dianggap mendeteksi hal yang sama
-            if(point_calculate.boxDistance(pointA[0], pointA[1], pointB[0], pointB[1]) < DETECTION_THRESHOLD):
-                # remove 1 box if distance between 2 boxes is less than threshold
-                coord.remove(item)
-    
-    return coord
-
-# draw bounding box and label
-def draw_bb(imgcv, coord):
-    h, w, _ = imgcv.shape
-    for coordinate in coord:
-        cv2.rectangle(imgcv, (coordinate[0], coordinate[1]), (coordinate[2], coordinate[3]), 255, 3)
-        cv2.putText(imgcv, coordinate[4], (coordinate[0], coordinate[1]-12), 0, 2e-3*h, 255, 1)
-
-    return imgcv
-
-def process_coords(img, result):
-    coord = []
-
-    for bbox in result:
-        left, top = bbox['topleft']['x'], bbox['topleft']['y']
-        right, bot = bbox['bottomright']['x'], bbox['bottomright']['y']
-        label = bbox['label']
-
-        if point_calculate.isNormalBlobSize(left, top, right, bot):
-            coord.append((left, top, right, bot, label))
+    def init_options(self, model_dir, weights_dir, threshold, gpu):
+        self.options.model = model_dir
+        self.options.load = weights_dir
+        self.options.threshold = threshold
+        self.options.gpu = gpu
         
-    coord = remove_overlap(img, coord)
-    final_img = draw_bb(draw_roi(img), coord)
+        if os.path.exists("./built_graph") and os.path.isdir("./built_graph"):
+            shutil.rmtree("./built_graph")
+        self.init_model()
 
-    # img = cv2.rectangle(img, tl, br, (0, 255, 0), 7)
-    # img = cv2.putText(img, label, tl, cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 2)
-    
-    return final_img
+    def init_model(self):
+        if(os.path.isfile("./built_graph/yolo.pb") & os.path.isfile("built_graph/yolo.meta")):
+            # if already saved, load from existing
+            FLAGS = argHandler()
+            FLAGS.setDefaults()
+            FLAGS.pbLoad = "built_graph/yolo.pb"
+            FLAGS.metaLoad = "built_graph/yolo.meta"
+            self.tfnet = TFNet(FLAGS)
+        else:
+            self.tfnet = TFNet(self.options)
+            self.tfnet.savepb()
 
-def get_frame(video_dir):
-    cap = cv2.VideoCapture(video_dir)
+    def init_roi(self, botleft, topleft, topright, botright):
+        self.roi_pts = [botleft, topleft, topright, botright]
 
-    if(cap.isOpened()):
-        ret, frame = cap.read()
-    else:
-        ret = False
-    
-    while ret:
-        yield get_roi(frame)
-        ret, frame = cap.read()
+    def set_label(self, labels):
+        self.labels = labels
 
-    cap.release()
+    # get image with region of interest applied for further processing
+    def get_roi(self, imgcv):
+        roi_pts = self.roi_pts
+        pts = np.array([roi_pts[0], roi_pts[1], roi_pts[2], roi_pts[3]] , np.int32)
+        roi = pts.reshape((-1, 1, 2))
+        cv2.polylines(imgcv, [roi], True, (0, 255, 255))
 
-async def video_detect(video_dir, loop):
-    # frame_count.value = 0
-    e = ProcessPoolExecutor(max_workers = 3)
+        mask = np.zeros_like(imgcv)
+        cv2.drawContours(mask, [roi], -1, (255, 255, 255), -1, cv2.LINE_AA)
+        masked = cv2.bitwise_and(imgcv, mask)
+        return masked
 
-    coords = await asyncio.gather(*(loop.run_in_executor(e, process_frame, frame) for frame in get_frame(video_dir)))
-    
-    cap = cv2.VideoCapture(video_dir)
-    width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-    height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter("./temp_results/out_video.avi", fourcc, 30.0, (int(width), int(height)))
+    # draw region of interest for final result
+    def draw_roi(self, imgcv, line):
+        roi_pts = self.roi_pts
+        pts = np.array([roi_pts[0], roi_pts[1], roi_pts[2], roi_pts[3]] , np.int32)
+        cv2.polylines(imgcv, [pts], True, (0, 255, 255))
+        cv2.line(imgcv, (int(line[0][0]), int(line[0][1])), (int(line[1][0]), int(line[1][1])), (0, 255, 0))
+        return imgcv
 
-    length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    # print("Coords: " + str(len(coords)))
-    # print("Frames: " + str(length))
+    # yolo at work - return coordinates of objects per frame
+    def process_frame(self, frame):
+        print("Frame count: " + str(self.frame_count))
+        result = self.tfnet.return_predict(frame)
+        self.frame_count += 1
+        return result
 
-    for i in range(length):
-        ret, frame = cap.read()
-        out.write(process_coords(frame, coords[i]))
+    # remove overlapping bounding boxes according to detection_threshold
+    def remove_overlap(self, img, coord):
+        if(len(coord) > 1):
+            pointB = coord[0]
+            for item in coord[1:]:
+                pointA = pointB
+                pointB = item
+                # detection threshold = batas selisih pixel yang dibutuhkan sehingga 2 box dianggap mendeteksi hal yang sama
+                if(point_calculate.boxDistance(pointA[0], pointA[1], pointB[0], pointB[1]) < self.detection_threshold):
+                    # remove box with lower confidence if distance between 2 boxes is less than threshold
+                    if pointA[5] > pointB[5]:
+                        coord.remove(pointB)
+                        pointB = pointA
+                    else:
+                        coord.remove(pointA)
+        return coord
 
-    cap.release()
+    # draw bounding box and label
+    def draw_bb(self, imgcv, coord):
+        h, w, _ = imgcv.shape
+        for coordinate in coord:
+            cv2.rectangle(imgcv, (coordinate[0], coordinate[1]), (coordinate[2], coordinate[3]), 255, 3)
+            cv2.putText(imgcv, coordinate[4], (coordinate[0], coordinate[1]-12), 0, 2e-3*h, 255, 1)
 
-async def image_detect(img_dir):
-    img = cv2.imread(img_dir, cv2.IMREAD_COLOR)
-    coords = await process_frame(img)
-    final_img = process_coords(img, coords)
-    cv2.imwrite("./temp_results/out_" + img_dir, final_img)
+        return imgcv
 
-# def add_task(file, task, loop):
-#     if(task == Task._video_detect):
-#         tasks.append(asyncio.ensure_future(video_detect(file, loop)))
-#     return
+    def car_count(self, img, coord, old_cars, count, line, is_vertical, frame_index):
+        for oc in old_cars:
+            if oc[6] - frame_index > self.time_threshold:
+                old_cars.remove(oc)
+
+        new_cars = []
+
+        for nc in coord:
+            # collision with counting line
+            if point_calculate.collision(nc[0], nc[1], nc[2], nc[3], line, self.counting_line_vertical):
+                new_cars.append(nc)
+
+                unique_car = True
+                for oc in old_cars:
+                    # tl.x, tl.y, br.x, br.y
+                    oc_point = ((oc[0] + oc[2])/2, (oc[1] + oc[3])/2)
+                    nc_point = ((nc[0] + nc[2])/2, (nc[1] + nc[3])/2)
+
+                    if self.counting_line_vertical:
+                        car_size = oc[3] - oc[1]
+                    else:
+                        car_size = oc[2] - oc[0]
+
+                    if point_calculate.boxDistance(oc_point[0], oc_point[1], nc_point[0], nc_point[1]) < car_size//3:
+                        # consider same car
+                        unique_car = False
+                        old_cars.remove(oc)
+                        break
+
+                if unique_car:
+                    count += 1
+            
+        return new_cars + old_cars, count
+
+    def process_coords(self, img, result, frame_index):
+        coord = []
+
+        for bbox in result:
+            left, top = bbox['topleft']['x'], bbox['topleft']['y']
+            right, bot = bbox['bottomright']['x'], bbox['bottomright']['y']
+            label = bbox['label']
+            conf = bbox['confidence']
+
+            if point_calculate.isNormalBlobSize(left, top, right, bot) & (label in self.labels):
+                coord.append((left, top, right, bot, label, conf, frame_index))
+            
+        coord = self.remove_overlap(img, coord)
+
+        return coord
+
+    def get_frame(self, video_dir):
+        cap = cv2.VideoCapture(video_dir)
+
+        if(cap.isOpened()):
+            ret, frame = cap.read()
+        else:
+            ret = False
+        
+        while ret:
+            if(self.roi):
+                yield self.get_roi(frame)
+            else:
+                yield frame
+            ret, frame = cap.read()
+
+        cap.release()
+
+    async def video_detect(self, video_dir):
+        roi_pts = self.roi_pts
+        self.frame_count = 0
+
+        # e = ProcessPoolExecutor(max_workers = 2)
+        # coords = await asyncio.gather(*(self.loop.run_in_executor(e, self.process_frame, frame) for frame in self.get_frame(video_dir)))
+        coords = [self.process_frame(frame) for frame in self.get_frame(video_dir)]
+
+        cap = cv2.VideoCapture(video_dir)
+        width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+        height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter("./temp_results/out_video.avi", fourcc, 30.0, (int(width), int(height)))
+
+        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        # print("Coords: " + str(len(coords)))
+        # print("Frames: " + str(length))
+        
+        cars = []
+        count = 0
+
+        for i in range(length):
+            ret, frame = cap.read()
+            coord = self.process_coords(frame, coords[i], i)
+
+            # car count
+            if self.count_switch:
+                botleft, topleft, topright, botright = roi_pts[0], roi_pts[1], roi_pts[2], roi_pts[3]
+                if self.counting_line_vertical:
+                    point_left = ((botleft[0]+topleft[0])/2, (botleft[1]+topleft[1])/2)
+                    point_right = ((botright[0]+topright[0])/2, (botright[1]+topright[1])/2)
+                    count_line = (point_left, point_right)
+                else:
+                    point_up = ((topleft[0]+topright[0])/2, (topleft[1]+topright[1])/2)
+                    point_down = ((topright[0]+botright[0])/2, (botleft[1]+botright[1])/2)
+                    count_line = (point_up, point_down)
+                cars, count = self.car_count(frame, coord, cars, count, count_line, self.counting_line_vertical, i)
+                cv2.putText(
+                    frame,
+                    'Detected Vehicles: ' + str(count),
+                    (10, 35),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.8,
+                    (0, 0xFF, 0xFF),
+                    2,
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                )
+                
+            # drawing roi and bounding box
+            if(self.roi):
+                frame = self.draw_roi(frame, count_line)
+            frame = self.draw_bb(frame, coord)
+
+            # write to video
+            cv2.imwrite("./temp_results/out_" + str(i) + ".jpg", frame)
+            out.write(frame)
+
+        cap.release()
+
+    async def image_detect(self, img_dir):
+        img = cv2.imread(img_dir, cv2.IMREAD_COLOR)
+
+        if(self.roi):
+            proc_img = self.get_roi(img)
+        else:
+            proc_img = img
+
+        coords = self.process_frame(proc_img)
+        bbox = self.process_coords(img, coords, 0)
+        img = self.draw_bb(img, bbox)
+
+        cv2.imwrite("./temp_results/out_" + img_dir, img)
+
+    def set_roi(self, roi_switch):
+        self.roi = roi_switch
 
 if __name__ == '__main__':
     start_time = time.time()
 
-    # m = multiprocessing.Manager()
-    # frame_count = m.Value('frame_count', 0)
-    
-    # fd, path = tempfile.mkstemp()
+    # max number of pixels for gap between bounding box for boxes to be considered separate
+    detection_threshold = 50
+    # use roi in object detection
+    roi = True
+    # counting cars mode
+    count_switch = True
+    # counting line is set to vertical or horizontal
+    counting_line_vertical = True
+
+    od = ObjectDetect(detection_threshold, roi, count_switch, counting_line_vertical)
+    # od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.5)
+    od.set_label(["car", "truck"])
+    od.set_roi(True)
+
+    # botleft, topleft, topright, botright
+    od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
 
     loop = asyncio.get_event_loop()
 
     # image detect
-    # loop.run_until_complete(image_detect("pizza.jpg"))
+    # loop.run_until_complete(od.image_detect("pizza.jpg"))
 
     # video detect
-    loop.run_until_complete(video_detect("short video.mp4", loop))
+    loop.run_until_complete(od.video_detect("short video.mp4"))
 
     loop.close()
 
