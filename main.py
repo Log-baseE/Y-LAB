@@ -37,7 +37,10 @@ class ObjectDetect:
         self.count_switch = count_switch
         self.counting_line_vertical = counting_line_vertical
         self.init_model()
-        self.loop = asyncio.get_event_loop()
+        self.make_temp_path()
+
+    def __del__(self):
+        shutil.rmtree(self.path)
 
     def init_options(self, model_dir, weights_dir, threshold, gpu):
         self.options.model = model_dir
@@ -163,8 +166,9 @@ class ObjectDetect:
             label = bbox['label']
             conf = bbox['confidence']
 
-            if point_calculate.isNormalBlobSize(left, top, right, bot) & (label in self.labels):
-                coord.append((left, top, right, bot, label, conf, frame_index))
+            if point_calculate.isNormalBlobSize(left, top, right, bot):
+                if (self.labels is None) or (label in self.labels):
+                    coord.append((left, top, right, bot, label, conf, frame_index))
             
         coord = self.remove_overlap(img, coord)
 
@@ -199,7 +203,9 @@ class ObjectDetect:
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter("./temp_results/out_video.avi", fourcc, 30.0, (int(width), int(height)))
+        result_dir = os.path.join(self.path, "out_video.avi")
+        # result_dir = "./temp_results/out_video.avi"
+        out = cv2.VideoWriter(result_dir, fourcc, 30.0, (int(width), int(height)))
 
         length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         # print("Coords: " + str(len(coords)))
@@ -241,10 +247,25 @@ class ObjectDetect:
             frame = self.draw_bb(frame, coord)
 
             # write to video
-            cv2.imwrite("./temp_results/out_" + str(i) + ".jpg", frame)
+            cv2.imwrite(os.path.join(self.path, "out_" + str(i) + ".jpg"), frame)
+            # cv2.imwrite("./temp_results/out_" + str(i) + ".jpg", frame)
             out.write(frame)
 
         cap.release()
+        
+        # show result (comment later)
+        # cap2 = cv2.VideoCapture(result_dir)
+        # cv2.namedWindow("Result", cv2.WINDOW_AUTOSIZE)
+        # while(cap2.isOpened()):
+        #     ret, frame = cap2.read()
+        #     if ret == True:
+        #         cv2.imshow('Frame', frame)
+        #         if cv2.waitKey(25) & 0xFF == ord('q'):
+        #             break
+        #     else: 
+        #         break
+        # cap2.release()
+        # cv2.destroyAllWindows()
 
     async def image_detect(self, img_dir):
         img = cv2.imread(img_dir, cv2.IMREAD_COLOR)
@@ -257,8 +278,21 @@ class ObjectDetect:
         coords = self.process_frame(proc_img)
         bbox = self.process_coords(img, coords, 0)
         img = self.draw_bb(img, bbox)
+        
+        result_dir = os.path.join(self.path, "out_image.jpg")
+        cv2.imwrite(result_dir, img)
+        # cv2.imwrite("./temp_results/out_" + img_dir, img)
 
-        cv2.imwrite("./temp_results/out_" + img_dir, img)
+        # show result (comment later)
+        # cv2.imshow('Result', img)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+
+    def make_temp_path(self):
+        # self.path = tempfile.TemporaryDirectory().name
+        self.path = tempfile.mkdtemp()
+        # open(self.path)
+        print(self.path)
 
     def set_roi(self, roi_switch):
         self.roi = roi_switch
@@ -267,18 +301,16 @@ if __name__ == '__main__':
     start_time = time.time()
 
     # max number of pixels for gap between bounding box for boxes to be considered separate
-    detection_threshold = 50
-    # use roi in object detection
+    detection_threshold = 10
+    # use region of interest in object detection
     roi = True
     # counting cars mode
     count_switch = True
-    # counting line is set to vertical or horizontal
+    # counting line is drawn vertically or horizontally between roi
     counting_line_vertical = True
 
     od = ObjectDetect(detection_threshold, roi, count_switch, counting_line_vertical)
     # od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.5)
-    od.set_label(["car", "truck"])
-    od.set_roi(True)
 
     # botleft, topleft, topright, botright
     od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
@@ -286,9 +318,12 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
 
     # image detect
+    # od.set_roi(False)
     # loop.run_until_complete(od.image_detect("pizza.jpg"))
 
     # video detect
+    od.set_label(["car", "truck"])
+    od.set_roi(True)
     loop.run_until_complete(od.video_detect("short video.mp4"))
 
     loop.close()
