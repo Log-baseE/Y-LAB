@@ -78,8 +78,8 @@
                             </div>
                             <div class="content2">
                                 <div class="content2c">
-                                    <input type="file" name="browse" class="hidden" id="chooseFile">
-                                    <div class="browse-button" id="chooseFileTrigger" onclick="browseFile()">Browse</div> or use the video preview window
+                                    <input type="file" name="browse" class="hidden" id="chooseFile" onchange="getFile()" accept="video/mp4,video/avi">
+                                    <div class="browse-button" id="chooseFileTrigger" onclick="browseFile()">Browse</div> <div id="file-text">or use the video preview window</div>
                                 </div>
                             </div>
                         </div>
@@ -256,10 +256,53 @@
                     <div class="header"><b>VIDEO PREVIEW</b></div>
                     <div class="right-content">
                         <div class="video-area">
-                            video here
+                            <div class="empty-video-area">
+                                <svg id="video-upload-icon" width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 12H102V66L114 78V12C114 5.37258 108.627 0 102 0H12C5.37258 0 0 5.37258 0 12V84C0 90.6274 5.37258 96 12 96H63L75 84H12L12 12Z" fill="#888888"/>
+                                    <path d="M120 96L96 72L72 96H81V108H111V96H120Z" fill="#888888"/>
+                                    <path d="M111 114H81V120H111V114Z" fill="#888888"/>
+                                    <path d="M42 66V30L78 48L42 66Z" fill="#888888"/>
+                                </svg>
+                                <div class="video-upload-text">
+                                    <b>Drag and drop a video here or click</b>
+                                    <br>Allowed files: .mp4, .avi
+                                </div>
+                            </div>
+                            <div class="selected-video">
+                                <video controls autoplay id="video-source" hidden></video>
+                            </div>
                         </div>
                         <div class="controller-area">
-                            controller here
+                            <div class="control-button">
+                                <svg id="step-back-button" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 0H2V12H0V0ZM3.5 6L12 12V0L3.5 6Z" fill="white"/>
+                                </svg>
+                            </div>
+                            <div class="control-button">
+                                <svg id="repeat-button" width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 5H14V8L18 4L14 0V3H2V9H4V5ZM14 15H4V12L0 16L4 20V17H16V11H14V15Z" fill="white"/>
+                                </svg>
+                            </div>
+                            <div class="control-button">
+                                <svg id="play-button" width="11" height="14" viewBox="0 0 11 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 0V14L11 7L0 0Z" fill="white"/>
+                                </svg>
+                            </div>
+                            <div class="control-button-pause">
+                                <svg id="pause-button" width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 14H4V0H0V14ZM8 0V14H12V0H8Z" fill="white"/>
+                                </svg> 
+                            </div>
+                            <div class="control-button">
+                                <svg id="stop-button" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 0H12V12H0V0Z" fill="white"/>
+                                </svg> 
+                            </div> 
+                            <div class="control-button">
+                                <svg id="step-forward-button" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 12L8.5 6L0 0V12ZM10 0V12H12V0H10Z" fill="white"/>
+                                </svg>    
+                            </div>                               
                         </div>
                         <div class="submit-area">
                             <input type="button" id="submit" class="submit" value="LOOKS GOOD!">

@@ -192,7 +192,7 @@ section {
         "video"
         "controller"
         "submit";
-    grid-template-rows: 60% 25% 15%;
+    grid-template-rows: 65% 20% 15%;
     height: 100%;
     margin: 0 3ex 0 3ex;
 }
@@ -546,7 +546,7 @@ option {
     background-color: var(--primary-default);
     width: 19ex;
     height: 7ex;
-    padding: 2ex;
+    padding: 1ex;
     position: absolute;
 }
 
@@ -587,4 +587,55 @@ option {
     width: 35ex;
     z-index: 0;
     cursor: default;
+}
+
+.empty-video-area {
+    border:  1px solid var(--secondary-light);
+    background-color: var(--transparent-white-10);
+    height: 52ex;
+    padding-top: 14ex;
+}
+
+#video-upload-icon {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.video-upload-text {
+    padding-top: 3ex;
+    color: var(--transparent-white-70);
+    text-align: center;
+}
+
+.controller-area {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.control-button {
+    padding: 0 3ex 0 3ex;
+    display: inline;
+}
+
+.control-button-pause {
+    position: absolute;
+    bottom: 20.5ex;
+    right: 43ex;
+}
+
+#pause-button {
+    display: none;
+}
+
+#video-source {
+    position: absolute;
+    width: 609;
+    height: 395;
+    top: 13ex;
+}
+
+#file-text {
+    display: inline;
 }

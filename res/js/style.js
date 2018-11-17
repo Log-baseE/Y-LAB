@@ -2,6 +2,45 @@ function browseFile() {
     document.getElementById('chooseFile').click();
 }
 
+function getFile() {
+    var browse = document.getElementById('chooseFile');
+    var txt = "";
+    var source = document.getElementById('video-source');
+    var url = window.URL || window.webkitURL;
+
+    if ('files' in browse) {
+        if (browse.files.length == 0) {
+            txt = "Select a file.";
+        } else {
+            var file = browse.files[0];
+            if ('type' in file) {
+                var type = file.type;
+                var videoNode = document.querySelector('video');
+                var canPlay = videoNode.canPlayType(type);
+                if (canPlay === '') {
+                    text = "Choose a video file."
+                } else {
+                    if ('name' in file) {
+                        txt += file.name;
+                    }
+
+                    var fileURL = url.createObjectURL(file);
+                    source.removeAttribute('hidden');
+                    source.src = fileURL;
+                }
+            }
+        }
+    } else {
+        if (x.value == "") {
+            txt += "Select a file.";
+        } else {
+            txt += "The files property is not supported!";
+            txt  += "<br>The path of the selected file: " + x.value; 
+        }
+    }
+    document.getElementById('file-text').innerHTML = txt;
+}
+
 function checkInMin() {
     var num = document.getElementById('in-min');
     if (!num.value.match('^' + num.getAttribute('pattern') + '$')) {
