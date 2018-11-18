@@ -41,6 +41,48 @@ function getFile() {
     document.getElementById('file-text').innerHTML = txt;
 }
 
+function stepBackVideo() {
+    document.getElementById('video-source').currentTime -= 5;
+}
+
+function repeatVideo() {
+    var video = document.getElementById('video-source');
+    var button = document.getElementById('repeat-button-path');
+
+    if (video.loop) {
+        video.loop = false;
+        button.setAttribute('fill', 'rgba(255, 255, 255, 0.2)');
+    } else {
+        video.loop = true;
+        button.setAttribute('fill', 'white');
+    }
+}
+
+function playVideo() {
+    document.getElementById('video-source').play();
+    document.getElementById('play-button-path').setAttribute('fill', 'none');
+    document.getElementById('pause-button').style.display = 'inline';
+}
+
+function pauseVideo() {
+    document.getElementById('video-source').pause();
+    document.getElementById('play-button-path').setAttribute('fill', 'white');
+    document.getElementById('pause-button').style.display = 'none';
+}
+
+function stopVideo() {
+    var video = document.getElementById('video-source');
+
+    video.pause();
+    document.getElementById('play-button-path').setAttribute('fill', 'white');
+    document.getElementById('pause-button').style.display = 'none';
+    video.currentTime = 0;
+}
+
+function stepForwardVideo() {
+    document.getElementById('video-source').currentTime += 5;
+}
+
 function checkInMin() {
     var num = document.getElementById('in-min');
     if (!num.value.match('^' + num.getAttribute('pattern') + '$')) {
