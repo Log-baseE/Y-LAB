@@ -43,10 +43,12 @@ class ObjectDetect:
         shutil.rmtree(self.path)
 
     def init_options(self, model_dir, weights_dir, threshold, gpu):
-        self.options.model = model_dir
-        self.options.load = weights_dir
-        self.options.threshold = threshold
-        self.options.gpu = gpu
+        self.options = {
+                "model": model_dir,
+                "load": weights_dir,
+                "threshold": threshold,
+                "gpu": gpu
+            }
         
         if os.path.exists("./built_graph") and os.path.isdir("./built_graph"):
             shutil.rmtree("./built_graph")
@@ -310,10 +312,10 @@ if __name__ == '__main__':
     counting_line_vertical = True
 
     od = ObjectDetect(detection_threshold, roi, count_switch, counting_line_vertical)
-    # od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.5)
+    od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.7)
 
     # botleft, topleft, topright, botright
-    od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
+    # od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
 
     loop = asyncio.get_event_loop()
 
