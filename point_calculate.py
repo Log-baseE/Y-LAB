@@ -1,4 +1,5 @@
 import math
+import cv2
 
 def boxDistance(x1, y1, x2, y2):
     # return abs(x1-x2)
@@ -20,6 +21,29 @@ def collision(left, top, right, bot, line, is_vertical):
         return ((line_y > top) & (line_y < bot))
     else:
         return ((line_x > left) & (line_x < right))
+
+def collision_debug(left, top, right, bot, line, is_vertical, img, i):
+    print("Frame coll: " + str(i))
+    line_x, line_y = get_point((left+right)/2, (top+bot)/2, line)
+    cv2.line(img, (int(line[0][0]), int(line[0][1])), (int(line[1][0]), int(line[1][1])), (0, 255, 0))
+    cv2.circle(img, (int((left+right)/2), int(line_y)), 5, (0,0,255), -1)
+    if is_vertical:
+        coll = ((line_y > top) & (line_y < bot))
+    else:
+        coll = ((line_x > left) & (line_x < right))
+    cv2.rectangle(img, (int(left), int(top)), (int(right), int(bot)), 255, 3)
+    cv2.putText(
+                img,
+                'Detected Vehicles: ' + str(coll),
+                (10, 35),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.8,
+                (0, 0xFF, 0xFF),
+                2,
+                cv2.FONT_HERSHEY_SIMPLEX,
+                )
+    cv2.imwrite("./temp_results/point_" + str(i) + ".jpg", img)
+    return coll
 
 def get_point(x, y, line):
     x1, y1 = line[0][0], line[0][1]
