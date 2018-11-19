@@ -24,19 +24,11 @@ class ObjectDetect:
     # video frame count
     frame_count = 0
 
-    options = {
-        "model": "cfg/yolo.cfg",
-        "load": "bin/yolo.weights",
-        "threshold": 0.1,
-        "gpu": 0.5
-    }
-
     def __init__(self, detection_threshold, roi, count_switch, counting_line_vertical):
         self.detection_threshold = detection_threshold
         self.roi = roi
         self.count_switch = count_switch
         self.counting_line_vertical = counting_line_vertical
-        self.init_model()
         self.make_temp_path()
 
     def __del__(self):
@@ -313,6 +305,7 @@ if __name__ == '__main__':
 
     od = ObjectDetect(detection_threshold, roi, count_switch, counting_line_vertical)
     od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.7)
+    # od.init_model()
 
     # botleft, topleft, topright, botright
     od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
