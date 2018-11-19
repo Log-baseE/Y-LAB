@@ -315,7 +315,7 @@ if __name__ == '__main__':
     od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.7)
 
     # botleft, topleft, topright, botright
-    # od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
+    od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
 
     loop = asyncio.get_event_loop()
 
