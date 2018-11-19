@@ -425,6 +425,21 @@ label.demo-label {
     transform: scale(1);
 }
 
+[type=radio]:disabled:checked + label, 
+[type=radio]:disabled:not(:checked) + label {
+    color: var(--transparent-white-20);
+}
+
+[type=radio]:disabled:checked + label:before, 
+[type=radio]:disabled:not(:checked) + label:before {
+    border-color: var(--transparent-white-20);
+}
+
+[type=radio]:disabled:checked + label:after, 
+[type=radio]:disabled:not(:checked) + label:after {
+    background: var(--transparent-white-20);
+}
+
 [type=range] {
     height: 5px;
     -webkit-appearance: none;

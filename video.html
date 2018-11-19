@@ -49,11 +49,11 @@
                             </div>
                             <div class="content2">
                                 <div class="content2a">
-                                    <input type="radio" name="detection" value="normal" id="normal-detection" checked>
+                                    <input type="radio" name="detection" value="normal" id="normal-detection" disabled checked>
                                     <label for="normal-detection">Normal</label>
                                 </div>
                                 <div class="content2b">
-                                    <input type="radio" name="detection" value="traffic" id="traffic-detection">
+                                    <input type="radio" name="detection" value="traffic" id="traffic-detection" disabled>
                                     <label for="traffic-detection">Road Traffic</label>
                                 </div>
                             </div>
@@ -66,7 +66,7 @@
                                 </svg>
                             </div>
                             <div class="content2">
-                                <input class="content2a" type="checkbox" name="demo" id="demo-checkbox"> <label for="demo-checkbox" class="demo-label"></label>
+                                <input class="content2a" type="checkbox" name="demo" id="demo-checkbox" disabled> <label for="demo-checkbox" class="demo-label"></label>
                             </div>
                         </div>
                         <div class="content">
@@ -91,9 +91,12 @@
                                 </svg>
                             </div>
                             <div class="content2">
-                                Detail1 <br>
-                                Detail2 <br>
-                                Detail3
+                                <div class="content2c">
+                                    <div id="file-type"></div>
+                                    <div id="file-size"></div>
+                                    <div id="file-res"></div>
+                                    <div id="file-duration"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -109,7 +112,7 @@
                             <div class="content2">
                                 <div class="content2c">
                                     <span class="custom-select">
-                                        <select name="model">
+                                        <select id="network-select" name="model" disabled>
                                             <option value="default">Default</option>
                                             <option value="a">A</option>
                                             <option value="b">B</option>
@@ -129,7 +132,7 @@
                             <div class="content2">
                                 <div class="content2c">
                                     <span class="custom-select">
-                                        <select name="weight">
+                                        <select id="weight-select" name="weight" disabled>
                                             <option value="default">Default</option>
                                             <option value="a">A</option>
                                             <option value="b">B</option>
@@ -148,11 +151,11 @@
                             </div>
                             <div class="content2">
                                 <div class="content2a">
-                                    <input type="radio" name="threshold" id="default-threshold" onclick="disableCustomThreshold()" checked>
+                                    <input type="radio" name="threshold" id="default-threshold" onclick="disableCustomThreshold()" disabled checked>
                                     <label for="default-threshold">Default - 0.1</label>
                                 </div>
                                 <div class="content2b">
-                                    <input type="radio" name="threshold" id="custom-threshold" onclick="enableCustomThreshold()">
+                                    <input type="radio" name="threshold" id="custom-threshold" onclick="enableCustomThreshold()" disabled>
                                     <label for="custom-threshold">Custom: </label>
                                     <input type="range" name="threshold" min="0.0" max="1.0" step="0.1" id="range-threshold" disabled>
                                     <input type="text" name="threshold" min="0.0" max="1.0" step="0.1" id="number-threshold" onchange="checkNumThreshold()" maxlength="3" pattern="(0|0+\.[1-9]|1+\.0)" disabled>
@@ -168,14 +171,14 @@
                             </div>
                             <div class="content2">
                                 <div class="content2a">
-                                    <input type="radio" name="weight" id="default-weight" onclick="disableCustomWeight()" checked>
-                                    <label for="default-weight">Default - 70%</label>
+                                    <input type="radio" name="gpu" id="default-gpu" onclick="disableCustomGPU()" disabled checked>
+                                    <label for="default-gpu">Default - 70%</label>
                                 </div>
                                 <div class="content2b">
-                                    <input type="radio" name="weight" id="custom-weight" onclick="enableCustomWeight()">
-                                    <label for="custom-weight">Custom:</label> 
-                                    <input type="range" name="weight" min="0" max="100" step="5" id="range-weight" disabled>
-                                    <input type="text" name="weight" min="0" max="100" step="5" id="number-weight" onchange="checkNumWeight()" maxlength="3" pattern="([0-9]{1,})" disabled><div id="num-unit">%</div>
+                                    <input type="radio" name="gpu" id="custom-gpu" onclick="enableCustomGPU()" disabled>
+                                    <label for="custom-gpu">Custom:</label> 
+                                    <input type="range" name="gpu" min="0" max="100" step="5" id="range-gpu" disabled>
+                                    <input type="text" name="gpu" min="0" max="100" step="5" id="number-gpu" onchange="checkNumGPU()" maxlength="3" pattern="([0-9]{1,})" disabled><div id="num-unit">%</div>
                                 </div>
                             </div>
                         </div>
@@ -188,12 +191,12 @@
                             </div>
                             <div class="content2">
                                 <div class="content2a">
-                                    <input type="radio" name="filter" id="filter-default" checked>
-                                    <label for="filter-default">All</label>
+                                    <input type="radio" name="filter" id="default-filter" disabled checked>
+                                    <label for="default-filter">All</label>
                                 </div>
                                 <div class="content2b">
-                                    <input type="radio" name="filter" id="filter-custom">
-                                    <label for="filter-custom">Custom:</label>
+                                    <input type="radio" name="filter" id="custom-filter" disabled>
+                                    <label for="custom-filter">Custom:</label>
                                 </div>
                             </div>
                         </div>
@@ -206,11 +209,11 @@
                             </div>
                             <div class="content2">
                                 <div class="content2a">
-                                    <input type="radio" name="roi" id="default-roi" onclick="disableCustomROI()" checked>
+                                    <input type="radio" name="roi" id="default-roi" onclick="disableCustomROI()" disabled checked>
                                     <label for="default-roi">Whole frame</label>
                                 </div>
                                 <div class="content2b">
-                                    <input type="radio" name="roi" id="custom-roi" onclick="enableCustomROI()">
+                                    <input type="radio" name="roi" id="custom-roi" onclick="enableCustomROI()" disabled>
                                     <label for="custom-roi">Custom:</label>
                                 </div>
                             </div>

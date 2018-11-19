@@ -5,6 +5,10 @@ function browseFile() {
 function getFile() {
     var browse = document.getElementById('chooseFile');
     var txt = "";
+    var type = "";
+    var size = ""; 
+    var res = "";
+    var duration = "";
     var source = document.getElementById('video-source');
     var url = window.URL || window.webkitURL;
 
@@ -14,7 +18,7 @@ function getFile() {
         } else {
             var file = browse.files[0];
             if ('type' in file) {
-                var type = file.type;
+                type = file.type;
                 var videoNode = document.querySelector('video');
                 var canPlay = videoNode.canPlayType(type);
                 if (canPlay === '') {
@@ -27,6 +31,18 @@ function getFile() {
                     var fileURL = url.createObjectURL(file);
                     source.removeAttribute('hidden');
                     source.src = fileURL;
+
+                    source.addEventListener('loadedmetadata', function() {
+                        type = "File type: " + file.type;
+                        size = "<br>File size: " + (file.size/1000000).toFixed(2) + " MB";
+                        res = "<br>Resolution: " + source.videoWidth + " x " + source.videoHeight;
+                        duration = "<br>Duration: " + Math.round(source.duration) + " secs";
+                    
+                        document.getElementById('file-type').innerHTML = type;
+                        document.getElementById('file-size').innerHTML = size;
+                        document.getElementById('file-res').innerHTML = res;
+                        document.getElementById('file-duration').innerHTML = duration;
+                    });
                 }
             }
         }
@@ -38,7 +54,25 @@ function getFile() {
             txt  += "<br>The path of the selected file: " + x.value; 
         }
     }
+
     document.getElementById('file-text').innerHTML = txt;
+    enableAll();
+}
+
+function enableAll() {
+    document.getElementById('normal-detection').removeAttribute('disabled');
+    document.getElementById('traffic-detection').removeAttribute('disabled');
+    document.getElementById('demo-checkbox').removeAttribute('disabled');
+    document.getElementById('network-select').removeAttribute('disabled');
+    document.getElementById('weight-select').removeAttribute('disabled');
+    document.getElementById('default-threshold').removeAttribute('disabled');
+    document.getElementById('custom-threshold').removeAttribute('disabled');
+    document.getElementById('default-gpu').removeAttribute('disabled');
+    document.getElementById('custom-gpu').removeAttribute('disabled');
+    document.getElementById('default-filter').removeAttribute('disabled');
+    document.getElementById('custom-filter').removeAttribute('disabled');
+    document.getElementById('default-roi').removeAttribute('disabled');
+    document.getElementById('custom-roi').removeAttribute('disabled');
 }
 
 function stepBackVideo() {
@@ -146,10 +180,10 @@ function checkNumThreshold() {
     }
 }
 
-function enableCustomWeight() {
-    var custom = document.getElementById('custom-weight');
-    var range = document.getElementById('range-weight');
-    var num = document.getElementById('number-weight');
+function enableCustomGPU() {
+    var custom = document.getElementById('custom-gpu');
+    var range = document.getElementById('range-gpu');
+    var num = document.getElementById('number-gpu');
     var unit = document.getElementById('num-unit');
 
     if (custom.checked) {
@@ -159,10 +193,10 @@ function enableCustomWeight() {
     }
 }
 
-function disableCustomWeight() {
-    var def = document.getElementById('default-weight');
-    var range = document.getElementById('range-weight');
-    var num = document.getElementById('number-weight');
+function disableCustomGPU() {
+    var def = document.getElementById('default-gpu');
+    var range = document.getElementById('range-gpu');
+    var num = document.getElementById('number-gpu');
     var unit = document.getElementById('num-unit');
 
     if (def.checked) {
@@ -172,8 +206,8 @@ function disableCustomWeight() {
     }
 }
 
-function checkNumWeight() {
-    var num = document.getElementById('number-weight');
+function checkNumGPU() {
+    var num = document.getElementById('number-gpu');
     if (!num.value.match('^' + num.getAttribute('pattern') + '$')) {
         //change the following code to error handling
         num.value="";
