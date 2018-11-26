@@ -25,29 +25,23 @@ class ObjectDetect:
     # video frame count
     frame_count = 0
 
-    options = {
-        "model": "cfg/yolo.cfg",
-        "load": "bin/yolo.weights",
-        "threshold": 0.1,
-        "gpu": 0.5
-    }
-
     def __init__(self, detection_threshold, roi, count_switch, counting_line_vertical):
         self.detection_threshold = detection_threshold
         self.roi = roi
         self.count_switch = count_switch
         self.counting_line_vertical = counting_line_vertical
-        self.init_model()
         self.make_temp_path()
 
     def __del__(self):
         shutil.rmtree(self.path)
 
     def init_options(self, model_dir, weights_dir, threshold, gpu):
-        self.options.model = model_dir
-        self.options.load = weights_dir
-        self.options.threshold = threshold
-        self.options.gpu = gpu
+        self.options = {
+                "model": model_dir,
+                "load": weights_dir,
+                "threshold": threshold,
+                "gpu": gpu
+            }
         
         if os.path.exists("./built_graph") and os.path.isdir("./built_graph"):
             shutil.rmtree("./built_graph")
@@ -127,7 +121,7 @@ class ObjectDetect:
 
     def car_count(self, img, coord, old_cars, count, line, is_vertical, frame_index):
         for oc in old_cars:
-            if oc[6] - frame_index > self.time_threshold:
+            if frame_index - oc[6] > self.time_threshold:
                 old_cars.remove(oc)
 
         new_cars = []
@@ -135,6 +129,7 @@ class ObjectDetect:
         for nc in coord:
             # collision with counting line
             if point_calculate.collision(nc[0], nc[1], nc[2], nc[3], line, self.counting_line_vertical):
+            # if point_calculate.collision_debug(nc[0], nc[1], nc[2], nc[3], line, self.counting_line_vertical, img, frame_index):
                 new_cars.append(nc)
 
                 unique_car = True
@@ -148,7 +143,7 @@ class ObjectDetect:
                     else:
                         car_size = oc[2] - oc[0]
 
-                    if point_calculate.boxDistance(oc_point[0], oc_point[1], nc_point[0], nc_point[1]) < car_size//3:
+                    if point_calculate.boxDistance(oc_point[0], oc_point[1], nc_point[0], nc_point[1]) < (car_size//3 * (frame_index - oc[6])):
                         # consider same car
                         unique_car = False
                         old_cars.remove(oc)
@@ -205,8 +200,8 @@ class ObjectDetect:
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        result_dir = os.path.join(self.path, "out_video.avi")
-        # result_dir = "./temp_results/out_video.avi"
+        # result_dir = os.path.join(self.path, "out_video.avi")
+        result_dir = "./temp_results/out_video.avi"
         out = cv2.VideoWriter(result_dir, fourcc, 30.0, (int(width), int(height)))
 
         length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -281,9 +276,9 @@ class ObjectDetect:
         bbox = self.process_coords(img, coords, 0)
         img = self.draw_bb(img, bbox)
         
-        result_dir = os.path.join(self.path, "out_image.jpg")
-        cv2.imwrite(result_dir, img)
-        # cv2.imwrite("./temp_results/out_" + img_dir, img)
+        # result_dir = os.path.join(self.path, "out_image.jpg")
+        # cv2.imwrite(result_dir, img)
+        cv2.imwrite("./temp_results/out_" + img_dir, img)
 
         # show result (comment later)
         # cv2.imshow('Result', img)
@@ -322,11 +317,13 @@ if __name__ == '__main__':
     print("BUILDING_MODEL_START")
     sys.stdout.flush()
     od = ObjectDetect(detection_threshold, roi, count_switch, counting_line_vertical)
+    od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.7)
     sys.stdout.flush()
+    # od.init_model()
     print("BUILDING_MODEL_COMPLETE")
+    sys.stdout.flush()
     print("Model built in %s seconds ---" % (time.time() - start_time))
     sys.stdout.flush()
-    # od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.5)
 
     # botleft, topleft, topright, botright
     od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
