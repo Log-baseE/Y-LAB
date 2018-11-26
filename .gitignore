@@ -71,3 +71,4 @@ built_graph
 # Others
 *.mp4
 __pycache__
+temp_results

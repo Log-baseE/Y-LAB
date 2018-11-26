@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Test</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container my-5">
+        <div class="row">
+            <form id="file-form">
+                <!-- <div class="form-group">
+                  <label for="number"><h5>
+                      Test loop
+                  </h5></label>
+                  <input type="number"
+                      class="form-control" name="number" id="number" min="0" placeholder="Input a number">
+                </div> -->
+                <div class="form-group">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="file" aria-describedby="fileHelpId">
+                        <label class="custom-file-label" for="file">Choose file</label>
+                    </div>
+                    <small id="fileHelpId" class="form-text text-muted">Add a video</small>
+                </div>
+                <button id="submit" type="submit" class="btn btn-dark">Submit</button>
+            </form>
+        </div>
+        <div class="row mt-5">
+            <h5 id="msg" class="d-none">Please be patient</h5>
+        </div>
+        <div class="row mt-5">
+            <h5 class="d-block">Output</h5>
+        </div>
+        <div class="row mt-1">
+            <div id="output">
+
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./linker.js"></script>
+
+</html>

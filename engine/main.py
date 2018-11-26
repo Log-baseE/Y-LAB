@@ -1,6 +1,15 @@
+print("Importing libraries...")
+
+print("Importing tensorflow")
 from darkflow.net.build import TFNet
 from darkflow.defaults import argHandler
+print("Tensorflow imported")
+
+print("Importing concurrent library")
 from concurrent.futures import ProcessPoolExecutor
+print("Concurrent library imported")
+
+print("Importing other libaries...")
 import point_calculate
 import numpy as np
 import pandas as pd
@@ -13,6 +22,7 @@ import shutil
 import time
 import os
 import sys
+print("Import finished")
 
 # suppress tensorflow warning
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -205,8 +215,8 @@ class ObjectDetect:
         out = cv2.VideoWriter(result_dir, fourcc, 30.0, (int(width), int(height)))
 
         length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        # print("Coords: " + str(len(coords)))
-        # print("Frames: " + str(length))
+        print("Coords: " + str(len(coords)))
+        print("Frames: " + str(length))
         
         cars = []
         count = 0
@@ -306,7 +316,7 @@ if __name__ == '__main__':
     start_time = time.time()
 
     # max number of pixels for gap between bounding box for boxes to be considered separate
-    detection_threshold = 10
+    detection_threshold = 50
     # use region of interest in object detection
     roi = True
     # counting cars mode
@@ -346,3 +356,4 @@ if __name__ == '__main__':
     loop.close()
 
     print("--- %s seconds ---" % (time.time() - start_time))
+    print("OBJECT DETECTION FINISHED")
