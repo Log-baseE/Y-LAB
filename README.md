@@ -21,7 +21,8 @@
 #### Setting Up Darkflow
 1. Clone the Darkflow repo by running `git clone https://github.com/thtrieu/darkflow.git`
 2. Run `cd darkflow`
-3. Install Darkflow globally by running `pip install .`
+3. Install Cython by running `pip install cython`
+4. Install Darkflow globally by running `pip install .`
 
 ### Electron.JS
 #### Setting Up Electron
