@@ -1,4 +1,7 @@
+.vscode
 node_modules
 bin
 cfg
+built_graph
 *.mp4
+__pycache__

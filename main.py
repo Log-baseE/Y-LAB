@@ -12,6 +12,7 @@ import tempfile
 import shutil
 import time
 import os
+import sys
 
 # suppress tensorflow warning
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -53,7 +54,7 @@ class ObjectDetect:
         self.init_model()
 
     def init_model(self):
-        if(os.path.isfile("./built_graph/yolo.pb") & os.path.isfile("built_graph/yolo.meta")):
+        if(os.path.isfile("./built_graph/yolo.pb") & os.path.isfile("./built_graph/yolo.meta")):
             # if already saved, load from existing
             FLAGS = argHandler()
             FLAGS.setDefaults()
@@ -93,6 +94,7 @@ class ObjectDetect:
     # yolo at work - return coordinates of objects per frame
     def process_frame(self, frame):
         print("Frame count: " + str(self.frame_count))
+        sys.stdout.flush()
         result = self.tfnet.return_predict(frame)
         self.frame_count += 1
         return result
@@ -298,6 +300,14 @@ class ObjectDetect:
         self.roi = roi_switch
 
 if __name__ == '__main__':
+    usage = "Usage: python main.py <video_path>"
+    print(sys.argv)
+    if len(sys.argv) != 2:
+        print("Invalid arguments")
+        print(usage)
+        sys.exit(-1)
+    videopath = sys.argv[1]
+
     start_time = time.time()
 
     # max number of pixels for gap between bounding box for boxes to be considered separate
@@ -309,7 +319,13 @@ if __name__ == '__main__':
     # counting line is drawn vertically or horizontally between roi
     counting_line_vertical = True
 
+    print("BUILDING_MODEL_START")
+    sys.stdout.flush()
     od = ObjectDetect(detection_threshold, roi, count_switch, counting_line_vertical)
+    sys.stdout.flush()
+    print("BUILDING_MODEL_COMPLETE")
+    print("Model built in %s seconds ---" % (time.time() - start_time))
+    sys.stdout.flush()
     # od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.5)
 
     # botleft, topleft, topright, botright
@@ -324,7 +340,11 @@ if __name__ == '__main__':
     # video detect
     od.set_label(["car", "truck"])
     od.set_roi(True)
-    loop.run_until_complete(od.video_detect("short video.mp4"))
+    print("OBJECT_DETECTION_START")
+    sys.stdout.flush()
+    loop.run_until_complete(od.video_detect(videopath))
+    print("OBJECT_DETECTION_END")
+    sys.stdout.flush()
 
     loop.close()
 
