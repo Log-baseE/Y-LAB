@@ -20,18 +20,10 @@ const styles = theme => ({
 });
 
 class BasicSettings extends Component {
-  state = {
-    type: 'default',
-  }
-
-  handleTypeChange = event => {
-    this.setState({
-      type: event.target.value
-    });
-  };
-
   render() {
     const { classes } = this.props;
+    const { state } = this.props;
+    const { handleChange } = this.props;
 
     return (
       <Paper className={ classes.root } elevation={1}>
@@ -72,8 +64,8 @@ class BasicSettings extends Component {
               <RadioGroup
                 aria-label="object detection type"
                 name="type"
-                value={this.state.type}
-                onChange={this.handleTypeChange}
+                value={this.props.state.type}
+                onChange={handleChange}
                 row
               >
                 <FormControlLabel value="default" control={<CustomRadio />} label="Default" />
@@ -88,7 +80,7 @@ class BasicSettings extends Component {
               <FormLabel>File details</FormLabel>
             </Grid>
             <Grid item md={8} style={{ padding: "7px 0" }}>
-              { this.state.fileDetails ? 
+              { this.props.state.fileDetails ? 
                 <Table>
                   <TableBody>
                     <TableRow>

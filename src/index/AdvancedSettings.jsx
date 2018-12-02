@@ -47,55 +47,10 @@ const styles = theme => ({
 });
 
 class AdvancedSettings extends Component {
-  state = {
-    type: "default",
-    nnModel: "default",
-    weights: "default",
-    threshold: 0.1,
-    lastValidThreshold: 0.1,
-    gpu: 70,
-    lastValidGpu: 70,
-    thresholdType: "default",
-    gpuType: "default",
-    filterType: "all",
-    filter: "",
-    roiType: "custom",
-  };
-
-  handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-
-  handleSliderChange = (name, min, max) => (event, value) => {
-    this.setState({ [name]: value });
-    if (!isNaN(parseFloat(value))) {
-      var val = parseFloat(value);
-      if (val >= min && val <= max) {
-        this.setState({
-          [`lastValid${name.charAt(0).toUpperCase() + name.slice(1)}`]: val
-        });
-      }
-    }
-  };
-
-  handleNumberInputChange = (name, min, max) => event => {
-    this.setState({ [name]: event.target.value });
-    if (!isNaN(parseFloat(event.target.value))) {
-      var val = parseFloat(event.target.value);
-      if (val >= min && val <= max) {
-        this.setState({
-          [`lastValid${name.charAt(0).toUpperCase() + name.slice(1)}`]: val
-        });
-      }
-    }
-  };
-
-  validateValue = (key, format) => {
-    return format.test(this.state[key]);
-  };
-
   render() {
     const { classes } = this.props;
+    const { state } = this.props;
+    const { handleChange, handleNumberInputChange, handleSliderChange, handleROIChange } = this.props;
 
     return (
       <ExpansionPanel
@@ -128,8 +83,8 @@ class AdvancedSettings extends Component {
                   <RadioGroup
                     aria-label="object detection type"
                     name="roiType"
-                    value={this.state.roiType}
-                    onChange={this.handleChange}
+                    value={state.roiType}
+                    onChange={handleChange}
                     row
                     className={classes.formControl}
                   >
@@ -145,9 +100,9 @@ class AdvancedSettings extends Component {
                       label="Custom:"
                     />
                   </RadioGroup>
-                  {this.state.roiType === "custom" ? (
-                    <Grow in={this.state.roiType === "custom"}>
-                      <ROIInput roi={this.props.roi} handleROIChange={this.props.handleROIChange} />
+                  {state.roiType === "custom" ? (
+                    <Grow in={state.roiType === "custom"}>
+                      <ROIInput roi={state.roi} handleROIChange={handleROIChange} />
                     </Grow>
                   ) : (
                     ""
@@ -166,9 +121,9 @@ class AdvancedSettings extends Component {
                 </Grid>
                 <Grid item container md={8} alignItems="center" spacing={16}>
                   <Select
-                    value={this.state.nnModel}
+                    value={state.nnModel}
                     name="nnModel"
-                    onChange={this.handleChange}
+                    onChange={handleChange}
                   >
                     <MenuItem value="default">Default</MenuItem>
                     <MenuItem value="model1">Model 1</MenuItem>
@@ -189,9 +144,9 @@ class AdvancedSettings extends Component {
                 </Grid>
                 <Grid item container md={8} alignItems="center" spacing={16}>
                   <Select
-                    value={this.state.weights}
+                    value={state.weights}
                     name="weights"
-                    onChange={this.handleChange}
+                    onChange={handleChange}
                   >
                     <MenuItem value="default">Default</MenuItem>
                     <MenuItem value="weight1">Weight 1</MenuItem>
@@ -214,8 +169,8 @@ class AdvancedSettings extends Component {
                   <RadioGroup
                     aria-label="object detection type"
                     name="thresholdType"
-                    value={this.state.thresholdType}
-                    onChange={this.handleChange}
+                    value={state.thresholdType}
+                    onChange={handleChange}
                     row
                     className={classes.formControl}
                   >
@@ -233,14 +188,14 @@ class AdvancedSettings extends Component {
                           Custom:&nbsp;&nbsp;&nbsp;
                           <Input
                             value={
-                              typeof this.state.threshold === "number"
-                                ? this.state.threshold.toFixed(2)
-                                : this.state.threshold
+                              typeof state.threshold === "number"
+                                ? state.threshold.toFixed(2)
+                                : state.threshold
                             }
                             margin="none"
                             className={classes.numberInput}
-                            disabled={this.state.thresholdType !== "custom"}
-                            onChange={this.handleNumberInputChange(
+                            disabled={state.thresholdType !== "custom"}
+                            onChange={handleNumberInputChange(
                               "threshold",
                               0,
                               1
@@ -250,12 +205,12 @@ class AdvancedSettings extends Component {
                       }
                     />
                   </RadioGroup>
-                  {this.state.thresholdType === "custom" ? (
-                    <Grow in={this.state.thresholdType === "custom"}>
+                  {state.thresholdType === "custom" ? (
+                    <Grow in={state.thresholdType === "custom"}>
                       <Slider
                         classes={{ container: classes.slider }}
-                        value={this.state.lastValidThreshold}
-                        onChange={this.handleSliderChange("threshold", 0, 1)}
+                        value={state.lastValidThreshold}
+                        onChange={handleSliderChange("threshold", 0, 1)}
                         min={0}
                         max={1}
                         step={0.01}
@@ -280,8 +235,8 @@ class AdvancedSettings extends Component {
                   <RadioGroup
                     aria-label="object detection type"
                     name="gpuType"
-                    value={this.state.gpuType}
-                    onChange={this.handleChange}
+                    value={state.gpuType}
+                    onChange={handleChange}
                     row
                     className={classes.formControl}
                   >
@@ -298,15 +253,11 @@ class AdvancedSettings extends Component {
                         <Grid container alignItems="center">
                           Custom:&nbsp;&nbsp;&nbsp;
                           <Input
-                            value={this.state.gpu}
+                            value={state.gpu}
                             margin="none"
                             className={classes.numberInput}
-                            disabled={this.state.gpuType !== "custom"}
-                            onChange={this.handleNumberInputChange(
-                              "gpu",
-                              0,
-                              100
-                            )}
+                            disabled={state.gpuType !== "custom"}
+                            onChange={handleNumberInputChange("gpu", 0, 100)}
                             endAdornment={
                               <InputAdornment position="end">%</InputAdornment>
                             }
@@ -315,12 +266,12 @@ class AdvancedSettings extends Component {
                       }
                     />
                   </RadioGroup>
-                  {this.state.gpuType === "custom" ? (
-                    <Grow in={this.state.gpuType === "custom"}>
+                  {state.gpuType === "custom" ? (
+                    <Grow in={state.gpuType === "custom"}>
                       <Slider
                         classes={{ container: classes.slider }}
-                        value={this.state.lastValidGpu}
-                        onChange={this.handleSliderChange("gpu", 0, 100)}
+                        value={state.lastValidGpu}
+                        onChange={handleSliderChange("gpu", 0, 100)}
                         min={0}
                         max={100}
                         step={1}
@@ -345,8 +296,8 @@ class AdvancedSettings extends Component {
                   <RadioGroup
                     aria-label="object detection type"
                     name="filterType"
-                    value={this.state.filterType}
-                    onChange={this.handleChange}
+                    value={state.filterType}
+                    onChange={handleChange}
                     row
                     className={classes.formControl}
                   >
@@ -362,14 +313,14 @@ class AdvancedSettings extends Component {
                       label="Custom:"
                     />
                   </RadioGroup>
-                  {this.state.filterType === "custom" ? (
-                    <Grow in={this.state.filterType === "custom"}>
+                  {state.filterType === "custom" ? (
+                    <Grow in={state.filterType === "custom"}>
                       <FormControl fullWidth>
                         <Input
                           error={!this.validateValue("filter", /^(\w+;)*\w+$/)}
                           name="filter"
-                          onChange={this.handleChange}
-                          value={this.state.filter}
+                          onChange={handleChange}
+                          value={state.filter}
                           placeholder="Example: car; truck"
                         />
                         <FormHelperText>
