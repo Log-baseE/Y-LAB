@@ -27,7 +27,8 @@ const styles = theme => ({
     display: "none"
   },
   root: {
-    margin: theme.spacing.unit * 2
+    margin: theme.spacing.unit * 2,
+    borderRadius: 4,
   },
   formControl: {
     width: "100%"
@@ -36,7 +37,8 @@ const styles = theme => ({
     width: `${100/3}%`
   },
   slider: {
-    padding: "12px 0px"
+    padding: "12px 0",
+    marginBottom: 24,
   },
   numberInput: {
     maxWidth: 50
@@ -86,7 +88,7 @@ class AdvancedSettings extends Component {
     }
   };
 
-  validateFormat = (key, format) => {
+  validateValue = (key, format) => {
     return format.test(this.state[key]);
   }
 
@@ -94,7 +96,11 @@ class AdvancedSettings extends Component {
     const { classes } = this.props;
 
     return (
-      <ExpansionPanel className={classes.root} elevation={1} defaultExpanded>
+      <ExpansionPanel classes={{
+        root: classes.root,
+      }} elevation={1} defaultExpanded style={{
+        marginBottom: 16,
+      }}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="h6" className={classes.heading}>
             YOLO Configuration
@@ -313,7 +319,7 @@ class AdvancedSettings extends Component {
                     <Grow in={this.state.filterType === "custom"}>
                       <FormControl fullWidth>
                         <Input 
-                          error={!this.validateFormat('filter', /^(\w+;)*\w+$/)}
+                          error={!this.validateValue('filter', /^(\w+;)*\w+$/)}
                           name="filter"
                           onChange={this.handleChange}
                           value={this.state.filter}

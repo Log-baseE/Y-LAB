@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import SplitPane from 'react-split-pane';
-import Settings from './Settings';
-import Preview from './Preview';
+import React, { Component } from "react";
+import SplitPane from "react-split-pane";
+import Settings from "./Settings";
+import Preview from "./Preview";
 
 class Index extends Component {
   render() {

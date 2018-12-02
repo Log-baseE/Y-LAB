@@ -1,2 +1,7 @@
 @import "resizer";
 @import "settings";
+
+.Pane {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
