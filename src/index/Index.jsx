@@ -6,7 +6,7 @@ import Preview from './Preview';
 class Index extends Component {
   render() {
     return (
-      <SplitPane split="vertical" minSize={100} defaultSize={"50%"}>
+      <SplitPane split="vertical" minSize={500} defaultSize={"50%"}>
         <Settings />
         <Preview />
       </SplitPane>

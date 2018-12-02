@@ -13,12 +13,13 @@ const THEME = createMuiTheme({
       useNextVariants: true,
       fontFamily: `-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif`
+      sans-serif`,
+      fontSize: 12
     },
-    palette: {
-      type: 'dark',
-      primary: indigo,
-    }
+    // palette: {
+    //   type: 'dark',
+    //   primary: indigo,
+    // }
   });
 
 
