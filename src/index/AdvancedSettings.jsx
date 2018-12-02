@@ -21,6 +21,7 @@ import { Slider } from "@material-ui/lab";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { withStyles } from "@material-ui/core/styles";
 import CustomRadio from "../custom/CustomRadio";
+import ROIInput from "./ROIInput";
 
 const styles = theme => ({
   input: {
@@ -28,17 +29,17 @@ const styles = theme => ({
   },
   root: {
     margin: theme.spacing.unit * 2,
-    borderRadius: 4,
+    borderRadius: 4
   },
   formControl: {
     width: "100%"
   },
   defaultRadio: {
-    width: `${100/3}%`
+    width: `${100 / 3}%`
   },
   slider: {
     padding: "12px 0",
-    marginBottom: 24,
+    marginBottom: 24
   },
   numberInput: {
     maxWidth: 50
@@ -58,6 +59,7 @@ class AdvancedSettings extends Component {
     gpuType: "default",
     filterType: "all",
     filter: "",
+    roiType: "custom",
   };
 
   handleChange = event => {
@@ -90,17 +92,22 @@ class AdvancedSettings extends Component {
 
   validateValue = (key, format) => {
     return format.test(this.state[key]);
-  }
+  };
 
   render() {
     const { classes } = this.props;
 
     return (
-      <ExpansionPanel classes={{
-        root: classes.root,
-      }} elevation={1} defaultExpanded style={{
-        marginBottom: 16,
-      }}>
+      <ExpansionPanel
+        classes={{
+          root: classes.root
+        }}
+        elevation={1}
+        defaultExpanded
+        style={{
+          marginBottom: 16
+        }}
+      >
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="h6" className={classes.heading}>
             YOLO Configuration
@@ -108,6 +115,46 @@ class AdvancedSettings extends Component {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Grid container>
+            <FormControl
+              margin="dense"
+              fullWidth
+              className={classes.formControl}
+            >
+              <Grid container>
+                <Grid item md={4} style={{ paddingTop: 5 }}>
+                  <FormLabel>Region of interest</FormLabel>
+                </Grid>
+                <Grid item container md={8} alignItems="center" spacing={16}>
+                  <RadioGroup
+                    aria-label="object detection type"
+                    name="roiType"
+                    value={this.state.roiType}
+                    onChange={this.handleChange}
+                    row
+                    className={classes.formControl}
+                  >
+                    <FormControlLabel
+                      value="all"
+                      control={<CustomRadio />}
+                      label="Whole frame"
+                      className={classes.defaultRadio}
+                    />
+                    <FormControlLabel
+                      value="custom"
+                      control={<CustomRadio />}
+                      label="Custom:"
+                    />
+                  </RadioGroup>
+                  {this.state.roiType === "custom" ? (
+                    <Grow in={this.state.roiType === "custom"}>
+                      <ROIInput roi={this.props.roi} handleROIChange={this.props.handleROIChange} />
+                    </Grow>
+                  ) : (
+                    ""
+                  )}
+                </Grid>
+              </Grid>
+            </FormControl>
             <FormControl
               margin="normal"
               fullWidth
@@ -318,14 +365,16 @@ class AdvancedSettings extends Component {
                   {this.state.filterType === "custom" ? (
                     <Grow in={this.state.filterType === "custom"}>
                       <FormControl fullWidth>
-                        <Input 
-                          error={!this.validateValue('filter', /^(\w+;)*\w+$/)}
+                        <Input
+                          error={!this.validateValue("filter", /^(\w+;)*\w+$/)}
                           name="filter"
                           onChange={this.handleChange}
                           value={this.state.filter}
                           placeholder="Example: car; truck"
                         />
-                        <FormHelperText>Use semicolon to separate labels</FormHelperText>
+                        <FormHelperText>
+                          Use semicolon to separate labels
+                        </FormHelperText>
                       </FormControl>
                     </Grow>
                   ) : (
