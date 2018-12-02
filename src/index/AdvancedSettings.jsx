@@ -51,6 +51,7 @@ class AdvancedSettings extends Component {
     const { classes } = this.props;
     const { state } = this.props;
     const { handleChange, handleNumberInputChange, handleSliderChange, handleROIChange } = this.props;
+    const { validateValue } = this.props;
 
     return (
       <ExpansionPanel
@@ -58,7 +59,6 @@ class AdvancedSettings extends Component {
           root: classes.root
         }}
         elevation={1}
-        defaultExpanded
         style={{
           marginBottom: 16
         }}
@@ -97,7 +97,8 @@ class AdvancedSettings extends Component {
                     <FormControlLabel
                       value="custom"
                       control={<CustomRadio />}
-                      label="Custom:"
+                      label={`Custom: ${state.file === null ? '(pick a file to enable)' : ''}`}
+                      disabled={state.file === null}
                     />
                   </RadioGroup>
                   {state.roiType === "custom" ? (
@@ -306,18 +307,20 @@ class AdvancedSettings extends Component {
                       control={<CustomRadio />}
                       label="All"
                       className={classes.defaultRadio}
+                      disabled={state.type !== "default"}
                     />
                     <FormControlLabel
                       value="custom"
                       control={<CustomRadio />}
                       label="Custom:"
+                      disabled={state.type !== "default"}
                     />
                   </RadioGroup>
                   {state.filterType === "custom" ? (
                     <Grow in={state.filterType === "custom"}>
                       <FormControl fullWidth>
                         <Input
-                          error={!this.validateValue("filter", /^(\w+;)*\w+$/)}
+                          error={!validateValue("filter", /^(\w+\s*;\s*)*\w+$/)}
                           name="filter"
                           onChange={handleChange}
                           value={state.filter}

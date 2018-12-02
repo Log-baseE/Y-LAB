@@ -6,6 +6,7 @@ const BrowserWindow = electron.BrowserWindow;
 
 const path = require('path');
 const url = require('url');
+const { is } = require('electron-util');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -19,7 +20,13 @@ const startUrl = process.env.ELECTRON_START_URL || url.format({
 
 function createWindow() {
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600});
+    mainWindow = new BrowserWindow({
+        width: 800, 
+        height: 600,
+        webPreferences: {
+            webSecurity: !is.development
+        },
+    });
 
     // and load the index.html of the app.
     mainWindow.loadURL(startUrl);

@@ -5,6 +5,8 @@ import Preview from "./Preview";
 
 class Index extends Component {
   state = {
+    file: null,
+    meta: null,
     type: "default",
     nnModel: "default",
     weights: "default",
@@ -16,16 +18,16 @@ class Index extends Component {
     lastValidGpu: 70,
     filterType: "all",
     filter: "",
-    roiType: "custom",
+    roiType: "all",
     roi: {
       topLeft: { x: 0, y: 0 },
       topRight: { x: 0, y: 0 },
       bottomLeft: { x: 0, y: 0 },
-      bottomRight: { x: 0, y: 0 },
+      bottomRight: { x: 0, y: 0 }
     }
   };
 
-  names = {}
+  names = {};
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
@@ -33,8 +35,9 @@ class Index extends Component {
 
   handleSliderChange = (name, min, max) => (event, value) => {
     this.setState({ [name]: value });
-    if(!this.names[name]) {
-      this.names[name] = `lastValid${name.charAt(0).toUpperCase() + name.slice(1)}`;
+    if (!this.names[name]) {
+      this.names[name] = `lastValid${name.charAt(0).toUpperCase() +
+        name.slice(1)}`;
     }
     this.setState({
       [this.names[name]]: value
@@ -60,19 +63,50 @@ class Index extends Component {
   handleROIChange = (position, component) => event => {
     let roi = Object.assign({}, this.state.roi);
     roi[position][component] = event.target.value;
-    this.setState({roi});
+    this.setState({ roi });
+  };
+
+  handleFileChange = event => {
+    this.setState({
+      file: event.target.files[0]
+    });
+  };
+
+  handleFileDrop = files => {
+    this.setState({
+      file: files[0]
+    });
+  };
+
+  handleMetaData = event => {
+    this.setState({
+      meta: {
+        duration: event.target.duration,
+        res: {
+          width: event.target.videoWidth,
+          height: event.target.videoHeight,
+        }
+      }
+    })
   }
 
   render() {
     return (
       <SplitPane split="vertical" minSize={500} defaultSize={"50%"}>
-        <Settings 
-          state={this.state} 
+        <Settings
+          state={this.state}
           handleSliderChange={this.handleSliderChange}
           handleNumberInputChange={this.handleNumberInputChange}
           handleChange={this.handleChange}
-          handleROIChange={this.handleROIChange} />
-        <Preview />
+          handleROIChange={this.handleROIChange}
+          handleFileChange={this.handleFileChange}
+          validateValue={this.validateValue}
+        />
+        <Preview 
+          state={this.state}
+          handleFileDrop={this.handleFileDrop}
+          handleMetaData={this.handleMetaData}
+        />
       </SplitPane>
     );
   }

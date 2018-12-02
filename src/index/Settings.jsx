@@ -5,15 +5,21 @@ import AdvancedSettings from './AdvancedSettings';
 class Settings extends Component {
   render() {
     const { state } = this.props;
-    const { handleChange, handleNumberInputChange, handleSliderChange, handleROIChange } = this.props;
+    const { handleChange, handleNumberInputChange, handleSliderChange, handleROIChange, handleFileChange } = this.props;
+    const { validateValue } = this.props;
     return ([
-      <BasicSettings state={state} handleChange={handleChange} key={'basic'} />,
+      <BasicSettings
+        state={state}
+        handleChange={handleChange}
+        handleFileChange={handleFileChange}
+        key={'basic'} />,
       <AdvancedSettings 
         state={state}
         handleNumberInputChange={handleNumberInputChange}
         handleChange={handleChange}
         handleSliderChange={handleSliderChange}
         handleROIChange={handleROIChange}
+        validateValue={validateValue}
         key={'advanced'}
       />,
     ]);
