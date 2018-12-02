@@ -149,27 +149,27 @@ class Preview extends Component {
           disabled={state.file === null}
         />
         <CardActions className={classes.videoControls}>
-          <IconButton aria-label="Previous" onClick={this.handleSkipPrevious}>
+          <IconButton aria-label="Previous" onClick={this.handleSkipPrevious} disabled={state.file === null}>
             <SkipPreviousIcon />
           </IconButton>
-          <IconButton aria-label="Toggl repeat" onClick={this.handleToggleRepeat}>
+          <IconButton aria-label="Toggl repeat" onClick={this.handleToggleRepeat} disabled={state.file === null}>
             {
               this.state.repeat ?
               <RepeatOneIcon /> :
               <RepeatIcon />
             }
           </IconButton>
-          <IconButton aria-label="Play/pause" onClick={this.handlePlayPause}>
+          <IconButton aria-label="Play/pause" onClick={this.handlePlayPause} disabled={state.file === null}>
             {
               this.state.play ?
               <PauseIcon /> :
               <PlayArrowIcon />
             }
           </IconButton>
-          <IconButton aria-label="Stop" onClick={this.handleSkipPrevious}>
+          <IconButton aria-label="Stop" onClick={this.handleSkipPrevious} disabled={state.file === null}>
             <StopIcon />
           </IconButton>
-          <IconButton aria-label="Next" onClick={this.handleSkipNext}>
+          <IconButton aria-label="Next" onClick={this.handleSkipNext} disabled={state.file === null}>
             <SkipNextIcon />
           </IconButton>
         </CardActions>
