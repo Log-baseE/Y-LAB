@@ -113,7 +113,9 @@ class Preview extends Component {
 
   render() {
     const { classes } = this.props;
-    const { state, handleFileDrop, handleMetaData } = this.props;
+    const { state } = this.props;
+    const { handleFileDrop, handleMetaData, handleSubmit } = this.props;
+
     return ([
       <Card className={classes.root} key="preview-card">
         {
@@ -194,6 +196,8 @@ class Preview extends Component {
             marginRight: 16
           }}
           color="primary"
+          onClick={handleSubmit(state)}
+          disabled={state.file === null}
         >
           LOOKS GOOD!
         </Button>

@@ -45,11 +45,14 @@
     "electron-util": "^0.10.2",
     "filesize": "^3.6.1",
     "node-sass": "^4.10.0",
+    "python-shell": "^1.0.6",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-dropzone": "^7.0.1",
     "react-joyride": "^2.0.0-15",
     "react-scripts": "2.1.1",
-    "react-split-pane": "^0.1.84"
+    "react-split-pane": "^0.1.84",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
   }
 }

@@ -29,6 +29,15 @@ class Index extends Component {
 
   names = {};
 
+  componentDidMount() {
+    const { state } = this.props;
+    if ( state ) {
+      this.setState({
+        ...state
+      });
+    }
+  }
+
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
@@ -97,6 +106,7 @@ class Index extends Component {
   }
 
   render() {
+    const { handleSubmit } = this.props;
     return (
       <SplitPane split="vertical" minSize={500} defaultSize={"50%"}>
         <Settings
@@ -112,6 +122,7 @@ class Index extends Component {
           state={this.state}
           handleFileDrop={this.handleFileDrop}
           handleMetaData={this.handleMetaData}
+          handleSubmit={handleSubmit}
         />
       </SplitPane>
     );

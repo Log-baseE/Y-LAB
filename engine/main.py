@@ -1,15 +1,7 @@
-print("Importing libraries...")
+print("PROGRAM_START")
 
-print("Importing tensorflow")
-from darkflow.net.build import TFNet
-from darkflow.defaults import argHandler
-print("Tensorflow imported")
+print("LIB_START")
 
-print("Importing concurrent library")
-from concurrent.futures import ProcessPoolExecutor
-print("Concurrent library imported")
-
-print("Importing other libaries...")
 import point_calculate
 import numpy as np
 import pandas as pd
@@ -22,7 +14,16 @@ import shutil
 import time
 import os
 import sys
-print("Import finished")
+
+from concurrent.futures import ProcessPoolExecutor
+
+print("LIB_END")
+print("TF_START")
+
+from darkflow.net.build import TFNet
+from darkflow.defaults import argHandler
+
+print("TF_END")
 
 # suppress tensorflow warning
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -97,7 +98,7 @@ class ObjectDetect:
 
     # yolo at work - return coordinates of objects per frame
     def process_frame(self, frame):
-        print("Frame count: " + str(self.frame_count))
+        print("FRAME_INDEX:" + str(self.frame_count))
         sys.stdout.flush()
         result = self.tfnet.return_predict(frame)
         self.frame_count += 1
@@ -202,10 +203,16 @@ class ObjectDetect:
         roi_pts = self.roi_pts
         self.frame_count = 0
 
+        cap = cv2.VideoCapture(video_dir)
+        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        cap.release()
+        self.frames = length
+        print("FRAMES:" + str(length))
+
         # e = ProcessPoolExecutor(max_workers = 2)
         # coords = await asyncio.gather(*(self.loop.run_in_executor(e, self.process_frame, frame) for frame in self.get_frame(video_dir)))
         coords = [self.process_frame(frame) for frame in self.get_frame(video_dir)]
-
+        
         cap = cv2.VideoCapture(video_dir)
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
@@ -214,9 +221,7 @@ class ObjectDetect:
         result_dir = "./temp_results/out_video.avi"
         out = cv2.VideoWriter(result_dir, fourcc, 30.0, (int(width), int(height)))
 
-        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         print("Coords: " + str(len(coords)))
-        print("Frames: " + str(length))
         
         cars = []
         count = 0
@@ -312,6 +317,10 @@ if __name__ == '__main__':
         print(usage)
         sys.exit(-1)
     videopath = sys.argv[1]
+    
+    """
+    PARSE JSON!!!!!!
+    """
 
     start_time = time.time()
 
@@ -324,16 +333,19 @@ if __name__ == '__main__':
     # counting line is drawn vertically or horizontally between roi
     counting_line_vertical = True
 
-    print("BUILDING_MODEL_START")
+    print("MODEL_START")
+
     sys.stdout.flush()
     od = ObjectDetect(detection_threshold, roi, count_switch, counting_line_vertical)
     od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.7)
     sys.stdout.flush()
+
     # od.init_model()
-    print("BUILDING_MODEL_COMPLETE")
+
+    print("MODEL_END")
     sys.stdout.flush()
-    print("Model built in %s seconds ---" % (time.time() - start_time))
-    sys.stdout.flush()
+    # print("Model built in %s seconds ---" % (time.time() - start_time))
+    # sys.stdout.flush()
 
     # botleft, topleft, topright, botright
     od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
@@ -347,13 +359,17 @@ if __name__ == '__main__':
     # video detect
     od.set_label(["car", "truck"])
     od.set_roi(True)
-    print("OBJECT_DETECTION_START")
+
+    print("DETECT_START")
+
     sys.stdout.flush()
     loop.run_until_complete(od.video_detect(videopath))
-    print("OBJECT_DETECTION_END")
+
+    print("DETECT_END")
     sys.stdout.flush()
 
     loop.close()
 
     print("--- %s seconds ---" % (time.time() - start_time))
-    print("OBJECT DETECTION FINISHED")
+    print("PROGRAM_END")
+    sys.stdout.flush()
