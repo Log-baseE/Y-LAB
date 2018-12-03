@@ -315,8 +315,8 @@ class ObjectDetect:
         # self.path = tempfile.mkdtemp()
         # print(self.path)
 
-        file_path = "./.ylab/"
-        directory = os.path.dirname(file_path)
+        self.path =  "./.ylab/"
+        directory = os.path.dirname(self.path)
         if not os.path.exists(directory):
             os.makedirs(directory)
 
