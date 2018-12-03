@@ -44,8 +44,8 @@ class ObjectDetect:
         self.counting_line_vertical = counting_line_vertical
         self.make_temp_path()
 
-    def __del__(self):
-        shutil.rmtree(self.path)
+    # def __del__(self):
+    #     shutil.rmtree(self.path)
 
     def init_options(self, model_dir, weights_dir, threshold, gpu):
         self.options = {
@@ -220,8 +220,8 @@ class ObjectDetect:
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        # result_dir = os.path.join(self.path, "out_video.avi")
-        result_dir = "./temp_results/out_video.avi"
+        result_dir = os.path.join(self.path, "out_video.avi")
+        # result_dir = "./temp_results/out_video.avi"
         out = cv2.VideoWriter(result_dir, fourcc, 30.0, (int(width), int(height)))
 
         print("Coords: " + str(len(coords)))
@@ -268,7 +268,7 @@ class ObjectDetect:
             frame = self.draw_bb(frame, coord)
 
             # write to video
-            cv2.imwrite(os.path.join(self.path, "out_" + str(i) + ".jpg"), frame)
+            # cv2.imwrite(os.path.join(self.path, "out_" + str(i) + ".jpg"), frame)
             # cv2.imwrite("./temp_results/out_" + str(i) + ".jpg", frame)
             out.write(frame)
 
@@ -300,9 +300,9 @@ class ObjectDetect:
         bbox = self.process_coords(img, coords, 0)
         img = self.draw_bb(img, bbox)
         
-        # result_dir = os.path.join(self.path, "out_image.jpg")
-        # cv2.imwrite(result_dir, img)
-        cv2.imwrite("./temp_results/out_" + img_dir, img)
+        result_dir = os.path.join(self.path, "out_image.jpg")
+        cv2.imwrite(result_dir, img)
+        # cv2.imwrite("./temp_results/out_" + img_dir, img)
 
         # show result (comment later)
         # cv2.imshow('Result', img)
@@ -311,9 +311,14 @@ class ObjectDetect:
 
     def make_temp_path(self):
         # self.path = tempfile.TemporaryDirectory().name
-        self.path = tempfile.mkdtemp()
-        # open(self.path)
-        print(self.path)
+        
+        # self.path = tempfile.mkdtemp()
+        # print(self.path)
+
+        file_path = "./.ylab/"
+        directory = os.path.dirname(file_path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
     def set_roi(self, roi_switch):
         self.roi = roi_switch
@@ -324,8 +329,8 @@ class ObjectDetect:
             resultsForJSON.append({"label": label, "confidence": float('%.2f' % conf), "topleft": {"x": left, "y": top}, "bottomright": {"x": right, "y": bot}, "frame_index": frame_index})
 
     def write_to_json(self, data):
-        # result_dir = os.path.join(self.path, "data.json")
-        result_dir = "./temp_results/data.json"
+        result_dir = os.path.join(self.path, "data.json")
+        # result_dir = "./temp_results/data.json"
         with open(result_dir, 'w') as outfile:
             json.dump(data, outfile)
 
