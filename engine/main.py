@@ -329,29 +329,28 @@ class ObjectDetect:
             json.dump(data, outfile)
 
 if __name__ == '__main__':
-    usage = "Usage: python main.py <video_path> <options_path>"
+    usage = "Usage: python main.py <video_path> <options_path> <model_dir> <weights_dir> <threshold> <gpu>"
     print(sys.argv)
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 7:
         print("Invalid arguments")
         print(usage)
         sys.exit(-1)
     videopath = sys.argv[1]
 
     optionspath = sys.argv[2]
+    model_dir = sys.argv[3]
+    weights_dir = sys.argv[4]
+    threshold = sys.argv[5]
+    gpu = sys.argv[6]
 
     # json values - model, load, threshold, gpu
-    with open(optionspath) as json_file:
-        json_data = json.load(json_file)
+    # with open(optionspath) as json_file:
+    #     json_data = json.load(json_file)
 
-    model_dir = json_data["model"]
-    weights_dir = json_data["load"]
-    threshold = json_data["threshold"]
-    gpu = json_data["gpu"]
-
-    # print(model_dir)
-    # print(weights_dir)
-    # print(threshold)
-    # print(gpu)
+    # model_dir = json_data["model"]
+    # weights_dir = json_data["load"]
+    # threshold = json_data["threshold"]
+    # gpu = json_data["gpu"]
 
     start_time = time.time()
 
