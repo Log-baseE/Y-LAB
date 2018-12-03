@@ -14,6 +14,7 @@ import shutil
 import time
 import os
 import sys
+import json
 
 from concurrent.futures import ProcessPoolExecutor
 
@@ -65,6 +66,8 @@ class ObjectDetect:
             FLAGS.setDefaults()
             FLAGS.pbLoad = "built_graph/yolo.pb"
             FLAGS.metaLoad = "built_graph/yolo.meta"
+            FLAGS.imgdir = "./temp_results/"
+            FLAGS.json = True
             self.tfnet = TFNet(FLAGS)
         else:
             self.tfnet = TFNet(self.options)
@@ -101,6 +104,7 @@ class ObjectDetect:
         print("FRAME_INDEX:" + str(self.frame_count))
         sys.stdout.flush()
         result = self.tfnet.return_predict(frame)
+        print(result)
         self.frame_count += 1
         return result
 
@@ -225,10 +229,13 @@ class ObjectDetect:
         
         cars = []
         count = 0
+        resultsForJSON = []
 
         for i in range(length):
             ret, frame = cap.read()
             coord = self.process_coords(frame, coords[i], i)
+            # append processed coordinate to json
+            self.append_to_json(coord, resultsForJSON)
 
             # car count
             if self.count_switch:
@@ -252,6 +259,9 @@ class ObjectDetect:
                     2,
                     cv2.FONT_HERSHEY_SIMPLEX,
                 )
+
+            # write json to results dir
+            self.write_to_json(resultsForJSON)
                 
             # drawing roi and bounding box
             if(self.roi):
@@ -309,18 +319,41 @@ class ObjectDetect:
     def set_roi(self, roi_switch):
         self.roi = roi_switch
 
+    def append_to_json(self, coord, resultsForJSON):
+        for box in coord:
+            left, top, right, bot, label, conf, frame_index = box[0], box[1], box[2], box[3], box[4], box[5], box[6]
+            resultsForJSON.append({"label": label, "confidence": float('%.2f' % conf), "topleft": {"x": left, "y": top}, "bottomright": {"x": right, "y": bot}, "frame_index": frame_index})
+
+    def write_to_json(self, data):
+        # result_dir = os.path.join(self.path, "data.json")
+        result_dir = "./temp_results/data.json"
+        with open(result_dir, 'w') as outfile:
+            json.dump(data, outfile)
+
 if __name__ == '__main__':
-    usage = "Usage: python main.py <video_path>"
+    usage = "Usage: python main.py <video_path> <options_path>"
     print(sys.argv)
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print("Invalid arguments")
         print(usage)
         sys.exit(-1)
     videopath = sys.argv[1]
-    
-    """
-    PARSE JSON!!!!!!
-    """
+
+    optionspath = sys.argv[2]
+
+    # json values - model, load, threshold, gpu
+    with open(optionspath) as json_file:
+        json_data = json.load(json_file)
+
+    model_dir = json_data["model"]
+    weights_dir = json_data["load"]
+    threshold = json_data["threshold"]
+    gpu = json_data["gpu"]
+
+    # print(model_dir)
+    # print(weights_dir)
+    # print(threshold)
+    # print(gpu)
 
     start_time = time.time()
 
@@ -337,7 +370,7 @@ if __name__ == '__main__':
 
     sys.stdout.flush()
     od = ObjectDetect(detection_threshold, roi, count_switch, counting_line_vertical)
-    od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.7)
+    od.init_options(model_dir, weights_dir, threshold, gpu)
     sys.stdout.flush()
 
     # od.init_model()
