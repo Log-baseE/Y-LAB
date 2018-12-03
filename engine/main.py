@@ -94,7 +94,8 @@ class ObjectDetect:
         roi_pts = self.roi_pts
         pts = np.array([roi_pts[0], roi_pts[1], roi_pts[2], roi_pts[3]] , np.int32)
         cv2.polylines(imgcv, [pts], True, (0, 255, 255))
-        cv2.line(imgcv, (int(line[0][0]), int(line[0][1])), (int(line[1][0]), int(line[1][1])), (0, 255, 0))
+        if not (line is None):
+            cv2.line(imgcv, (int(line[0][0]), int(line[0][1])), (int(line[1][0]), int(line[1][1])), (0, 255, 0))
         return imgcv
 
     # yolo at work - return coordinates of objects per frame
@@ -263,7 +264,9 @@ class ObjectDetect:
             self.write_to_json(resultsForJSON)
                 
             # drawing roi and bounding box
-            if(self.roi):
+            if self.roi:
+                if not self.count_switch:
+                    count_line = None
                 frame = self.draw_roi(frame, count_line)
             frame = self.draw_bb(frame, coord)
 
