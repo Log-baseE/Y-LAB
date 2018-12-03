@@ -102,7 +102,7 @@ class ObjectDetect:
         print("FRAME_INDEX:" + str(self.frame_count))
         sys.stdout.flush()
         result = self.tfnet.return_predict(frame)
-        print(result)
+        # print(result)
         self.frame_count += 1
         return result
 
@@ -202,7 +202,8 @@ class ObjectDetect:
         cap.release()
 
     async def video_detect(self, video_dir):
-        roi_pts = self.roi_pts
+        if self.roi:
+            roi_pts = self.roi_pts
         self.frame_count = 0
 
         cap = cv2.VideoCapture(video_dir)
@@ -328,25 +329,46 @@ class ObjectDetect:
         with open(result_dir, 'w') as outfile:
             json.dump(data, outfile)
 
+DEFAULT_MODEL = "cfg/yolo.cfg"
+DEFAULT_WEIGHTS = "bin/yolo.weights"
+DEFAULT_THRESHOLD = 0.1
+DEFAULT_GPU = 0.7
+
 if __name__ == '__main__':
-    usage = "Usage: python main.py <video_path> <options_path> <model_dir> <weights_dir> <threshold> <gpu>"
+    usage = "Usage: python main.py <options_string>"
     print(sys.argv)
-    if len(sys.argv) != 7:
+    if len(sys.argv) != 2:
         print("Invalid arguments")
         print(usage)
         sys.exit(-1)
-    videopath = sys.argv[1]
+    # videopath = sys.argv[1]
 
-    optionspath = sys.argv[2]
-    model_dir = sys.argv[3]
-    weights_dir = sys.argv[4]
-    threshold = sys.argv[5]
-    gpu = sys.argv[6]
+    # read json string
+    options_str = sys.argv[1]
+    # with open(options_str) as json_file:
+    #     data = json.load(json_file)
+    try:
+        data = json.loads(options_str)
+        videopath = data["file_path"]
+        detect_type = data["detect_type"]
+        roi = data["roi"]
+        model = data["model"]
+        weights = data["weights"]
+        labels = data["filter"]
+        threshold = data["threshold"]
+        gpu = data["gpu"]
+    except KeyError:
+        print("Invalid input")
+        sys.exit(-1)
+
+    # model_dir = sys.argv[3]
+    # weights_dir = sys.argv[4]
+    # threshold = sys.argv[5]
+    # gpu = sys.argv[6]
 
     # json values - model, load, threshold, gpu
     # with open(optionspath) as json_file:
     #     json_data = json.load(json_file)
-
     # model_dir = json_data["model"]
     # weights_dir = json_data["load"]
     # threshold = json_data["threshold"]
@@ -357,17 +379,26 @@ if __name__ == '__main__':
     # max number of pixels for gap between bounding box for boxes to be considered separate
     detection_threshold = 50
     # use region of interest in object detection
-    roi = True
+    roi_switch = not (roi is None)
     # counting cars mode
-    count_switch = True
+    count_switch = (detect_type == "traffic")
     # counting line is drawn vertically or horizontally between roi
     counting_line_vertical = True
+    # apply defaults
+    if model is None:
+        model = DEFAULT_MODEL
+    if weights is None:
+        weights = DEFAULT_WEIGHTS
+    if threshold == 'default':
+        threshold = DEFAULT_THRESHOLD
+    if gpu == 'default':
+        gpu = DEFAULT_GPU
 
     print("MODEL_START")
 
     sys.stdout.flush()
-    od = ObjectDetect(detection_threshold, roi, count_switch, counting_line_vertical)
-    od.init_options(model_dir, weights_dir, threshold, gpu)
+    od = ObjectDetect(detection_threshold, roi_switch, count_switch, counting_line_vertical)
+    od.init_options(model, weights, threshold, gpu)
     sys.stdout.flush()
 
     # od.init_model()
@@ -378,7 +409,18 @@ if __name__ == '__main__':
     # sys.stdout.flush()
 
     # botleft, topleft, topright, botright
-    od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
+    if roi_switch:
+        botleft = (roi['bottomLeft']['x'], roi['bottomLeft']['y'])
+        topleft = (roi['topLeft']['x'], roi['topLeft']['y'])
+        topright = (roi['topRight']['x'], roi['topRight']['y'])
+        botright = (roi['bottomRight']['x'], roi['bottomRight']['y'])
+        od.init_roi(botleft, topleft, topright, botright)
+        # od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
+    
+    if detect_type == "traffic":
+        od.set_label(["car", "truck"])
+    else:
+        od.set_label(labels)
 
     loop = asyncio.get_event_loop()
 
@@ -387,9 +429,6 @@ if __name__ == '__main__':
     # loop.run_until_complete(od.image_detect("pizza.jpg"))
 
     # video detect
-    od.set_label(["car", "truck"])
-    od.set_roi(True)
-
     print("DETECT_START")
 
     sys.stdout.flush()
