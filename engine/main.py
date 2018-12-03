@@ -340,7 +340,7 @@ DEFAULT_THRESHOLD = 0.1
 DEFAULT_GPU = 0.7
 
 if __name__ == '__main__':
-    usage = "Usage: python main.py <options_string>"
+    usage = "Usage: python main.py <options>"
     print(sys.argv)
     if len(sys.argv) != 2:
         print("Invalid arguments")
