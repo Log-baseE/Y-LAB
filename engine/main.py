@@ -66,8 +66,6 @@ class ObjectDetect:
             FLAGS.setDefaults()
             FLAGS.pbLoad = "built_graph/yolo.pb"
             FLAGS.metaLoad = "built_graph/yolo.meta"
-            FLAGS.imgdir = "./temp_results/"
-            FLAGS.json = True
             self.tfnet = TFNet(FLAGS)
         else:
             self.tfnet = TFNet(self.options)
