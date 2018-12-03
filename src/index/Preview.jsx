@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, CardActions, CardMedia, IconButton, Typography } from "@material-ui/core";
+import { Button, Card, CardActions, CardMedia, IconButton, Typography, Grid, Tooltip } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
 import Dropzone from 'react-dropzone'
 
@@ -114,8 +114,8 @@ class Preview extends Component {
   render() {
     const { classes } = this.props;
     const { state, handleFileDrop, handleMetaData } = this.props;
-    return (
-      <Card className={classes.root}>
+    return ([
+      <Card className={classes.root} key="preview-card">
         {
           state.file ?
           <CardMedia
@@ -149,32 +149,56 @@ class Preview extends Component {
           disabled={state.file === null}
         />
         <CardActions className={classes.videoControls}>
-          <IconButton aria-label="Previous" onClick={this.handleSkipPrevious} disabled={state.file === null}>
-            <SkipPreviousIcon />
-          </IconButton>
-          <IconButton aria-label="Toggl repeat" onClick={this.handleToggleRepeat} disabled={state.file === null}>
-            {
-              this.state.repeat ?
-              <RepeatOneIcon /> :
-              <RepeatIcon />
-            }
-          </IconButton>
-          <IconButton aria-label="Play/pause" onClick={this.handlePlayPause} disabled={state.file === null}>
-            {
-              this.state.play ?
-              <PauseIcon /> :
-              <PlayArrowIcon />
-            }
-          </IconButton>
-          <IconButton aria-label="Stop" onClick={this.handleSkipPrevious} disabled={state.file === null}>
-            <StopIcon />
-          </IconButton>
-          <IconButton aria-label="Next" onClick={this.handleSkipNext} disabled={state.file === null}>
-            <SkipNextIcon />
-          </IconButton>
+          <Tooltip title="Previous" placement="bottom">
+            <IconButton aria-label="Previous" onClick={this.handleSkipPrevious} disabled={state.file === null}>
+              <SkipPreviousIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Toggle repeat" placement="bottom">
+            <IconButton aria-label="Toggle repeat" onClick={this.handleToggleRepeat} disabled={state.file === null}>
+              {
+                this.state.repeat ?
+                <RepeatOneIcon /> :
+                <RepeatIcon />
+              }
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={this.state.play ? "Pause" : "Play"} placement="bottom">
+            <IconButton aria-label="Play/pause" onClick={this.handlePlayPause} disabled={state.file === null}>
+              {
+                this.state.play ?
+                <PauseIcon /> :
+                <PlayArrowIcon />
+              }
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Stop" placement="bottom">
+            <IconButton aria-label="Stop" onClick={this.handleSkipPrevious} disabled={state.file === null}>
+              <StopIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Next" placement="bottom">
+            <IconButton aria-label="Next" onClick={this.handleSkipNext} disabled={state.file === null}>
+              <SkipNextIcon />
+            </IconButton>
+          </Tooltip>
         </CardActions>
-      </Card>
-    );
+      </Card>,
+      <Grid container>
+        <Button
+          variant="contained"
+          component="span"
+          size="large"
+          style={{
+            marginLeft: 'auto',
+            marginRight: 16
+          }}
+          color="primary"
+        >
+          LOOKS GOOD!
+        </Button>
+      </Grid>
+    ]);
   }
 }
 

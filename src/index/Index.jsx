@@ -86,6 +86,12 @@ class Index extends Component {
           width: event.target.videoWidth,
           height: event.target.videoHeight,
         }
+      },
+      roi: {
+        topLeft: {x: 0, y: 0},
+        topRight: {x: event.target.videoWidth, y: 0},
+        bottomLeft: {x: 0, y: event.target.videoHeight},
+        bottomRight: {x: event.target.videoWidth, y: event.target.videoHeight},
       }
     })
   }

@@ -80,10 +80,12 @@ class ROIInput extends Component {
             <Grid item>
               <FormControl>
                 <TextField
+                  label="x"
                   variant="outlined"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
+                  InputLabelProps={{ shrink: true }}
                   value={this.props.roi.topLeft.x}
                   onChange={this.props.handleROIChange('topLeft', 'x')}
                 />
@@ -96,9 +98,11 @@ class ROIInput extends Component {
               <FormControl>
                 <TextField
                   variant="outlined"
+                  label="y"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
+                  InputLabelProps={{ shrink: true }}
                   value={this.props.roi.topLeft.y}
                   onChange={this.props.handleROIChange('topLeft', 'y')}
                 />
@@ -115,9 +119,11 @@ class ROIInput extends Component {
               <FormControl>
                 <TextField
                   variant="outlined"
+                  label="x"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
+                  InputLabelProps={{ shrink: true }}
                   value={this.props.roi.topRight.x}
                   onChange={this.props.handleROIChange('topRight', 'x')}
                 />
@@ -130,9 +136,11 @@ class ROIInput extends Component {
               <FormControl>
                 <TextField
                   variant="outlined"
+                  label="y"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
+                  InputLabelProps={{ shrink: true }}
                   value={this.props.roi.topRight.y}
                   onChange={this.props.handleROIChange('topRight', 'y')}
                 />
@@ -153,9 +161,11 @@ class ROIInput extends Component {
               <FormControl>
                 <TextField
                   variant="outlined"
+                  label="x"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
+                  InputLabelProps={{ shrink: true }}
                   value={this.props.roi.bottomLeft.x}
                   onChange={this.props.handleROIChange('bottomLeft', 'x')}
                 />
@@ -168,9 +178,11 @@ class ROIInput extends Component {
               <FormControl>
                 <TextField
                   variant="outlined"
+                  label="y"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
+                  InputLabelProps={{ shrink: true }}
                   value={this.props.roi.bottomLeft.y}
                   onChange={this.props.handleROIChange('bottomLeft', 'y')}
                 />
@@ -191,9 +203,11 @@ class ROIInput extends Component {
               <FormControl>
                 <TextField
                   variant="outlined"
+                  label="x"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
+                  InputLabelProps={{ shrink: true }}
                   value={this.props.roi.bottomRight.x}
                   onChange={this.props.handleROIChange('bottomRight', 'x')}
                 />
@@ -206,9 +220,11 @@ class ROIInput extends Component {
               <FormControl>
                 <TextField
                   variant="outlined"
+                  label="y"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
+                  InputLabelProps={{ shrink: true }}
                   value={this.props.roi.bottomRight.y}
                   onChange={this.props.handleROIChange('bottomRight', 'y')}
                 />
