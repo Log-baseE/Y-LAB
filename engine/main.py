@@ -220,8 +220,9 @@ class ObjectDetect:
         cap = cv2.VideoCapture(video_dir)
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        result_dir = os.path.join(self.path, "out_video.avi")
+        fourcc = cv2.VideoWriter_fourcc(*'H264')
+        # fourcc = 0x00000021
+        result_dir = os.path.join(self.path, "out_video.mp4")
         # result_dir = "./temp_results/out_video.avi"
         out = cv2.VideoWriter(result_dir, fourcc, 30.0, (int(width), int(height)))
 
@@ -234,8 +235,6 @@ class ObjectDetect:
         for i in range(length):
             ret, frame = cap.read()
             coord = self.process_coords(frame, coords[i], i)
-            # append processed coordinate to json
-            self.append_to_json(coord, resultsForJSON)
 
             # car count
             if self.count_switch:
@@ -259,9 +258,11 @@ class ObjectDetect:
                     2,
                     cv2.FONT_HERSHEY_SIMPLEX,
                 )
+            else:
+                count = None
 
-            # write json to results dir
-            self.write_to_json(resultsForJSON)
+            # append processed coordinate to json
+            self.append_to_json(coord, resultsForJSON, count, i)
                 
             # drawing roi and bounding box
             if self.roi:
@@ -274,6 +275,9 @@ class ObjectDetect:
             # cv2.imwrite(os.path.join(self.path, "out_" + str(i) + ".jpg"), frame)
             # cv2.imwrite("./temp_results/out_" + str(i) + ".jpg", frame)
             out.write(frame)
+
+        # write json to results dir
+        self.write_to_json(resultsForJSON)
 
         cap.release()
         
@@ -326,10 +330,34 @@ class ObjectDetect:
     def set_roi(self, roi_switch):
         self.roi = roi_switch
 
-    def append_to_json(self, coord, resultsForJSON):
+    def append_to_json(self, coord, resultsForJSON, car_count, frame_id):
+        objects_json = []
+        frame_labels = set()
         for box in coord:
             left, top, right, bot, label, conf, frame_index = box[0], box[1], box[2], box[3], box[4], box[5], box[6]
-            resultsForJSON.append({"label": label, "confidence": float('%.2f' % conf), "topleft": {"x": left, "y": top}, "bottomright": {"x": right, "y": bot}, "frame_index": frame_index})
+            frame_labels.add(label)
+
+            objects_json.append({
+                "label": label,
+                "confidence": float('%.2f' % conf),
+                "topleft": {"x": left, "y": top},
+                "bottomright": {"x": right, "y": bot}
+            })
+
+        if self.count_switch:
+            type_str = "traffic"
+        else:
+            type_str = "default"
+
+        resultsForJSON.append({
+            "labels": list(frame_labels),
+            "frame_index": frame_id,
+            "objects": objects_json,
+            "count_per_frame": len(coord),
+            "type": type_str,
+            "car_count": car_count
+        })
+
 
     def write_to_json(self, data):
         result_dir = os.path.join(self.path, "data.json")
