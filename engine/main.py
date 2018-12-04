@@ -230,7 +230,11 @@ class ObjectDetect:
         
         cars = []
         count = 0
-        resultsForJSON = []
+        self.resultsForJSON = []
+        self.objects_json = []
+        self.object_count = 0
+        # summary of number of object labels
+        self.object_labels = set()
 
         print("WRITE_START")
 
@@ -264,7 +268,7 @@ class ObjectDetect:
                 count = None
 
             # append processed coordinate to json
-            self.append_to_json(coord, resultsForJSON, count, i)
+            self.append_to_frame_json(coord)
                 
             # drawing roi and bounding box
             if self.roi:
@@ -279,7 +283,8 @@ class ObjectDetect:
             out.write(frame)
 
         # write json to results dir
-        self.write_to_json(resultsForJSON)
+        self.append_to_json(count)
+        self.write_to_json(self.resultsForJSON)
 
         cap.release()
         
@@ -333,30 +338,29 @@ class ObjectDetect:
     def set_roi(self, roi_switch):
         self.roi = roi_switch
 
-    def append_to_json(self, coord, resultsForJSON, car_count, frame_id):
-        objects_json = []
-        frame_labels = set()
+    def append_to_frame_json(self, coord):
+        self.object_count += len(coord)
         for box in coord:
-            left, top, right, bot, label, conf, frame_index = box[0], box[1], box[2], box[3], box[4], box[5], box[6]
-            frame_labels.add(label)
+            left, top, right, bot, label, conf = box[0], box[1], box[2], box[3], box[4], box[5]
+            self.object_labels.add(label)
 
-            objects_json.append({
+            self.objects_json.append({
                 "label": label,
                 "confidence": float('%.2f' % conf),
                 "topleft": {"x": left, "y": top},
                 "bottomright": {"x": right, "y": bot}
             })
 
+    def append_to_json(self, car_count):
         if self.count_switch:
             type_str = "traffic"
         else:
             type_str = "default"
 
-        resultsForJSON.append({
-            "labels": list(frame_labels),
-            "frame_index": frame_id,
-            "objects": objects_json,
-            "count_per_frame": len(coord),
+        self.resultsForJSON.append({
+            "objects": list(self.object_labels),
+            "frames": self.objects_json,
+            "count_per_frame": float('%.2f' % (self.object_count / self.frames)),
             "type": type_str,
             "car_count": car_count
         })
