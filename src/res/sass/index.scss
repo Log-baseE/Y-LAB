@@ -1,7 +1,8 @@
 @import "resizer";
 @import "settings";
 
-.Pane {
+.Pane.vertical {
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
+    height: 100%;
 }

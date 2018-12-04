@@ -116,27 +116,18 @@ class Preview extends Component {
   render() {
     const { classes } = this.props;
     const { state } = this.props;
-    const { handleFileDrop, handleMetaData, handleSubmit } = this.props;
+    const { handleMetaData } = this.props;
 
     return ([
       <Card className={classes.root} key="preview-card">
-        {
-          state.file ?
-          <CardMedia
-            id="video"
-            src={state.file.path}
-            component="video"
-            onTimeUpdate={this.handleSeekbar}
-            onEnded={this.handleEnded}
-            onLoadedMetadata={handleMetaData}
-          /> :
-          <Dropzone onDrop={handleFileDrop} className={classes.dropzone}>
-            <UploadVideoIcon className={classes.uploadIcon}/>
-            <Typography variant="h6" color="textSecondary">
-              Drop your video here
-            </Typography>
-          </Dropzone>
-        }
+        <CardMedia
+          id="video"
+          src={state.file.path}
+          component="video"
+          onTimeUpdate={this.handleSeekbar}
+          onEnded={this.handleEnded}
+          onLoadedMetadata={handleMetaData}
+        />
         <Slider 
           id="seek-bar"
           min={0}
@@ -187,23 +178,7 @@ class Preview extends Component {
             </IconButton>
           </Tooltip>
         </CardActions>
-      </Card>,
-      <Grid container>
-        <Button
-          variant="outlined"
-          component="span"
-          size="large"
-          style={{
-            marginLeft: 'auto',
-            marginRight: 16
-          }}
-          color="primary"
-          onClick={handleSubmit(state)}
-          disabled={state.file === null}
-        >
-          LOOKS GOOD!
-        </Button>
-      </Grid>
+      </Card>
     ]);
   }
 }

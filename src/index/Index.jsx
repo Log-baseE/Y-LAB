@@ -1,7 +1,9 @@
 import React, { Component } from "react";
+import { Grid } from '@material-ui/core';
 import SplitPane from "react-split-pane";
 import Settings from "./Settings";
 import Preview from "./Preview";
+import Topbar from "./Topbar";
 
 class Index extends Component {
   state = {
@@ -108,23 +110,34 @@ class Index extends Component {
   render() {
     const { handleSubmit } = this.props;
     return (
-      <SplitPane split="vertical" minSize={500} defaultSize={"50%"}>
-        <Settings
-          state={this.state}
-          handleSliderChange={this.handleSliderChange}
-          handleNumberInputChange={this.handleNumberInputChange}
-          handleChange={this.handleChange}
-          handleROIChange={this.handleROIChange}
-          handleFileChange={this.handleFileChange}
-          validateValue={this.validateValue}
-        />
-        <Preview 
-          state={this.state}
-          handleFileDrop={this.handleFileDrop}
-          handleMetaData={this.handleMetaData}
-          handleSubmit={handleSubmit}
-        />
-      </SplitPane>
+      <Grid container direction="column" alignItems="stretch" style={{
+        height: '100vh'
+      }}>
+        <Grid item>
+          <Topbar />
+        </Grid>
+        <Grid item>
+          <SplitPane split="vertical" minSize={500} maxSize={700} defaultSize={"50%"} style={{
+            height: 'calc(100vh - 64px)',
+          }}>
+            <Settings
+              state={this.state}
+              handleSliderChange={this.handleSliderChange}
+              handleNumberInputChange={this.handleNumberInputChange}
+              handleChange={this.handleChange}
+              handleROIChange={this.handleROIChange}
+              handleFileChange={this.handleFileChange}
+              validateValue={this.validateValue}
+            />
+            <Preview 
+              state={this.state}
+              handleFileDrop={this.handleFileDrop}
+              handleMetaData={this.handleMetaData}
+              handleSubmit={handleSubmit}
+            />
+          </SplitPane>
+        </Grid>
+      </Grid>
     );
   }
 }

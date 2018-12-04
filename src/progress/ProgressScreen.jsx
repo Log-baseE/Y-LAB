@@ -75,6 +75,18 @@ class ProgressScreen extends Component {
     }));
   };
 
+  appendError = err => {
+    this.setState(prev => ({
+      logs: [
+        ...prev.logs,
+        <span style={{ color: 'red' }}>{`${err}`}</span>
+      ],
+      cancelled: true,
+      progress: 99.999,
+      status: <span style={{ color: 'red' }}>Program error! See log for details</span>
+    }));
+  }
+
   componentDidUpdate() {
     this.scrollToLogEnd();
   }
@@ -84,7 +96,7 @@ class ProgressScreen extends Component {
   }
 
   renderLog() {
-    return this.state.logs.map((log, index) => <li key={index}>{log}</li>);
+    return this.state.logs.map((log, index) => <li key={index}><pre style={{ margin: 0 }}>{log}</pre></li>);
   }
 
   startDetection = () => {
@@ -144,6 +156,14 @@ class ProgressScreen extends Component {
       this.setState({
         status: "Object detection finished"
       });
+    } else if (message === 'WRITE_START') {
+      this.setState({
+        status: "Rendering result video..."
+      });
+    } else if (message === 'WRITE_END') {
+      this.setState({
+        status: "Finished rendering video"
+      });
     } else if (message === 'PROGRAM_END') {
       this.setState({
         status: "Finished",
@@ -154,7 +174,9 @@ class ProgressScreen extends Component {
   };
 
   handleFinish = (err, code, signal) => {
-    console.log(err, code, signal);
+    if(err) this.appendError(err);
+    if(code) this.appendLog(`Program exited with code ${code}`);
+    if(signal) this.appendLog(`Program exited with code ${code}`);
   };
 
   handleCancel = event => {

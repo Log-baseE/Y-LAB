@@ -232,6 +232,8 @@ class ObjectDetect:
         count = 0
         resultsForJSON = []
 
+        print("WRITE_START")
+
         for i in range(length):
             ret, frame = cap.read()
             coord = self.process_coords(frame, coords[i], i)
@@ -281,6 +283,7 @@ class ObjectDetect:
 
         cap.release()
         
+        print("WRITE_END")
         # show result (comment later)
         # cap2 = cv2.VideoCapture(result_dir)
         # cv2.namedWindow("Result", cv2.WINDOW_AUTOSIZE)

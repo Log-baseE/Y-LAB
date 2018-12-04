@@ -70,3 +70,5 @@ cfg/
 
 # pycache
 __pycache__
+
+.ylab
