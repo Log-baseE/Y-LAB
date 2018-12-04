@@ -220,8 +220,8 @@ class ObjectDetect:
         cap = cv2.VideoCapture(video_dir)
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        result_dir = os.path.join(self.path, "out_video.avi")
+        fourcc = cv2.VideoWriter_fourcc(*'H264')
+        result_dir = os.path.join(self.path, "out_video.mp4")
         # result_dir = "./temp_results/out_video.avi"
         out = cv2.VideoWriter(result_dir, fourcc, 30.0, (int(width), int(height)))
 
