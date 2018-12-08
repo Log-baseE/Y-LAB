@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { Grid } from '@material-ui/core';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import SplitPane from "react-split-pane";
 import Settings from "./Settings";
 import Preview from "./Preview";
 import Topbar from "./Topbar";
 
-class Index extends Component {
+class IndexScreen extends Component {
   state = {
     file: null,
     meta: null,
@@ -108,7 +110,7 @@ class Index extends Component {
   }
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, handleSave } = this.props;
     return (
       <Grid container direction="column" alignItems="stretch" style={{
         height: '100vh'
@@ -120,21 +122,26 @@ class Index extends Component {
           <SplitPane split="vertical" minSize={500} maxSize={700} defaultSize={"50%"} style={{
             height: 'calc(100vh - 64px)',
           }}>
-            <Settings
-              state={this.state}
-              handleSliderChange={this.handleSliderChange}
-              handleNumberInputChange={this.handleNumberInputChange}
-              handleChange={this.handleChange}
-              handleROIChange={this.handleROIChange}
-              handleFileChange={this.handleFileChange}
-              validateValue={this.validateValue}
-            />
-            <Preview 
-              state={this.state}
-              handleFileDrop={this.handleFileDrop}
-              handleMetaData={this.handleMetaData}
-              handleSubmit={handleSubmit}
-            />
+            <PerfectScrollbar option={{ suppressScrollX: true }}>
+              <Settings
+                state={this.state}
+                handleSliderChange={this.handleSliderChange}
+                handleNumberInputChange={this.handleNumberInputChange}
+                handleChange={this.handleChange}
+                handleROIChange={this.handleROIChange}
+                handleFileChange={this.handleFileChange}
+                validateValue={this.validateValue}
+              />
+            </PerfectScrollbar>
+            <PerfectScrollbar>
+              <Preview 
+                state={this.state}
+                handleFileDrop={this.handleFileDrop}
+                handleMetaData={this.handleMetaData}
+                handleSubmit={handleSubmit}
+                handleSave={handleSave}
+              />
+            </PerfectScrollbar>
           </SplitPane>
         </Grid>
       </Grid>
@@ -142,4 +149,4 @@ class Index extends Component {
   }
 }
 
-export default Index;
+export default IndexScreen;

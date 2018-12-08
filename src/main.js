@@ -31,6 +31,8 @@ function createWindow() {
     // and load the index.html of the app.
     mainWindow.loadURL(startUrl);
 
+    mainWindow.maximize();
+
     // Open the DevTools.
     mainWindow.webContents.openDevTools();
 

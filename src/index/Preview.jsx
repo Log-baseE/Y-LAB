@@ -39,6 +39,13 @@ const styles = theme => ({
   },
   videoControls: {
     justifyContent: 'center'
+  },
+  save: {
+    marginLeft: "auto",
+    marginRight: theme.spacing.unit
+  },
+  action: {
+    paddingRight: theme.spacing.unit * 2,
   }
 });
 
@@ -116,7 +123,7 @@ class Preview extends Component {
   render() {
     const { classes } = this.props;
     const { state } = this.props;
-    const { handleFileDrop, handleMetaData, handleSubmit } = this.props;
+    const { handleFileDrop, handleMetaData, handleSubmit, handleSave } = this.props;
 
     return ([
       <Card className={classes.root} key="preview-card">
@@ -130,10 +137,13 @@ class Preview extends Component {
             onEnded={this.handleEnded}
             onLoadedMetadata={handleMetaData}
           /> :
-          <Dropzone onDrop={handleFileDrop} className={classes.dropzone}>
+          <Dropzone accept="video/mp4" onDrop={handleFileDrop} className={classes.dropzone}>
             <UploadVideoIcon className={classes.uploadIcon}/>
             <Typography variant="h6" color="textSecondary">
-              Drop your video here
+              Drop a video here or click
+            </Typography>
+            <Typography variant="body2" style={{ fontWeight: 'normal' }} color="textSecondary">
+              Allowed files: *.mp4
             </Typography>
           </Dropzone>
         }
@@ -188,16 +198,21 @@ class Preview extends Component {
           </Tooltip>
         </CardActions>
       </Card>,
-      <Grid container>
+      <Grid container className={classes.action}>
+        <Button
+          component="span"
+          className={classes.save}
+          color="default"
+          onClick={handleSave(state)}
+          disabled={state.file === null}
+        >
+          Save options
+        </Button>
         <Button
           variant="outlined"
           component="span"
-          size="large"
-          style={{
-            marginLeft: 'auto',
-            marginRight: 16
-          }}
-          color="primary"
+          className={classes.submit}
+          color="default"
           onClick={handleSubmit(state)}
           disabled={state.file === null}
         >

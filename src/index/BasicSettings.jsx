@@ -48,7 +48,7 @@ class BasicSettings extends Component {
             <Grid item container md={8} alignItems="center">
               <Grid item>
                 <input
-                  accept="*"
+                  accept="video/mp4"
                   className={classes.input}
                   id="file-input"
                   type="file"
@@ -56,9 +56,10 @@ class BasicSettings extends Component {
                 />
                 <label htmlFor="file-input">
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     component="span"
                     size="small"
+                    color="default"
                     style={{
                       marginRight: 16
                     }}
@@ -103,7 +104,8 @@ class BasicSettings extends Component {
                 <FormControlLabel
                   value="traffic"
                   control={<CustomRadio />}
-                  label="Traffic"
+                  label="Traffic (feature in construction)"
+                  disabled
                 />
               </RadioGroup>
             </Grid>

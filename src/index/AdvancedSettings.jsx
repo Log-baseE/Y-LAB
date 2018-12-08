@@ -29,7 +29,13 @@ const styles = theme => ({
   },
   root: {
     margin: theme.spacing.unit * 2,
-    borderRadius: 4
+    borderRadius: 4,
+    '&:before': {
+      height: 0,
+    },
+  },
+  focused: {
+    borderColor: 'red',
   },
   formControl: {
     width: "100%"
@@ -56,14 +62,14 @@ class AdvancedSettings extends Component {
     return (
       <ExpansionPanel
         classes={{
-          root: classes.root
+          root: classes.root,
         }}
         elevation={1}
         style={{
           marginBottom: 16
         }}
       >
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+        <ExpansionPanelSummary classes={{ focused: classes.focused }} expandIcon={<ExpandMoreIcon />}>
           <Typography variant="h6" className={classes.heading}>
             YOLO Configuration
           </Typography>
@@ -97,7 +103,7 @@ class AdvancedSettings extends Component {
                     <FormControlLabel
                       value="custom"
                       control={<CustomRadio />}
-                      label={`Custom: ${state.file === null ? '(pick a file to enable)' : ''}`}
+                      label={`Custom: ${state.file === null ? '(pick a video file to enable)' : ''}`}
                       disabled={state.file === null}
                     />
                   </RadioGroup>

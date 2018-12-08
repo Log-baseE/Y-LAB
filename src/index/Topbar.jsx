@@ -7,14 +7,14 @@ import {
 
 const styles = theme => ({
   root: {
-    background: theme.palette.primary.main,
+    background: '#202021',
     height: theme.spacing.unit * 8,
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px`,
     alignItems: 'center',
   },
   heading: {
     color: 'white',
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     lineHeight: 1,
   }
 });

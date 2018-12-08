@@ -11,21 +11,36 @@ import * as serviceWorker from "./serviceWorker";
 const THEME = createMuiTheme({
   typography: {
     useNextVariants: true,
-    fontFamily: `-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    fontFamily: `-apple-system, BlinkMacSystemFont, 'Bahnschrift Light', 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
       sans-serif`,
-    fontSize: 12
+    fontSize: 12,
+    lineHeight: 1,
   },
   palette: {
-    // type: 'dark',
-    // primary: lightBlue,
-  }
+    type: 'dark',
+    background: {
+      default: '#272729',
+      paper: '#2F2F35',
+    },
+    text: {
+      default: '#fff',
+      disabled: "rgba(255, 255, 255, 0.25)",
+    },
+    primary: {
+      main: '#9A67EA',
+    },
+    action: {
+      disabled: "rgba(255, 255, 255, 0.075)",
+    }
+  },
+  
 });
 
 ReactDOM.render(
   <MuiThemeProvider theme={THEME}>
-    <CssBaseline />
-    <App />
+    <CssBaseline key='css-baseline' />
+    <App key='app'/>
   </MuiThemeProvider>,
   document.getElementById("root")
 );

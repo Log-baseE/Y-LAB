@@ -11,6 +11,10 @@ import {
 
 import { startDetect, cancelDetect } from "../linker";
 
+const electron = window.require("electron");
+const { remote } = electron;
+const path = remote.require("path");
+
 const styles = theme => ({
   root: {
     width: "100vw",
@@ -191,7 +195,7 @@ class ProgressScreen extends Component {
 
   render() {
     const { classes } = this.props;
-    const { handlePrevious } = this.props;
+    const { handlePrevious, handleResult } = this.props;
     return (
       <div className={classes.root}>
         <Paper className={classes.card}>
@@ -256,7 +260,7 @@ class ProgressScreen extends Component {
                 Go back
               </Button>
               :
-              <Button variant="contained" color="primary" disabled={this.state.progress !== 100}>
+              <Button variant="contained" color="primary" onClick={handleResult(path.join(remote.app.getAppPath(), "./.ylab/data.json"))} disabled={this.state.progress !== 100}>
                 Continue
               </Button>
             }
