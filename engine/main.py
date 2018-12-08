@@ -220,11 +220,13 @@ class ObjectDetect:
         cap = cv2.VideoCapture(video_dir)
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        # if self.count_switch:
+            # fourcc = 0x00000021
+        # else:
         fourcc = cv2.VideoWriter_fourcc(*'H264')
-        # fourcc = 0x00000021
         result_dir = os.path.join(self.path, "out_video.mp4")
         # result_dir = "./temp_results/out_video.avi"
-        out = cv2.VideoWriter(result_dir, fourcc, 30.0, (int(width), int(height)))
+        out = cv2.VideoWriter(result_dir, fourcc, 30.0, (int(cap.get(3)), int(cap.get(4))))
 
         print("Coords: " + str(len(coords)))
         
@@ -254,16 +256,16 @@ class ObjectDetect:
                     point_down = ((topright[0]+botright[0])/2, (botleft[1]+botright[1])/2)
                     count_line = (point_up, point_down)
                 cars, count = self.car_count(frame, coord, cars, count, count_line, self.counting_line_vertical, i)
-                cv2.putText(
-                    frame,
-                    'Detected Vehicles: ' + str(count),
-                    (10, 35),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.8,
-                    (0, 0xFF, 0xFF),
-                    2,
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                )
+                # cv2.putText(
+                #     frame,
+                #     'Detected Vehicles: ' + str(count),
+                #     (10, 35),
+                #     cv2.FONT_HERSHEY_SIMPLEX,
+                #     0.8,
+                #     (0, 0xFF, 0xFF),
+                #     2,
+                #     cv2.FONT_HERSHEY_SIMPLEX,
+                # )
             else:
                 count = None
 
@@ -357,13 +359,13 @@ class ObjectDetect:
         else:
             type_str = "default"
 
-        self.resultsForJSON.append({
+        self.resultsForJSON = {
             "objects": list(self.object_labels),
             "frames": self.objects_json,
             "count_per_frame": float('%.2f' % (self.object_count / self.frames)),
             "type": type_str,
             "car_count": car_count
-        })
+        }
 
 
     def write_to_json(self, data):
