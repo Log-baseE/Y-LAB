@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Grid } from '@material-ui/core';
 import 'react-perfect-scrollbar/dist/css/styles.css';
-import PerfectScrollbar from 'react-perfect-scrollbar'
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import SplitPane from "react-split-pane";
 import Settings from "./Settings";
 import Preview from "./Preview";
@@ -80,15 +80,20 @@ class IndexScreen extends Component {
   };
 
   handleFileChange = event => {
-    this.setState({
-      file: event.target.files[0]
-    });
+    if(event.target.files[0] && event.target.files[0].type === 'video/mp4') {
+      this.setState({
+        file: event.target.files[0]
+      });
+    }
   };
 
-  handleFileDrop = files => {
-    this.setState({
-      file: files[0]
-    });
+  handleFileDrop = (acceptedFiles, rejectedFiles) => {
+    // console.log(acceptedFiles[0]);
+    if(acceptedFiles[0]) {
+      this.setState({
+        file: acceptedFiles[0],
+      });
+    }
   };
 
   handleMetaData = event => {
@@ -115,10 +120,10 @@ class IndexScreen extends Component {
       <Grid container direction="column" alignItems="stretch" style={{
         height: '100vh'
       }}>
-        <Grid item>
+        <Grid item key="1">
           <Topbar />
         </Grid>
-        <Grid item>
+        <Grid item key="2">
           <SplitPane split="vertical" minSize={500} maxSize={700} defaultSize={"50%"} style={{
             height: 'calc(100vh - 64px)',
           }}>

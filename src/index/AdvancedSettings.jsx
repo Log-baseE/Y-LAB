@@ -69,7 +69,7 @@ class AdvancedSettings extends Component {
           marginBottom: 16
         }}
       >
-        <ExpansionPanelSummary classes={{ focused: classes.focused }} expandIcon={<ExpandMoreIcon />}>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="h6" className={classes.heading}>
             YOLO Configuration
           </Typography>

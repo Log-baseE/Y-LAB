@@ -8,10 +8,12 @@ const styles = theme => ({
   action: {
     paddingRight: theme.spacing.unit * 2,
   },
-  save: {
+  // save: {
+  // },
+  submit: {
     marginLeft: "auto",
-    marginRight: theme.spacing.unit
-  },
+    // marginRight: theme.spacing.unit
+  }
 });
 
 class Details extends Component {
@@ -30,19 +32,10 @@ class Details extends Component {
       />,
       <Grid container className={classes.action}>
         <Button
-          component="span"
-          className={classes.save}
-          color="default"
-          // onClick={handleSave(state)}
-          disabled={state.file === null}
-        >
-          Save results
-        </Button>
-        <Button
           variant="outlined"
           component="span"
           className={classes.submit}
-          color="primary"
+          color="default"
           onClick={handleRestart}
           disabled={state.file === null}
         >

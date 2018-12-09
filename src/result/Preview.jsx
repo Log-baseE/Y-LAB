@@ -1,9 +1,6 @@
 import React, { Component } from "react";
-import { Button, Card, CardActions, CardMedia, IconButton, Typography, Grid, Tooltip } from "@material-ui/core";
+import { Card, CardActions, CardMedia, IconButton, Tooltip } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
-import Dropzone from 'react-dropzone'
-
-import { ReactComponent as UploadVideoIcon } from '../res/icon/svg/upload-video.svg';
 
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -21,18 +18,6 @@ const styles = theme => ({
   },
   mediaFrame: {
     width: '100%',
-  },
-  dropzone: {
-    width: `calc(100% - ${theme.spacing.unit * 4}px)`,
-    margin: theme.spacing.unit * 2,
-    height: 300,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    border: 'dashed 1px',
-    borderColor: theme.palette.primary.light,
-    cursor: 'pointer',
   },
   uploadIcon: {
     marginBottom: theme.spacing.unit * 2,

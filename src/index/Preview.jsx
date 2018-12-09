@@ -44,6 +44,9 @@ const styles = theme => ({
     marginLeft: "auto",
     marginRight: theme.spacing.unit
   },
+  tooltip: {
+    transform: 'translateX(100%)',
+  },
   action: {
     paddingRight: theme.spacing.unit * 2,
   }
@@ -164,41 +167,51 @@ class Preview extends Component {
         />
         <CardActions className={classes.videoControls}>
           <Tooltip title="Previous" placement="bottom">
-            <IconButton aria-label="Previous" onClick={this.handleSkipPrevious} disabled={state.file === null}>
-              <SkipPreviousIcon />
-            </IconButton>
+            <div>
+              <IconButton aria-label="Previous" onClick={this.handleSkipPrevious} disabled={state.file === null}>
+                <SkipPreviousIcon />
+              </IconButton>
+            </div>
           </Tooltip>
           <Tooltip title="Toggle repeat" placement="bottom">
-            <IconButton aria-label="Toggle repeat" onClick={this.handleToggleRepeat} disabled={state.file === null}>
-              {
-                this.state.repeat ?
-                <RepeatOneIcon /> :
-                <RepeatIcon />
-              }
-            </IconButton>
+            <div>
+              <IconButton aria-label="Toggle repeat" onClick={this.handleToggleRepeat} disabled={state.file === null}>
+                {
+                  this.state.repeat ?
+                  <RepeatOneIcon /> :
+                  <RepeatIcon />
+                }
+              </IconButton>
+            </div>
           </Tooltip>
           <Tooltip title={this.state.play ? "Pause" : "Play"} placement="bottom">
-            <IconButton aria-label="Play/pause" onClick={this.handlePlayPause} disabled={state.file === null}>
-              {
-                this.state.play ?
-                <PauseIcon /> :
-                <PlayArrowIcon />
-              }
-            </IconButton>
+            <div>
+              <IconButton aria-label="Play/pause" onClick={this.handlePlayPause} disabled={state.file === null}>
+                {
+                  this.state.play ?
+                  <PauseIcon /> :
+                  <PlayArrowIcon />
+                }
+              </IconButton>
+            </div>
           </Tooltip>
           <Tooltip title="Stop" placement="bottom">
-            <IconButton aria-label="Stop" onClick={this.handleSkipPrevious} disabled={state.file === null}>
-              <StopIcon />
-            </IconButton>
+            <div>
+              <IconButton aria-label="Stop" onClick={this.handleSkipPrevious} disabled={state.file === null}>
+                <StopIcon />
+              </IconButton>
+            </div>
           </Tooltip>
           <Tooltip title="Next" placement="bottom">
-            <IconButton aria-label="Next" onClick={this.handleSkipNext} disabled={state.file === null}>
-              <SkipNextIcon />
-            </IconButton>
+            <div>
+              <IconButton aria-label="Next" onClick={this.handleSkipNext} disabled={state.file === null}>
+                <SkipNextIcon />
+              </IconButton>
+            </div>
           </Tooltip>
         </CardActions>
       </Card>,
-      <Grid container className={classes.action}>
+      <Grid container className={classes.action} key="action">
         <Button
           component="span"
           className={classes.save}

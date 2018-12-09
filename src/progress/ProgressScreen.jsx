@@ -8,11 +8,15 @@ import {
   Button,
   Collapse
 } from "@material-ui/core";
+import "react-perfect-scrollbar/dist/css/styles.css";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { startDetect, cancelDetect } from "../linker";
 
 const electron = window.require("electron");
 const { remote } = electron;
+const { ipcRenderer } = electron;
+const currentWindow = remote.getCurrentWindow();
 const path = remote.require("path");
 
 const styles = theme => ({
@@ -39,16 +43,21 @@ const styles = theme => ({
     marginRight: theme.spacing.unit
   },
   logContainer: {
-    overflowY: "auto",
+    overflow: "hidden",
+    position: "relative",
     flexGrow: 1,
     height: 0,
-    margin: `${theme.spacing.unit * 2}px 0`
+    marginTop: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit * 3,
+    padding: theme.spacing.unit
   },
   log: {
     margin: 0,
     fontFamily: "monospace",
     listStyle: "none",
-    paddingLeft: 0
+    paddingLeft: 0,
+    paddingBottom: theme.spacing.unit,
+    color: theme.palette.text.primary
   },
   link: {
     cursor: "pointer",
@@ -61,15 +70,15 @@ class ProgressScreen extends Component {
     progress: 0,
     logs: [],
     logExpanded: false,
-    status: "",
+    status: "Starting object detection engine...",
     frames: 1,
-    cancelled: false,
+    cancelled: false
   };
 
   componentDidMount() {
     const { options } = this.props;
     if (options) {
-      this.startDetection();
+    this.startDetection();
     }
   }
 
@@ -81,15 +90,14 @@ class ProgressScreen extends Component {
 
   appendError = err => {
     this.setState(prev => ({
-      logs: [
-        ...prev.logs,
-        <span style={{ color: 'red' }}>{`${err}`}</span>
-      ],
+      logs: [...prev.logs, <span style={{ color: "red" }}>{`${err}`}</span>],
       cancelled: true,
       progress: 99.999,
-      status: <span style={{ color: 'red' }}>Program error! See log for details</span>
+      status: (
+        <span style={{ color: "red" }}>Program error! See log for details</span>
+      )
     }));
-  }
+  };
 
   componentDidUpdate() {
     this.scrollToLogEnd();
@@ -100,11 +108,29 @@ class ProgressScreen extends Component {
   }
 
   renderLog() {
-    return this.state.logs.map((log, index) => <li key={index}><pre style={{ margin: 0 }}>{log}</pre></li>);
+    return this.state.logs.map((log, index) => (
+      <li key={index}>
+        <pre style={{ margin: 0 }}>{log}</pre>
+      </li>
+    ));
+  }
+
+  setProgress = (val) => {
+    this.setState({
+      progress: val
+    });
+    currentWindow.setProgressBar(val/100);
   }
 
   startDetection = () => {
     const { options } = this.props;
+    // for (let i = 0; i < 100; ++i) {
+    //   this.appendLog(
+    //     "ASDJFNALSKDJFNALSDKJNFALSDKJNFALSDKJNFALSKJDNFLASKDJNFLASKDJNFLAKSJDNFLASKJDNFLAKSJDNFLAKSJDNFLKASJDNFLASKJDNFALKSJDNFLASKDJNFALSKDJFN"
+    //   );
+    // }
+    currentWindow.setProgressBar(2);
+    this.appendLog(this.state.status);
     startDetect(options, this.handleMessage, this.handleFinish);
   };
 
@@ -112,39 +138,47 @@ class ProgressScreen extends Component {
     if (message === "PROGRAM_START") {
       this.setState({
         status: "Program started",
-        progress: 1
       });
+      this.setProgress(1);
+      this.appendLog("Program started");
     } else if (message === "LIB_START") {
       this.setState({
         status: "Importing libraries..."
       });
+      this.appendLog("Importing libraries...");
     } else if (message === "LIB_END") {
       this.setState({
         status: "Libraries imported",
-        progress: 5
       });
+      this.setProgress(5);
+      this.appendLog("Libraries imported");
     } else if (message === "TF_START") {
       this.setState({
         status: "Importing tensorflow..."
       });
+      this.appendLog("Importing tensorflow...");
     } else if (message === "TF_END") {
       this.setState({
         status: "Tensorflow imported",
-        progress: 15
       });
+      this.setProgress(15);
+      this.appendLog("Tensorflow imported");
     } else if (message === "MODEL_START") {
       this.setState({
         status: "Building neural network..."
       });
+      this.appendLog("Building neural network...");
     } else if (message === "MODEL_END") {
       this.setState({
         status: "Neural network built",
-        progress: 30
       });
+      this.setProgress(30);
+      this.appendLog("Neural network built");
     } else if (message === "DETECT_START") {
       this.setState({
         status: "Starting object detection..."
       });
+      this.appendLog("Starting object detection...");
     } else if (/^FRAMES:(\d+)$/.test(message)) {
       let frames = parseInt(/^FRAMES:(\d+)$/.exec(message)[1]);
       this.setState({
@@ -153,45 +187,68 @@ class ProgressScreen extends Component {
     } else if (/^FRAME_INDEX:(\d+)$/.test(message)) {
       let index = parseInt(/^FRAME_INDEX:(\d+)$/.exec(message)[1]) + 1;
       this.setState({
-        progress: this.state.progress + (69 / this.state.frames),
-        status: `Processing frame ${index} out of ${this.state.frames} frame(s)`,
+        status: `Processing frame ${index} out of ${this.state.frames} frame(s)`
       });
-    } else if (message === 'DETECT_END') {
+      this.setProgress(this.state.progress + 69 / this.state.frames);
+      this.appendLog(`Processing frame ${index} out of ${this.state.frames} frame(s)`);
+    } else if (message === "DETECT_END") {
       this.setState({
         status: "Object detection finished"
       });
-    } else if (message === 'WRITE_START') {
+      this.appendLog("Object detection finished");
+    } else if (message === "WRITE_START") {
       this.setState({
         status: "Rendering result video..."
       });
-    } else if (message === 'WRITE_END') {
+      this.appendLog("Rendering result video...");
+    } else if (message === "WRITE_END") {
       this.setState({
         status: "Finished rendering video"
       });
-    } else if (message === 'PROGRAM_END') {
+      this.appendLog("Finished rendering video");
+    } else if (message === "PROGRAM_END") {
       this.setState({
         status: "Finished",
-        progress: 100,
       });
+      this.setProgress(100);
+      this.appendLog("Finished");
+    } else {
+      this.appendLog(message);
     }
-    this.appendLog(message);
   };
 
   handleFinish = (err, code, signal) => {
-    if(err) this.appendError(err);
-    if(code) this.appendLog(`Program exited with code ${code}`);
-    if(signal) this.appendLog(`Program exited with code ${code}`);
+    if (err){
+      this.appendError(err);
+      currentWindow.setProgressBar(1, {
+        mode: 'error',
+      });
+    }
+    currentWindow.on('focus', () => {
+      currentWindow.setProgressBar(-1);
+      currentWindow.on('focus', () => {});
+    });
+    if (code) this.appendLog(`Program exited with code ${code}`);
+    if (signal) this.appendLog(`Program exited with code ${code}`);
   };
 
   handleCancel = event => {
     cancelDetect();
     this.setState({
       progress: 99.999,
-      status: 'Cancelled',
-      cancelled: true,
+      status: "Cancelled",
+      cancelled: true
     });
-    this.appendLog('CANCELLED');
-  }
+    this.appendLog("CANCELLED");
+    if(!currentWindow.isFocused()) {
+      currentWindow.setProgressBar(1, {
+        mode: 'error',
+      });
+      setTimeout(() => {
+        currentWindow.setProgressBar(-1);
+      }, 1000);
+    }
+  };
 
   render() {
     const { classes } = this.props;
@@ -209,6 +266,7 @@ class ProgressScreen extends Component {
                 <LinearProgress
                   variant="determinate"
                   value={this.state.progress}
+                  onChange={() => ipcRenderer.send('progress', this.state.progress/100)}
                 />
               </div>
               <Typography variant="body2" style={{ fontSize: 14 }}>
@@ -227,44 +285,63 @@ class ProgressScreen extends Component {
               {this.state.logExpanded ? "Hide log" : "Show log"}
             </Typography>
           </Grid>
+
           <Grid
             container
             alignItems="flex-start"
             className={classes.logContainer}
-            onScroll={this.handleLogScroll}
             ref={el => {
               this.logs = el;
             }}
+            style={{
+              border: this.state.logExpanded ? 'solid thin rgba(255,255,255,0.5)' : 'none'
+            }}
           >
-            <Grid item xs={12}>
+            <PerfectScrollbar>
               <Collapse in={this.state.logExpanded}>
-                <ul className={classes.log}>
-                  {this.renderLog()}
-                  <div
-                    style={{ float: "left", clear: "both" }}
-                    ref={el => {
-                      this.logEnd = el;
-                    }}
-                  />
-                </ul>
+                <Grid item xs={12}>
+                  <ul className={classes.log}>
+                    {this.renderLog()}
+                    <div
+                      style={{ float: "left", clear: "both" }}
+                      ref={el => {
+                        this.logEnd = el;
+                      }}
+                    />
+                  </ul>
+                </Grid>
               </Collapse>
-            </Grid>
+            </PerfectScrollbar>
           </Grid>
           <Grid container alignItems="center">
-            <Button color="default" className={classes.cancel} disabled={this.state.progress === 100 || this.state.cancelled} onClick={this.handleCancel}>
+            <Button
+              color="default"
+              className={classes.cancel}
+              disabled={this.state.progress === 100 || this.state.cancelled}
+              onClick={this.handleCancel}
+            >
               Cancel
             </Button>
-            {
-              this.state.cancelled ? 
-              <Button variant="contained" color="default" onClick={handlePrevious}>
+            {this.state.cancelled ? (
+              <Button
+                variant="contained"
+                color="default"
+                onClick={handlePrevious}
+              >
                 Go back
               </Button>
-              :
-              <Button variant="contained" color="primary" onClick={handleResult(path.join(remote.app.getAppPath(), "./.ylab/data.json"))} disabled={this.state.progress !== 100}>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleResult(
+                  path.join(remote.app.getAppPath(), "./.ylab/data.json")
+                )}
+                disabled={this.state.progress !== 100}
+              >
                 Continue
               </Button>
-            }
-            
+            )}
           </Grid>
         </Paper>
       </div>
