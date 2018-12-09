@@ -18,11 +18,12 @@ class App extends Component {
     result: null,
     // result: {
     //   file: {
-    //     path: `C:\\Users\\Nicky\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\.ylab\\out_video.avi`,
+    //     path: `C:\\Users\\Nicky\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\.ylab\\out_video.mp4`,
     //     size: 100,
     //   },
     //   objects: ['a','b','c'],
-
+    //   count_per_frame: 10.37,
+    //   type: 'default',
     // },
   };
 
