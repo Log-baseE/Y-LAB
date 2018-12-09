@@ -224,10 +224,18 @@ class ProgressScreen extends Component {
         mode: 'error',
       });
     }
-    currentWindow.on('focus', () => {
-      currentWindow.setProgressBar(-1);
-      currentWindow.on('focus', () => {});
-    });
+    if(!currentWindow.isFocused()) {
+      currentWindow.on('focus', () => {
+        setTimeout(() => {
+          currentWindow.setProgressBar(-1);
+        }, 1000);
+        currentWindow.on('focus', () => {});
+      });
+    } else {
+      setTimeout(() => {
+        currentWindow.setProgressBar(-1);
+      }, 1000);
+    }
     if (code) this.appendLog(`Program exited with code ${code}`);
     if (signal) this.appendLog(`Program exited with code ${code}`);
   };
@@ -240,10 +248,17 @@ class ProgressScreen extends Component {
       cancelled: true
     });
     this.appendLog("CANCELLED");
+    currentWindow.setProgressBar(1, {
+      mode: 'error',
+    });
     if(!currentWindow.isFocused()) {
-      currentWindow.setProgressBar(1, {
-        mode: 'error',
+      currentWindow.on('focus', () => {
+        setTimeout(() => {
+          currentWindow.setProgressBar(-1);
+        }, 1000);
+        currentWindow.on('focus', () => {});
       });
+    } else {
       setTimeout(() => {
         currentWindow.setProgressBar(-1);
       }, 1000);

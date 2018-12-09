@@ -16,6 +16,7 @@ class App extends Component {
     stage: 0,
     options: null,
     result: null,
+    run: true,
     // result: {
     //   file: {
     //     path: `C:\\Users\\Nicky\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\.ylab\\out_video.mp4`,
@@ -94,8 +95,10 @@ class App extends Component {
     let screens = [
       <IndexScreen
         state={this.state.options}
+        run={this.state.run}
         handleSubmit={this.handleSubmit}
         handleSave={this.handleSaveOptions}
+        completeTutorial={this.completeTutorial}
         key="index"
       />,
       <ProgressScreen
@@ -112,6 +115,12 @@ class App extends Component {
     ];
     return screens[this.state.stage];
   };
+
+  completeTutorial = () => {
+    this.setState({
+      run: false,
+    })
+  }
 
   render() {
     return this.renderScreen();

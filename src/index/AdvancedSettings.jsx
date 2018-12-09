@@ -68,6 +68,7 @@ class AdvancedSettings extends Component {
         style={{
           marginBottom: 16
         }}
+        id='advanced-settings'
       >
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="h6" className={classes.heading}>
@@ -103,8 +104,8 @@ class AdvancedSettings extends Component {
                     <FormControlLabel
                       value="custom"
                       control={<CustomRadio />}
-                      label={`Custom: ${state.file === null ? '(pick a video file to enable)' : ''}`}
-                      disabled={state.file === null}
+                      label={`Custom: (feature in construction)`}
+                      disabled
                     />
                   </RadioGroup>
                   {state.roiType === "custom" ? (

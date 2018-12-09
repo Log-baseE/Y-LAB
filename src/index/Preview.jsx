@@ -129,7 +129,7 @@ class Preview extends Component {
     const { handleFileDrop, handleMetaData, handleSubmit, handleSave } = this.props;
 
     return ([
-      <Card className={classes.root} key="preview-card">
+      <Card className={classes.root} key="preview-card" id="preview-card">
         {
           state.file ?
           <CardMedia
@@ -228,6 +228,7 @@ class Preview extends Component {
           color="default"
           onClick={handleSubmit(state)}
           disabled={state.file === null}
+          id="submit-button"
         >
           LOOKS GOOD!
         </Button>

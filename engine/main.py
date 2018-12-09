@@ -404,6 +404,7 @@ if __name__ == '__main__':
         gpu = data["gpu"]
     except KeyError:
         print("Invalid input")
+        traceback.print_exc()
         sys.exit(-1)
 
     # model_dir = sys.argv[3]

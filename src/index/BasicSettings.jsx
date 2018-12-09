@@ -36,7 +36,7 @@ class BasicSettings extends Component {
     const { handleChange, handleFileChange } = this.props;
 
     return (
-      <Paper className={classes.root} elevation={1}>
+      <Paper className={classes.root} elevation={1} id='basic-settings'>
         <Typography variant="h6" className={classes.heading}>
           SETTINGS
         </Typography>
