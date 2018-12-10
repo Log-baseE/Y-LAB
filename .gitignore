@@ -61,9 +61,7 @@ typings/
 .next
 
 # yolo files
-bin/
 built_graph
-cfg/
 
 # vscode
 .vscode
