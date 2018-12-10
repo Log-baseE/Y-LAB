@@ -20,15 +20,6 @@ const styles = theme => ({
 });
 
 class Topbar extends Component {
-  state = {
-    progress: 0,
-    logs: [],
-    logExpanded: false,
-    status: "",
-    frames: 1,
-    cancelled: false,
-  };
-
   render() {
     const { classes } = this.props;
     return (
