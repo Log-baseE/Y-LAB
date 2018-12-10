@@ -75,7 +75,7 @@ class VideoDetails extends Component {
         </FormGroup>
         {state.meta
           ? [
-              <FormGroup>
+              <FormGroup key="1">
                 <Grid container>
                   <Grid item md={4} style={{ paddingTop: 7 }}>
                     <FormLabel>Duration</FormLabel>
@@ -94,7 +94,7 @@ class VideoDetails extends Component {
                   </Grid>
                 </Grid>
               </FormGroup>,
-              <FormGroup>
+              <FormGroup key="2">
                 <Grid container>
                   <Grid item md={4} style={{ paddingTop: 7 }}>
                     <FormLabel>Resolution</FormLabel>
