@@ -9,6 +9,8 @@ import Preview from "./Preview";
 import Topbar from "./Topbar";
 import Joyride from 'react-joyride';
 
+const { ipcRenderer } = window.require('electron');
+
 const joyrideStyles = {
   options: {
     fontFamily: `-apple-system, BlinkMacSystemFont, 'Bahnschrift Light', 'Segoe UI', 'Roboto', 'Oxygen',
@@ -114,6 +116,15 @@ class IndexScreen extends Component {
         ...state,
       });
     }
+
+    ipcRenderer.on('open-video', (event, arg) => {
+      this.setState({
+        file: {
+          path: arg.path,
+          size: arg.size,
+        }
+      })
+    })
   }
 
   handleChange = event => {

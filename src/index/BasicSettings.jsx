@@ -14,6 +14,8 @@ import { withStyles } from "@material-ui/core/styles";
 import CustomRadio from "../custom/CustomRadio";
 import filesize from "filesize";
 
+const { ipcRenderer } = window.require("electron");
+
 const styles = theme => ({
   input: {
     display: "none"
@@ -30,6 +32,12 @@ const styles = theme => ({
 });
 
 class BasicSettings extends Component {
+  componentDidMount() {
+    ipcRenderer.on('open-video', (event, arg) => {
+      console.log(arg);
+    });
+  }
+
   render() {
     const { classes } = this.props;
     const { state } = this.props;
@@ -53,7 +61,7 @@ class BasicSettings extends Component {
                   id="file-input"
                   type="file"
                   onChange={handleFileChange}
-                />
+                  />
                 <label htmlFor="file-input">
                   <Button
                     variant="outlined"
@@ -63,7 +71,7 @@ class BasicSettings extends Component {
                     style={{
                       marginRight: 16
                     }}
-                  >
+                    >
                     Browse
                   </Button>
                 </label>

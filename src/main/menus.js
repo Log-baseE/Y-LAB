@@ -5,6 +5,8 @@ const {
   shell,
 } = require('electron');
 
+const fs = require('fs');
+
 class Mainmenu {
   /**
    * 
@@ -16,7 +18,7 @@ class Mainmenu {
       {
         label: 'File',
         submenu: [
-          { label: 'Open video', click: this.onMenuClickOpenVideo, accelerator: 'CmdOrCtrl+O' },
+          { label: 'Open video', click: this.onMenuClickOpenVideo.bind(this), accelerator: 'CmdOrCtrl+O' },
           { type: 'separator' },
           { role: 'quit' },
         ]
@@ -42,7 +44,21 @@ class Mainmenu {
   }
 
   onMenuClickOpenVideo() {
-    
+    dialog.showOpenDialog(
+      {
+        filters: [{ name: "MP4 video", extensions: ["mp4"] }]
+      },
+      fileNames => {
+        if(fileNames === undefined)
+          return;
+        
+        let filepath = fileNames[0];
+        this.window.webContents.send('open-video', {
+          path: filepath,
+          size: fs.statSync(filepath).size
+        });
+      }
+    );
   }
   
   onMenuClickQuickManual() {

@@ -7,6 +7,12 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
+const { ipcRenderer } = window.require('electron');
+
+ipcRenderer.on('log', (event, arg) => {
+  console.error(arg);
+});
+
 const THEME = createMuiTheme({
   typography: {
     useNextVariants: true,
