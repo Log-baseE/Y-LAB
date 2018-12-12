@@ -1,28 +1,59 @@
 {
   "name": "y-lab",
   "version": "1.0.0",
+  "private": true,
   "description": "**YOLO Labelling** or **Y-LAB** is a simple GUI for [YOLO](https://pjreddie.com/darknet/yolo/) to aid learning for new users and introduce them to Object Detection. This project will use [Electron.JS](https://electronjs.org/) as the interface.",
-  "main": "index.js",
-  "scripts": {
-    "start": "electron ."
-  },
+  "author": "",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Log-baseE/Y-LAB.git"
   },
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/Log-baseE/Y-LAB/issues"
   },
-  "homepage": "https://github.com/Log-baseE/Y-LAB#readme",
+  "main": "src/main.js",
+  "homepage": "./",
+  "scripts": {
+    "start": "nf start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "electron-dev": "set ELECTRON_START_URL=http://localhost:5000 && electron .",
+    "electron-start": "nodemon src/electron-wait-react",
+    "react-start": "react-scripts start"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "devDependencies": {
-    "electron": "^3.0.7",
-    "electron-rebuild": "^1.8.2"
+    "foreman": "^3.0.1",
+    "nodemon": "^1.18.8"
   },
   "dependencies": {
-    "bindings": "^1.3.0",
-    "electron-middle-sass": "^1.0.2",
-    "node-sass": "^4.10.0"
+    "@material-ui/core": "^3.6.1",
+    "@material-ui/icons": "^3.0.1",
+    "@material-ui/lab": "^3.0.0-alpha.24",
+    "classnames": "^2.2.6",
+    "dotenv": "^6.2.0",
+    "electron": "^3.0.10",
+    "electron-util": "^0.10.2",
+    "filesize": "^3.6.1",
+    "node-sass": "^4.10.0",
+    "python-shell": "^1.0.6",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-dropzone": "^7.0.1",
+    "react-joyride": "^2.0.0-15",
+    "react-perfect-scrollbar": "^1.4.2",
+    "react-scripts": "2.1.1",
+    "react-split-pane": "^0.1.84"
   }
 }

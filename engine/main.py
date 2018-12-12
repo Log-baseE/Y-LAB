@@ -1,6 +1,7 @@
-from darkflow.net.build import TFNet
-from darkflow.defaults import argHandler
-from concurrent.futures import ProcessPoolExecutor
+print("PROGRAM_START")
+
+print("LIB_START")
+
 import point_calculate
 import numpy as np
 import pandas as pd
@@ -13,6 +14,18 @@ import shutil
 import time
 import os
 import sys
+import json
+import traceback
+
+from concurrent.futures import ProcessPoolExecutor
+
+print("LIB_END")
+print("TF_START")
+
+from darkflow.net.build import TFNet
+from darkflow.defaults import argHandler
+
+print("TF_END")
 
 # suppress tensorflow warning
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -32,8 +45,8 @@ class ObjectDetect:
         self.counting_line_vertical = counting_line_vertical
         self.make_temp_path()
 
-    def __del__(self):
-        shutil.rmtree(self.path)
+    # def __del__(self):
+    #     shutil.rmtree(self.path)
 
     def init_options(self, model_dir, weights_dir, threshold, gpu):
         self.options = {
@@ -82,14 +95,16 @@ class ObjectDetect:
         roi_pts = self.roi_pts
         pts = np.array([roi_pts[0], roi_pts[1], roi_pts[2], roi_pts[3]] , np.int32)
         cv2.polylines(imgcv, [pts], True, (0, 255, 255))
-        cv2.line(imgcv, (int(line[0][0]), int(line[0][1])), (int(line[1][0]), int(line[1][1])), (0, 255, 0))
+        if not (line is None):
+            cv2.line(imgcv, (int(line[0][0]), int(line[0][1])), (int(line[1][0]), int(line[1][1])), (0, 255, 0))
         return imgcv
 
     # yolo at work - return coordinates of objects per frame
     def process_frame(self, frame):
-        print("Frame count: " + str(self.frame_count))
+        print("FRAME_INDEX:" + str(self.frame_count))
         sys.stdout.flush()
         result = self.tfnet.return_predict(frame)
+        # print(result)
         self.frame_count += 1
         return result
 
@@ -189,27 +204,42 @@ class ObjectDetect:
         cap.release()
 
     async def video_detect(self, video_dir):
-        roi_pts = self.roi_pts
+        if self.roi:
+            roi_pts = self.roi_pts
         self.frame_count = 0
+
+        cap = cv2.VideoCapture(video_dir)
+        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        cap.release()
+        self.frames = length
+        print("FRAMES:" + str(length))
 
         # e = ProcessPoolExecutor(max_workers = 2)
         # coords = await asyncio.gather(*(self.loop.run_in_executor(e, self.process_frame, frame) for frame in self.get_frame(video_dir)))
         coords = [self.process_frame(frame) for frame in self.get_frame(video_dir)]
-
+        
         cap = cv2.VideoCapture(video_dir)
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        # result_dir = os.path.join(self.path, "out_video.avi")
-        result_dir = "./temp_results/out_video.avi"
-        out = cv2.VideoWriter(result_dir, fourcc, 30.0, (int(width), int(height)))
+        # if self.count_switch:
+            # fourcc = 0x00000021
+        # else:
+        fourcc = cv2.VideoWriter_fourcc(*'H264')
+        result_dir = os.path.join(self.path, "out_video.mp4")
+        # result_dir = "./temp_results/out_video.avi"
+        out = cv2.VideoWriter(result_dir, fourcc, 30.0, (int(cap.get(3)), int(cap.get(4))))
 
-        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        # print("Coords: " + str(len(coords)))
-        # print("Frames: " + str(length))
+        print("Coords: " + str(len(coords)))
         
         cars = []
         count = 0
+        self.resultsForJSON = []
+        self.objects_json = []
+        self.object_count = 0
+        # summary of number of object labels
+        self.object_labels = set()
+
+        print("WRITE_START")
 
         for i in range(length):
             ret, frame = cap.read()
@@ -227,29 +257,41 @@ class ObjectDetect:
                     point_down = ((topright[0]+botright[0])/2, (botleft[1]+botright[1])/2)
                     count_line = (point_up, point_down)
                 cars, count = self.car_count(frame, coord, cars, count, count_line, self.counting_line_vertical, i)
-                cv2.putText(
-                    frame,
-                    'Detected Vehicles: ' + str(count),
-                    (10, 35),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.8,
-                    (0, 0xFF, 0xFF),
-                    2,
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                )
+                # cv2.putText(
+                #     frame,
+                #     'Detected Vehicles: ' + str(count),
+                #     (10, 35),
+                #     cv2.FONT_HERSHEY_SIMPLEX,
+                #     0.8,
+                #     (0, 0xFF, 0xFF),
+                #     2,
+                #     cv2.FONT_HERSHEY_SIMPLEX,
+                # )
+            else:
+                count = None
+
+            # append processed coordinate to json
+            self.append_to_frame_json(coord)
                 
             # drawing roi and bounding box
-            if(self.roi):
+            if self.roi:
+                if not self.count_switch:
+                    count_line = None
                 frame = self.draw_roi(frame, count_line)
             frame = self.draw_bb(frame, coord)
 
             # write to video
-            cv2.imwrite(os.path.join(self.path, "out_" + str(i) + ".jpg"), frame)
+            # cv2.imwrite(os.path.join(self.path, "out_" + str(i) + ".jpg"), frame)
             # cv2.imwrite("./temp_results/out_" + str(i) + ".jpg", frame)
             out.write(frame)
 
+        # write json to results dir
+        self.append_to_json(count)
+        self.write_to_json(self.resultsForJSON)
+
         cap.release()
         
+        print("WRITE_END")
         # show result (comment later)
         # cap2 = cv2.VideoCapture(result_dir)
         # cv2.namedWindow("Result", cv2.WINDOW_AUTOSIZE)
@@ -276,9 +318,9 @@ class ObjectDetect:
         bbox = self.process_coords(img, coords, 0)
         img = self.draw_bb(img, bbox)
         
-        # result_dir = os.path.join(self.path, "out_image.jpg")
-        # cv2.imwrite(result_dir, img)
-        cv2.imwrite("./temp_results/out_" + img_dir, img)
+        result_dir = os.path.join(self.path, "out_image.jpg")
+        cv2.imwrite(result_dir, img)
+        # cv2.imwrite("./temp_results/out_" + img_dir, img)
 
         # show result (comment later)
         # cv2.imshow('Result', img)
@@ -287,46 +329,149 @@ class ObjectDetect:
 
     def make_temp_path(self):
         # self.path = tempfile.TemporaryDirectory().name
-        self.path = tempfile.mkdtemp()
-        # open(self.path)
-        print(self.path)
+        
+        # self.path = tempfile.mkdtemp()
+        # print(self.path)
+
+        self.path =  "./.ylab/"
+        directory = os.path.dirname(self.path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
     def set_roi(self, roi_switch):
         self.roi = roi_switch
 
+    def append_to_frame_json(self, coord):
+        self.object_count += len(coord)
+        for box in coord:
+            left, top, right, bot, label, conf = box[0], box[1], box[2], box[3], box[4], box[5]
+            self.object_labels.add(label)
+
+            self.objects_json.append({
+                "label": label,
+                "confidence": float('%.2f' % conf),
+                "topleft": {"x": left, "y": top},
+                "bottomright": {"x": right, "y": bot}
+            })
+
+    def append_to_json(self, car_count):
+        if self.count_switch:
+            type_str = "traffic"
+        else:
+            type_str = "default"
+
+        self.resultsForJSON = {
+            "objects": list(self.object_labels),
+            "frames": self.objects_json,
+            "count_per_frame": float('%.2f' % (self.object_count / self.frames)),
+            "type": type_str,
+            "car_count": car_count
+        }
+
+
+    def write_to_json(self, data):
+        result_dir = os.path.join(self.path, "data.json")
+        # result_dir = "./temp_results/data.json"
+        with open(result_dir, 'w') as outfile:
+            json.dump(data, outfile)
+
+DEFAULT_MODEL = "cfg/yolo.cfg"
+DEFAULT_WEIGHTS = "bin/yolo.weights"
+DEFAULT_THRESHOLD = 0.1
+DEFAULT_GPU = 0.7
+DEFAULT_PIXEL_THRESHOLD = 50
+
 if __name__ == '__main__':
-    usage = "Usage: python main.py <video_path>"
+    usage = "Usage: python main.py <options>"
     print(sys.argv)
     if len(sys.argv) != 2:
         print("Invalid arguments")
         print(usage)
         sys.exit(-1)
-    videopath = sys.argv[1]
+    # videopath = sys.argv[1]
+
+    # read json string
+    options_str = sys.argv[1]
+    # with open(options_str) as json_file:
+    #     data = json.load(json_file)
+    try:
+        data = json.loads(options_str)
+        videopath = data["file_path"]
+        detect_type = data["detect_type"]
+        roi = data["roi"]
+        model = data["model"]
+        weights = data["weights"]
+        labels = data["filter"]
+        threshold = data["threshold"]
+        gpu = data["gpu"]
+        detection_threshold = data["pixelThreshold"]
+    except KeyError:
+        print("Invalid input")
+        traceback.print_exc()
+        sys.exit(-1)
+
+    # model_dir = sys.argv[3]
+    # weights_dir = sys.argv[4]
+    # threshold = sys.argv[5]
+    # gpu = sys.argv[6]
+
+    # json values - model, load, threshold, gpu
+    # with open(optionspath) as json_file:
+    #     json_data = json.load(json_file)
+    # model_dir = json_data["model"]
+    # weights_dir = json_data["load"]
+    # threshold = json_data["threshold"]
+    # gpu = json_data["gpu"]
 
     start_time = time.time()
 
     # max number of pixels for gap between bounding box for boxes to be considered separate
-    detection_threshold = 10
+    # detection_threshold = 50
     # use region of interest in object detection
-    roi = True
+    roi_switch = not (roi is None)
     # counting cars mode
-    count_switch = True
+    count_switch = (detect_type == "traffic")
     # counting line is drawn vertically or horizontally between roi
     counting_line_vertical = True
+    # apply defaults
+    if model is None:
+        model = DEFAULT_MODEL
+    if weights is None:
+        weights = DEFAULT_WEIGHTS
+    if threshold == 'default':
+        threshold = DEFAULT_THRESHOLD
+    if gpu == 'default':
+        gpu = DEFAULT_GPU
+    if detection_threshold == 'default':
+        detection_threshold = DEFAULT_PIXEL_THRESHOLD
+    
+    print("MODEL_START")
 
-    print("BUILDING_MODEL_START")
     sys.stdout.flush()
-    od = ObjectDetect(detection_threshold, roi, count_switch, counting_line_vertical)
-    od.init_options("cfg/yolo.cfg", "bin/yolo.weights", 0.1, 0.7)
+    od = ObjectDetect(detection_threshold, roi_switch, count_switch, counting_line_vertical)
+    od.init_options(model, weights, threshold, gpu)
     sys.stdout.flush()
+
     # od.init_model()
-    print("BUILDING_MODEL_COMPLETE")
+
+    print("MODEL_END")
     sys.stdout.flush()
-    print("Model built in %s seconds ---" % (time.time() - start_time))
-    sys.stdout.flush()
+    # print("Model built in %s seconds ---" % (time.time() - start_time))
+    # sys.stdout.flush()
 
     # botleft, topleft, topright, botright
-    od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
+    if roi_switch:
+        botleft = (roi['bottomLeft']['x'], roi['bottomLeft']['y'])
+        topleft = (roi['topLeft']['x'], roi['topLeft']['y'])
+        topright = (roi['topRight']['x'], roi['topRight']['y'])
+        botright = (roi['bottomRight']['x'], roi['bottomRight']['y'])
+        od.init_roi(botleft, topleft, topright, botright)
+        # od.init_roi([0, 450], [270, 250], [1110, 350], [1280, 450])
+    
+    if detect_type == "traffic":
+        od.set_label(["car", "truck"])
+    else:
+        od.set_label(labels)
 
     loop = asyncio.get_event_loop()
 
@@ -335,14 +480,16 @@ if __name__ == '__main__':
     # loop.run_until_complete(od.image_detect("pizza.jpg"))
 
     # video detect
-    od.set_label(["car", "truck"])
-    od.set_roi(True)
-    print("OBJECT_DETECTION_START")
+    print("DETECT_START")
+
     sys.stdout.flush()
     loop.run_until_complete(od.video_detect(videopath))
-    print("OBJECT_DETECTION_END")
+
+    print("DETECT_END")
     sys.stdout.flush()
 
     loop.close()
 
     print("--- %s seconds ---" % (time.time() - start_time))
+    print("PROGRAM_END")
+    sys.stdout.flush()

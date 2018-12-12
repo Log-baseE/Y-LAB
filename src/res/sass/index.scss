@@ -1,0 +1,14 @@
+@import "resizer";
+@import "settings";
+
+// .Pane.vertical {
+//     overflow-x: hidden;
+//     overflow-y: auto;
+//     height: 100%;
+// }
+
+h1, h2, h3, h4, h5, p, button {
+    font-family: -apple-system, BlinkMacSystemFont, 'Bahnschrift Light', 'Segoe UI', 'Roboto', 'Oxygen',
+            'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+            sans-serif,
+}

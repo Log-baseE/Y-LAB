@@ -60,14 +60,13 @@ typings/
 # next.js build output
 .next
 
-# VSCode directory
-.vscode
-
-# YOLO files
-bin
-cfg
+# yolo files
 built_graph
 
-# Others
-*.mp4
+# vscode
+.vscode
+
+# pycache
 __pycache__
+
+.ylab
