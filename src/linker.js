@@ -14,7 +14,7 @@ export const startDetect = (options, messageCallback, finishCallback) => {
         model: options.nnModel === 'default' ? null : 'path',
         weights: options.weights === 'default' ? null : 'path',
         filter: options.filterType === 'all' ? null : options.filter.split(';'),
-        threshold: options.thresholdType === 'default' ? 'default' : options.lastValidTheshold,
+        threshold: options.thresholdType === 'default' ? 'default' : options.lastValidThreshold,
         gpu: options.gpuType === 'default' ? 'default' : options.lastValidGpu,
     }
     var pyOptions = {
