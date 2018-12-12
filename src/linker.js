@@ -19,7 +19,7 @@ export const startDetect = (options, messageCallback, finishCallback) => {
     }
     var pyOptions = {
         scriptPath: path.join(remote.app.getAppPath(), './engine'),
-        pythonPath: 'C:/tools/Anaconda3/envs/yolo-venv/python',
+        pythonPath: remote.process.env.PYTHON_PATH,
         pythonOptions: ['-u'],
         args: [ JSON.stringify(opts) ]
     };
