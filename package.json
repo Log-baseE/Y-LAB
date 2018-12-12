@@ -21,7 +21,7 @@
     "eject": "react-scripts eject",
     "electron": "electron .",
     "electron-dev": "set ELECTRON_START_URL=http://localhost:5000 && electron .",
-    "electron-start": "node src/electron-wait-react",
+    "electron-start": "nodemon src/electron-wait-react",
     "react-start": "react-scripts start"
   },
   "eslintConfig": {
@@ -34,7 +34,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "foreman": "^3.0.1"
+    "foreman": "^3.0.1",
+    "nodemon": "^1.18.8"
   },
   "dependencies": {
     "@material-ui/core": "^3.6.1",
