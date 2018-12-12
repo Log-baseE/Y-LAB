@@ -379,6 +379,7 @@ DEFAULT_MODEL = "cfg/yolo.cfg"
 DEFAULT_WEIGHTS = "bin/yolo.weights"
 DEFAULT_THRESHOLD = 0.1
 DEFAULT_GPU = 0.7
+DEFAULT_PIXEL_THRESHOLD = 50
 
 if __name__ == '__main__':
     usage = "Usage: python main.py <options>"
@@ -403,6 +404,7 @@ if __name__ == '__main__':
         labels = data["filter"]
         threshold = data["threshold"]
         gpu = data["gpu"]
+        detection_threshold = data["pixelThreshold"]
     except KeyError:
         print("Invalid input")
         traceback.print_exc()
@@ -424,7 +426,7 @@ if __name__ == '__main__':
     start_time = time.time()
 
     # max number of pixels for gap between bounding box for boxes to be considered separate
-    detection_threshold = 50
+    # detection_threshold = 50
     # use region of interest in object detection
     roi_switch = not (roi is None)
     # counting cars mode
@@ -440,7 +442,9 @@ if __name__ == '__main__':
         threshold = DEFAULT_THRESHOLD
     if gpu == 'default':
         gpu = DEFAULT_GPU
-
+    if detection_threshold == 'default':
+        detection_threshold = DEFAULT_PIXEL_THRESHOLD
+    
     print("MODEL_START")
 
     sys.stdout.flush()

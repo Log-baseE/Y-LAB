@@ -6,7 +6,12 @@ import {
   Paper,
   LinearProgress,
   Button,
-  Collapse
+  Collapse,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from "@material-ui/core";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -72,7 +77,8 @@ class ProgressScreen extends Component {
     logExpanded: false,
     status: "Starting object detection engine...",
     frames: 1,
-    cancelled: false
+    cancelled: false,
+    confirmOpen: false
   };
 
   componentDidMount() {
@@ -245,7 +251,8 @@ class ProgressScreen extends Component {
     this.setState({
       progress: 99.999,
       status: "Cancelled",
-      cancelled: true
+      cancelled: true,
+      confirmOpen: false
     });
     this.appendLog("CANCELLED");
     currentWindow.setProgressBar(1, {
@@ -264,6 +271,18 @@ class ProgressScreen extends Component {
       }, 1000);
     }
   };
+
+  handleConfirmOpen = event => {
+    this.setState({
+      confirmOpen: true,
+    })
+  }
+
+  handleConfirmClose = event => {
+    this.setState({
+      confirmOpen: false,
+    })
+  }
 
   render() {
     const { classes } = this.props;
@@ -300,7 +319,29 @@ class ProgressScreen extends Component {
               {this.state.logExpanded ? "Hide log" : "Show log"}
             </Typography>
           </Grid>
-
+          <Dialog
+            open={this.state.confirmOpen}
+            onClose={this.handleConfirmClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Cancel the process?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                The object detection process will be terminated.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleCancel} color="default">
+                Yes
+              </Button>
+              <Button onClick={this.handleConfirmClose} color="default" autoFocus>
+                No
+              </Button>
+            </DialogActions>
+          </Dialog>
           <Grid
             container
             alignItems="flex-start"
@@ -333,7 +374,7 @@ class ProgressScreen extends Component {
               color="default"
               className={classes.cancel}
               disabled={this.state.progress === 100 || this.state.cancelled}
-              onClick={this.handleCancel}
+              onClick={this.handleConfirmOpen}
             >
               Cancel
             </Button>

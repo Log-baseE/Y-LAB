@@ -15,6 +15,7 @@ export const startDetect = (options, messageCallback, finishCallback) => {
         weights: options.weights === 'default' ? null : 'path',
         filter: options.filterType === 'all' ? null : options.filter.split(';'),
         threshold: options.thresholdType === 'default' ? 'default' : options.lastValidThreshold,
+        pixelThreshold: options.pixelThresholdType === 'default' ? 'default' : options.lastValidPixelThreshold,
         gpu: options.gpuType === 'default' ? 'default' : options.lastValidGpu / 100,
     }
     var pyOptions = {

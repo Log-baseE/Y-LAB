@@ -171,7 +171,7 @@ class AdvancedSettings extends Component {
             >
               <Grid container>
                 <Grid item md={4} style={{ paddingTop: 5 }}>
-                  <FormLabel>Threshold</FormLabel>
+                  <FormLabel>Confidence threshold</FormLabel>
                 </Grid>
                 <Grid item container md={8} alignItems="center" spacing={16}>
                   <RadioGroup
@@ -227,6 +227,53 @@ class AdvancedSettings extends Component {
                   ) : (
                     ""
                   )}
+                </Grid>
+              </Grid>
+            </FormControl>
+            <FormControl
+              margin="dense"
+              fullWidth
+              className={classes.formControl}
+            >
+              <Grid container>
+                <Grid item md={4} style={{ paddingTop: 5 }}>
+                  <FormLabel>Pixel distance threshold</FormLabel>
+                </Grid>
+                <Grid item container md={8} alignItems="center" spacing={16}>
+                  <RadioGroup
+                    aria-label="object detection type"
+                    name="pixelThresholdType"
+                    value={state.pixelThresholdType}
+                    onChange={handleChange}
+                    row
+                    className={classes.formControl}
+                  >
+                    <FormControlLabel
+                      value="default"
+                      control={<CustomRadio />}
+                      label="Default (50px)"
+                      className={classes.defaultRadio}
+                    />
+                    <FormControlLabel
+                      value="custom"
+                      control={<CustomRadio />}
+                      label={
+                        <Grid container alignItems="center">
+                          Custom:&nbsp;&nbsp;&nbsp;
+                          <Input
+                            value={state.pixelThreshold}
+                            margin="none"
+                            className={classes.numberInput}
+                            disabled={state.pixelThresholdType !== "custom"}
+                            onChange={handleNumberInputChange("pixelThreshold", 0, 1)}
+                            endAdornment={
+                              <InputAdornment position="end">px</InputAdornment>
+                            }
+                          />
+                        </Grid>
+                      }
+                    />
+                  </RadioGroup>
                 </Grid>
               </Grid>
             </FormControl>
