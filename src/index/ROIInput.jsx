@@ -5,7 +5,6 @@ import {
   Typography,
   Paper,
   ButtonBase,
-  Input,
   FormControl,
   Grid,
   TextField

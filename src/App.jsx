@@ -31,7 +31,6 @@ class App extends Component {
 
   componentDidMount() {
     ipcRenderer.on('replay-tutorial', (event, arg) => {
-      alert('Got message!');
       this.restartTutorial();
     });
   }

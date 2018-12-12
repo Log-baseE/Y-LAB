@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import { lightBlue } from "@material-ui/core/colors";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
 import "./index.css";
