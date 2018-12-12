@@ -24,7 +24,7 @@ class Topbar extends Component {
     const { classes } = this.props;
     return (
       <Grid container className={classes.root}>
-        <Typography variant="h5" className={classes.heading}>VIDEO OBJECT DETECTION</Typography>
+        <Typography variant="h5" className={classes.heading}><strong>Y-LAB</strong>&nbsp;&nbsp;&gt;&nbsp;&nbsp;VIDEO OBJECT DETECTION</Typography>
       </Grid>
     );
   }

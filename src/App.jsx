@@ -6,7 +6,7 @@ import ResultScreen from "./result/ResultScreen";
 import "./App.scss";
 
 const electron = window.require("electron");
-const { remote } = electron;
+const { remote, ipcRenderer } = electron;
 const path = remote.require("path");
 const fs = remote.require("fs");
 const { dialog } = remote;
@@ -16,7 +16,8 @@ class App extends Component {
     stage: 0,
     options: null,
     result: null,
-    run: true,
+    runTutorial: true,
+    tutorialIndex: 0,
     // result: {
     //   file: {
     //     path: `C:\\Users\\Nicky\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\.ylab\\out_video.mp4`,
@@ -27,6 +28,13 @@ class App extends Component {
     //   type: 'default',
     // },
   };
+
+  componentDidMount() {
+    ipcRenderer.on('replay-tutorial', (event, arg) => {
+      alert('Got message!');
+      this.restartTutorial();
+    });
+  }
 
   handleSubmit = options => event => {
     this.setState({
@@ -95,10 +103,12 @@ class App extends Component {
     let screens = [
       <IndexScreen
         state={this.state.options}
-        run={this.state.run}
+        runTutorial={this.state.runTutorial}
+        tutorialIndex={this.state.tutorialIndex}
         handleSubmit={this.handleSubmit}
         handleSave={this.handleSaveOptions}
         completeTutorial={this.completeTutorial}
+        setTutorialIndex={this.setTutorialIndex}
         key="index"
       />,
       <ProgressScreen
@@ -116,9 +126,22 @@ class App extends Component {
     return screens[this.state.stage];
   };
 
+  setTutorialIndex = (index) => {
+    this.setState({
+      tutorialIndex: index,
+    })
+  }
+
   completeTutorial = () => {
     this.setState({
-      run: false,
+      runTutorial: false,
+    })
+  }
+
+  restartTutorial = () => {
+    this.setState({
+      runTutorial: true,
+      tutorialIndex: 0,
     })
   }
 

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Typography, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { ACTIONS, EVENTS } from 'react-joyride/es/constants';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -95,8 +95,13 @@ class IndexScreen extends Component {
 
   names = {};
 
-  callback = (data) => {
+  tutorialCallback = (data) => {
     const { action, index, type } = data;
+    console.log(index);
+    const { setTutorialIndex } = this.props;
+    if ([EVENTS.STEP_AFTER, EVENTS.CLOSE, EVENTS.TARGET_NOT_FOUND].includes(type)) {
+      setTutorialIndex(index + (action === ACTIONS.PREV ? -1 : 1));
+    }
     if (type === EVENTS.TOUR_END) {
       this.props.completeTutorial();
     }
@@ -184,7 +189,8 @@ class IndexScreen extends Component {
   }
 
   render() {
-    const { handleSubmit, handleSave, run } = this.props;
+    const { handleSubmit, handleSave } = this.props;
+    const { runTutorial, tutorialIndex } = this.props;
     const { steps } = this.state;
     return (
       <Grid container direction="column" id="index-screen" alignItems="stretch" style={{
@@ -193,10 +199,11 @@ class IndexScreen extends Component {
         <Joyride
           continuous
           steps={steps}
-          run={run}
+          run={runTutorial}
           showProgress
           showSkipButton
-          callback={this.callback}
+          callback={this.tutorialCallback}
+          stepIndex={tutorialIndex}
           styles={joyrideStyles}
         />
         <Grid item key="1">

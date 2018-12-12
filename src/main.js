@@ -1,8 +1,6 @@
-const electron = require('electron');
 const {
   app,
   BrowserWindow,
-  dialog,
   Menu
 } = require('electron');
 
@@ -11,6 +9,8 @@ const url = require('url');
 const {
   is
 } = require('electron-util');
+
+const Mainmenu = require('./main/menus');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -99,61 +99,10 @@ function createWindow() {
     }
   });
 
-  const template = [{
-      label: 'File',
-      submenu: [{
-        role: 'quit'
-      }]
-    },
-    {
-      role: 'help',
-      submenu: [{
-          label: 'Quick manual',
-          click() {
+  let mainMenu = new Mainmenu(mainWindow);
 
-          }
-        },
-        {
-          label: 'Documentation',
-          click() {
-            require('electron').shell.openExternal('https://github.com/Log-baseE/Y-LAB/')
-          }
-        },
-        {
-          label: 'Replay tutorial',
-          click() {
-
-          }
-        },
-        {
-          type: 'separator',
-        },
-        {
-          label: 'Report errors',
-          click() {
-            require('electron').shell.openExternal('https://github.com/Log-baseE/Y-LAB/issues/new')
-          }
-        },
-        {
-          type: 'separator',
-        },
-        {
-          label: 'About',
-          click() {
-            dialog.showMessageBox(mainWindow, {
-              type: 'info',
-              title: 'About',
-              message: 'About message',
-            })
-          },
-        },
-      ]
-    }
-  ]
-
-
-  const menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu)
+  const menu = Menu.buildFromTemplate(mainMenu.getTemplate());
+  Menu.setApplicationMenu(menu);
 }
 
 // This method will be called when Electron has finished
