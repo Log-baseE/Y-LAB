@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Card, CardActions, CardMedia, IconButton, Typography, Grid, Tooltip } from "@material-ui/core";
+import { Button, Card, CardActions, CardMedia, IconButton, Typography, Grid, Tooltip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
 import Dropzone from 'react-dropzone'
 
@@ -58,6 +58,7 @@ class Preview extends Component {
     duration: 1,
     currentTime: 0,
     repeat: false,
+    confirmOpen: false,
   }
 
   handleToggleRepeat = event => {
@@ -121,6 +122,18 @@ class Preview extends Component {
     })
     video.pause();
     video.currentTime = video.duration - 1e-9; 
+  }
+
+  handleConfirmOpen = event => {
+    this.setState({
+      confirmOpen: true,
+    })
+  }
+
+  handleConfirmClose = event => {
+    this.setState({
+      confirmOpen: false,
+    })
   }
 
   render() {
@@ -212,6 +225,30 @@ class Preview extends Component {
         </CardActions>
       </Card>,
       <Grid container className={classes.action} key="action">
+        <Dialog
+          open={this.state.confirmOpen}
+          onClose={this.handleConfirmClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Process video?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Process the video with the chosen settings. If you wish
+              to change something, you can press cancel at anytime.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleConfirmClose} color="default">
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit(state)} color="default" variant="outlined" autoFocus>
+              Go!
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Button
           component="span"
           className={classes.save}
@@ -226,7 +263,7 @@ class Preview extends Component {
           component="span"
           className={classes.submit}
           color="default"
-          onClick={handleSubmit(state)}
+          onClick={this.handleConfirmOpen}
           disabled={state.file === null}
           id="submit-button"
         >
