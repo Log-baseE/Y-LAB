@@ -244,7 +244,7 @@ This means that the specified module is not installed in the python environment.
 
 #### `ImportError: DLL load failed: The specified module could not be found.`
 
-This means the required NVIDIA `.dll`s for `tensorflow` are not available in the `PATH` environment variable. Make sure that the required `PATH`s are readily available. You can refer to the [tensorflow Installation page](https://www.tensorflow.org/Install/gpu) for more information.
+This means the required NVIDIA `.dll`s for `tensorflow` are not available in the `PATH` environment variable. Make sure that the required `PATH`s are readily available. You can refer to the [tensorflow installation page](https://www.tensorflow.org/install/gpu) for more information.
 
 #### Other errors
 
