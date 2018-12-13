@@ -24,12 +24,20 @@ class Mainmenu {
         ]
       },
       {
+        label: 'View',
+        submenu: [
+          { role: 'zoomIn', accelerator: 'CmdOrCtrl+='},
+          { role: 'zoomOut', accelerator: 'CmdOrCtrl+-' },
+        ]
+      },
+      {
         role: 'help',
         submenu: [
           { label: 'Quick manual', click: this.onMenuClickQuickManual.bind(this) },
           { label: 'Documentation', click: this.onMenuClickDocumentation.bind(this) },
           { label: 'Replay tutorial', click: this.onMenuClickReplayTutorial.bind(this) },
           { type: 'separator' },
+          { role: 'toggleDevTools', accelerator: '' },
           { label: 'Report errors', click: this.onMenuClickReportErrors.bind(this) },
           { type: 'separator' },
           { label: 'About', click: this.onMenuClickAbout.bind(this) },
