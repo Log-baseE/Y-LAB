@@ -19,37 +19,32 @@ Y-Lab is an application to introduce you the capabilities of YOLO library. The i
 
 ### Installation
 
-#### Setting Up Python3 and pip
+#### Setting Up Anaconda
 
-1. Download the latest version of the Python installer from the [Python download page](https://www.python.org/downloads/)
-2. Run the installer by double-clicking the downloaded file \(make sure to check the box Add Python 3.x to PATH\)
-3. The version of the installed Python can be checked by opening the command prompt and typing:
+1. Download the Anaconda installer for Python 3.x from the [Anaconda download page](https://www.anaconda.com/download/).
+2. In Windows run the installer by double-clicking the downloaded file. In Linux install by typing:
 ```sh
-python --version
-```
-4. Make sure pip is updated by typing:
-```sh
-python -m pip install -U pip
+# in terminal window, where [Anaconda-latest-Linux-x86_64.sh] is the name of downloaded file
+bash [Anaconda-latest-Linux-x86_64.sh]
 ```
 
-#### Setting Up a Virtual Environment
+#### Setting Up a Conda Environment
 
-1. Install virtualenv by typing:
+1. Create a new Conda environment by typing:
 ```sh
-pip install -U pip virtualenv
+# in the Anaconda Prompt, where [env_name] is the name of the specified environment
+conda create -n [env_name] python=3.5
 ```
-2. Create a new virtual environment by choosing a Python interpreter and making a \./venv directory by typing:
+2. Activate the virtual environment by typing:
 ```sh
-virtualenv --system-site-packages -p python3 ./venv
-```
-3. Activate virtualenv by typing:
-```sh
-# (in Ubuntu / Mac OS)
-source ./venv/bin/activate
+# in Windows
+activate [env_name]
 
-# (in Windows)
-.\venv\Scripts\activate
+# in Linux
+# in Anaconda Prompt, where [env_name] is the name of the specified environment
+source activate [env_name] 
 ```
+
 #### Setting Up the Libraries for Python
 
 1. Install __numpy__ by typing:
@@ -60,26 +55,33 @@ pip install numpy
 ```sh
 pip install pandas
 ```
-3. Install __Cython__ by typing:
+3. Install __cython__ by typing:
 ```sh
 pip install cython
 ```
 4. Install __OpenCV__ for Python by typing:
 ```sh
-pip install opencv-python
+pip install opencv\-python
 ```
 
 #### Setting Up Tensorflow
 
 1. Type:
 ```sh
-python -m pip install tensorflow
+python \-m pip install tensorflow
 ```
-Alternatively, run:
+Alternatively to install the GPU package which requires a [CUDA®-enabled GPU card](https://www.tensorflow.org/install/gpu), run:
 ```sh
-python -m pip install tensorflow-gpu
+python \-m pip install tensorflow\-gpu
 ```
-to install the GPU package which requires a [CUDA®-enabled GPU card](https://www.tensorflow.org/install/gpu)
+
+#### Setting Up Git
+
+1. In Windows, install Git by downloading [git](https://git-scm.com/download/win), and double-clicking on the downloaded file. In Linux, install Git by typing:
+```sh
+# in the terminal window
+apt-get install git
+```
 
 #### Setting Up Darkflow
 
@@ -103,12 +105,15 @@ pip install .
 ```sh
 npm install -g electron
 ```
-3. Clone the repo by typing:
+
+#### Setting Up the Repository
+
+1. Clone the repo by typing:
 ```sh
 git clone https://github.com/log-basee/y-lab.git
 ```
 [Download the repo](https://github.com/log-basee/y-lab/archive/master.zip) if you can't clone it and extract the file
-5. Enter the folder directory by typing:
+2. Enter the folder directory by typing:
 ```sh
 # if you downloaded the repo
 cd y-lab/master 
@@ -116,11 +121,11 @@ cd y-lab/master
 # or
 cd y-lab
 ```
-6. Install the dependencies by typing:
+3. Install the dependencies by typing:
 ```sh
 npm install
 ```
-7. Run the app by typing:
+4. Run the app by typing:
 ```sh
 npm start 
 
@@ -207,21 +212,28 @@ To exit the system, the user only needs to close the application and provides a 
 
 <br>
 
-### Vehicle Counting
+### Functionalities
 
-Introduces a vehicle-counting mode where the number of vehicles which passes a counting line is tracked and counted.
+#### Detect objects from video
 
+This function enables users to detect objects from video.
+
+![Index Screen](/screenshots/image2.png)
+__Step 1:__ Click on ‘browse’ button (1) to choose a video
 <br>
+__Step 1a (optional):__ If desired, customize the settings (4-9) for the object detection engine.
 
-### Region of Interest
-
-Define a customized region of interest where object detection takes place.
-
+![Index Screen (file chosen)](/screenshots/image6.png)
+__Step 2:__ Press ‘looks good’ (1) to start the object detection process. Press ‘go!’ on the confirmation dialog.
 <br>
+__Step 3:__ A process screen like below should appear. Wait until the progress bar is full.
 
-### Video Player
+![Processing Screen](/screenshots/image5.png)
+__Step 4:__ Once it’s done, press the ‘continue’ button (1).
 
-Plays back processed videos immediately in the in-built player.
+![Result Screen](/screenshots/image4.png)
+__Step 5:__ A result screen like the image above should appear. If you wish to restart the process, press ‘try again’ (3) and repeat from step 1.
+
 
 <br>
 
