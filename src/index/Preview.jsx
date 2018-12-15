@@ -259,10 +259,10 @@ class Preview extends Component {
           Save options
         </Button>
         <Button
-          variant="outlined"
+          variant="contained"
           component="span"
           className={classes.submit}
-          color="default"
+          color="primary"
           onClick={this.handleConfirmOpen}
           disabled={state.file === null}
           id="submit-button"
