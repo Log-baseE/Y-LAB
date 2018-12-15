@@ -28,6 +28,7 @@ class Mainmenu {
         submenu: [
           { role: 'zoomIn', accelerator: 'CmdOrCtrl+='},
           { role: 'zoomOut', accelerator: 'CmdOrCtrl+-' },
+          { label: 'Reset Zoom', role: 'resetZoom', accelerator: 'CmdOrCtrl+0' },
         ]
       },
       {
