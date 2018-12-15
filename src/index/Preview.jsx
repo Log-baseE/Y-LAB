@@ -147,7 +147,7 @@ class Preview extends Component {
           state.file ?
           <CardMedia
             id="video"
-            src={state.file.path}
+            src={'file://' + state.file.path}
             component="video"
             onTimeUpdate={this.handleSeekbar}
             onEnded={this.handleEnded}

@@ -107,7 +107,7 @@ class Preview extends Component {
       <Card className={classes.root} key="preview-card">
         <CardMedia
           id="video"
-          src={state.file.path}
+          src={'file://' + state.file.path}
           component="video"
           onTimeUpdate={this.handleSeekbar}
           onEnded={this.handleEnded}
