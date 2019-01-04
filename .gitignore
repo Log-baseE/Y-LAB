@@ -61,7 +61,7 @@ typings/
 .next
 
 # yolo files
-built_graph
+.built_graph
 
 # generated package-lock file
 package-lock.json
