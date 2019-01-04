@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import os
 import json
+import ffmpeg
 
 class ObjectDetector:
     def __init__(self, verbose_level=0):
@@ -108,7 +109,10 @@ class ObjectDetector:
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
 
-        out = cv2.VideoWriter(dest_path, fourcc, 30.0,
+        dirname = os.path.dirname(dest_path)
+        temp_path = os.path.join(dirname, "_temp.avi")
+
+        out = cv2.VideoWriter(temp_path, fourcc, 30.0,
                               (int(cap.get(3)), int(cap.get(4))))
 
         if self.verbose_level == 1:
@@ -125,6 +129,14 @@ class ObjectDetector:
             out.write(frame)
 
         cap.release()
+        out.release()
+
+        stream = ffmpeg.input(temp_path)
+        stream = ffmpeg.output(stream, dest_path)
+        stream = ffmpeg.overwrite_output(stream)
+        ffmpeg.run(stream)
+
+        os.remove(temp_path)
 
         if self.verbose_level == 1:
             print("WRITE_END")
@@ -182,7 +194,7 @@ class ObjectDetector:
 
         self._results = self._postprocess_results()
 
-        vid_path = os.path.join(dest_dir, "out_video.avi")
+        vid_path = os.path.join(dest_dir, "out_video.mp4")
         data_path = os.path.join(dest_dir, "data.json")
 
         self._write_to_video(src_vid=videopath, dest_path=vid_path)
