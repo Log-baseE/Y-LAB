@@ -19,9 +19,6 @@
             "y": 450
         }
     },
-    "filter": [
-        "car",
-        "truck"
-    ],
+    "traffic": true,
     "confidenceThreshold": 0.5
 }

@@ -66,7 +66,7 @@ class ObjectDetector:
         pts = np.array(
             [bottom_left, top_left, top_right, bottom_right], np.int32)
         roi = pts.reshape((-1, 1, 2))
-        cv2.polylines(img=imgcv, pts=[roi], isClosed=True, color=(0, 255, 255))
+        cv2.polylines(img=imgcv, pts=[roi], isClosed=True, color=(0, 255, 255), lineType=cv2.LINE_AA)
 
         return imgcv
 

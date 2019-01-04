@@ -15,6 +15,7 @@ class DetectorOptions:
     DEFAULT_THRESHOLD = 0.1
     DEFAULT_GPU = 0.7
     DEFAULT_COUNTING_LINE = "horizontal"
+    DEFAULT_NORMAL_BLOB_SIZE = 300
 
     def __init__(self):
         self.model = DetectorOptions.DEFAULT_MODEL
@@ -23,6 +24,7 @@ class DetectorOptions:
         self.confidence_threshold = DetectorOptions.DEFAULT_THRESHOLD
         self.gpu = DetectorOptions.DEFAULT_GPU
         self.counting_line = DetectorOptions.DEFAULT_COUNTING_LINE
+        self.normal_blob_size = DetectorOptions.DEFAULT_NORMAL_BLOB_SIZE
         self.tfnet = None
         self.roi = None
         self.filter = None

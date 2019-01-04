@@ -9,7 +9,7 @@ import time
 from videodetector.options import DetectorOptions
 from videodetector.object import ObjectDetector
 from videodetector.traffic import TrafficDetector
-from videodetector.algorithms import distance_count
+from videodetector.algorithms import Madeleine
 
 
 def main(args):
@@ -109,11 +109,13 @@ def main(args):
     if traffic:
         detector = TrafficDetector(verbose_level=verbose_level)
         results = detector.detect(
-            videopath, 
-            options=options, 
-            algorithm=distance_count(
+            videopath,
+            destination_directory="D:\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\.ylab",
+            options=options,
+            algorithm=Madeleine(
                 pixel_threshold=pixel_threshold, 
-                time_threshold=time_threshold
+                time_threshold=time_threshold,
+                normal_size=300
             )
         )
     else:
