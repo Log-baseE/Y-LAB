@@ -1,0 +1,25 @@
+{
+    "filePath": "path\\to\\mp4\\file",
+    "gpu": 0.3,
+    "roi": {
+        "bottomLeft": {
+            "x": 0,
+            "y": 500
+        },
+        "topLeft": {
+            "x": 300,
+            "y": 250
+        },
+        "topRight": {
+            "x": 1100,
+            "y": 250
+        },
+        "bottomRight": {
+            "x": 1450,
+            "y": 500
+        }
+    },
+    "traffic": true,
+    "confidenceThreshold": 0.1,
+    "pixelThreshold": 80
+}

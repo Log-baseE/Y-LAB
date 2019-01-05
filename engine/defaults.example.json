@@ -1,0 +1,8 @@
+{
+    "DEFAULT_MODEL" : "path\\to\\cfg\\file",
+    "DEFAULT_WEIGHTS" : "path\\to\\weights\\file",
+    "DEFAULT_THRESHOLD" : 0.1,
+    "DEFAULT_GPU" : 0.7,
+    "DEFAULT_PIXEL_THRESHOLD" : 50,
+    "DEFAULT_TIME_THRESHOLD": 2
+}

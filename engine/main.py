@@ -22,7 +22,6 @@ def main(args):
     Load default parameters:
     - DEFAULT_MODEL: path to YOLO's .cfg file
     - DEFAULT_WEIGHTS: path to YOLO's .weights file
-    - DEFAULT_LABELS: path to YOLO's .names file
     - DEFAULT_THRESHOLD: confidence threshold, floating point number between 0 and 1 inclusive
     - DEFAULT_GPU: gpu usage percentage, floating point number between 0 and 1 inclusive
     - DEFAULT_PIXEL_THRESHOLD
@@ -35,7 +34,6 @@ def main(args):
     try:
         DEFAULT_MODEL = defaults["DEFAULT_MODEL"]
         DEFAULT_WEIGHTS = defaults["DEFAULT_WEIGHTS"]
-        DEFAULT_LABELS = defaults["DEFAULT_LABELS"]
         DEFAULT_THRESHOLD = defaults["DEFAULT_THRESHOLD"]
         DEFAULT_GPU = defaults["DEFAULT_GPU"]
         DEFAULT_PIXEL_THRESHOLD = defaults["DEFAULT_PIXEL_THRESHOLD"]
@@ -62,7 +60,6 @@ def main(args):
     - roi
     - model
     - weights
-    - labels
     - filter
     - gpu
     - confidenceThreshold
@@ -85,7 +82,6 @@ def main(args):
     weights = data.get("weights", DEFAULT_WEIGHTS)
     confidence_threshold = data.get("confidenceThreshold", DEFAULT_THRESHOLD)
     gpu = data.get("gpu", DEFAULT_GPU)
-    labels = data.get("labels", DEFAULT_LABELS)
     pixel_threshold = data.get("pixelThreshold", DEFAULT_PIXEL_THRESHOLD)
     time_threshold = data.get("timeThreshold", DEFAULT_TIME_THRESHOLD)
     roi = data.get("roi", None)

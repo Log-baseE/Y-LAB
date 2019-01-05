@@ -80,10 +80,9 @@ class DetectorOptions:
         self.filter = labels
         return self
 
-    def store_model(self, dir):
-        pass
-
     def build_model(self, verbose_level=0):
+        prev_dir = os.getcwd()
+        os.chdir(dir_path)
         if verbose_level == 1:
             print("TF_START")
         elif verbose_level >= 2:
@@ -105,9 +104,9 @@ class DetectorOptions:
             "gpu": self.gpu,
         }
 
-        old_options_path = os.path.join(dir_path, ".built_graph/options.json")
-        old_pb_path = os.path.join(dir_path, ".built_graph/yolo.pb")
-        old_meta_path = os.path.join(dir_path, ".built_graph/yolo.meta")
+        old_options_path = "built_graph/options.json"
+        old_pb_path = "built_graph/yolo.pb"
+        old_meta_path = "built_graph/yolo.meta"
         
         if verbose_level == 1:
             print("MODEL_START")
@@ -117,23 +116,30 @@ class DetectorOptions:
         old = False
         if os.path.isfile(old_pb_path) and os.path.isfile(old_meta_path) and os.path.isfile(old_options_path):
             with open(old_options_path) as f:
-                old_options = json.load(old_options_path)
+                old_options = json.load(f)
             if old_options == options:
                 if verbose_level >= 2:
                     print("Loading model from identical model in storage")
                 options = argHandler()
-                options.setDefaults()
+                options.gpu = old_options['gpu']
+                options.threshold = old_options['threshold']
+                options.model = old_options['model']
+                options.load = old_options['load']
                 options.pbLoad = old_pb_path
                 options.metaLoad = old_meta_path
                 old = True
 
         self.tfnet = TFNet(options)
         if not old:
-            self.store_model(os.path.join(dir_path, ".built_graph"))
+            print("Saving model in cache")
+            with open("built_graph/options.json", "w+") as f:
+                json.dump(options, f)
+            self.tfnet.savepb()
 
         if verbose_level == 1:
             print("MODEL_END")
         elif verbose_level >= 2:
             print("Model finished building")
         
+        os.chdir(prev_dir)
         return self

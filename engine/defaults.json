@@ -1,9 +1,0 @@
-{
-    "DEFAULT_MODEL" : "D:\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\cfg\\yolo.cfg",
-    "DEFAULT_WEIGHTS" : "D:\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\bin\\yolo.weights",
-    "DEFAULT_LABELS" : "D:\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\bin\\coco.names",
-    "DEFAULT_THRESHOLD" : 0.1,
-    "DEFAULT_GPU" : 0.7,
-    "DEFAULT_PIXEL_THRESHOLD" : 50,
-    "DEFAULT_TIME_THRESHOLD": 2
-}
