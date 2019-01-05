@@ -15,6 +15,8 @@ from videodetector.algorithms import Andrew
 
 def main(args):
     verbose_level = args.verbose or 0
+    if verbose_level < 3:
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
     """
     Load default parameters:

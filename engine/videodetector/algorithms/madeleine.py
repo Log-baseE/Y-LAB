@@ -21,19 +21,23 @@ class Madeleine(TrafficAlgorithm):
 
     def _remove_overlaps(self, result):
         if(len(result) > 1):
-            B = result[0]
-            for item in result[1:]:
-                A = B
-                B = item
-                # pixel threshold = batas selisih pixel yang dibutuhkan sehingga 2 box dianggap mendeteksi hal yang sama
-                if(point_calculate.boxDistance(A['topleft']['x'], A['topleft']['y'], B['topleft']['x'], B['topleft']['y']) < self.pixel_threshold):
-                    # remove box with lower confidence if distance between 2 boxes is less than threshold
-                    if A['confidence'] > B['confidence']:
-                        result.remove(B)
-                        B = A
-                    else:
-                        result.remove(A)
-        return result
+            new_result = []
+            for A in result:
+                temp_result = new_result[:]
+                ignore = False
+                for B in new_result:
+                    if point_calculate.boxDistance(A['topleft']['x'], A['topleft']['y'], B['topleft']['x'], B['topleft']['y']) < self.pixel_threshold:
+                        if A['confidence'] > B['confidence']:
+                            temp_result.remove(B)
+                        else:
+                            ignore = True
+                        break
+                if not ignore:
+                    temp_result.append(A)
+                new_result = temp_result
+            return new_result
+        else:
+            return result
 
     def postprocess_result(self, result):
         coord = []
@@ -48,8 +52,6 @@ class Madeleine(TrafficAlgorithm):
         return self._remove_overlaps(coord)
 
     def _count_cars_per_frame(self, frame_index, current_cars, previous_cars, counting_line, vertical=False):
-        print("curr:", current_cars)
-        print("prev:", previous_cars)
         for prev_car in previous_cars:
             if frame_index - prev_car[6] > self.time_threshold:
                 previous_cars.remove(prev_car)
@@ -75,7 +77,7 @@ class Madeleine(TrafficAlgorithm):
                     else:
                         car_size = prev_car[2] - prev_car[0]
 
-                    if point_calculate.boxDistance(prev_car_point[0], prev_car_point[1], new_car_point[0], new_car_point[1]) < (car_size//3 * (frame_index - prev_car[6])):
+                    if point_calculate.boxDistance(prev_car_point[0], prev_car_point[1], new_car_point[0], new_car_point[1]) < (car_size//2 * (frame_index - prev_car[6])):
                         # consider same car
                         unique_car = False
                         previous_cars.remove(prev_car)
@@ -102,7 +104,7 @@ class Madeleine(TrafficAlgorithm):
 
             cars, count = self._count_cars_per_frame(
                 index, _coord, cars, count_line, vertical)
-            print('cars:', cars)
+            
             cars_per_frame.append(
                 count + (cars_per_frame[-1] if cars_per_frame else 0))
 

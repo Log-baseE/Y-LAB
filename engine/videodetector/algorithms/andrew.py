@@ -21,19 +21,23 @@ class Andrew(TrafficAlgorithm):
 
     def _remove_overlaps(self, result):
         if(len(result) > 1):
-            B = result[0]
-            for item in result[1:]:
-                A = B
-                B = item
-                # pixel threshold = batas selisih pixel yang dibutuhkan sehingga 2 box dianggap mendeteksi hal yang sama
-                if(point_calculate.boxDistance(A['topleft']['x'], A['topleft']['y'], B['topleft']['x'], B['topleft']['y']) < self.pixel_threshold):
-                    # remove box with lower confidence if distance between 2 boxes is less than threshold
-                    if A['confidence'] > B['confidence']:
-                        result.remove(B)
-                        B = A
-                    else:
-                        result.remove(A)
-        return result
+            new_result = []
+            for A in result:
+                temp_result = new_result[:]
+                ignore = False
+                for B in new_result:
+                    if point_calculate.boxDistance(A['topleft']['x'], A['topleft']['y'], B['topleft']['x'], B['topleft']['y']) < self.pixel_threshold:
+                        if A['confidence'] > B['confidence']:
+                            temp_result.remove(B)
+                        else:
+                            ignore = True
+                        break
+                if not ignore:
+                    temp_result.append(A)
+                new_result = temp_result
+            return new_result
+        else:
+            return result
 
     def postprocess_result(self, result):
         coord = []
@@ -47,7 +51,7 @@ class Andrew(TrafficAlgorithm):
 
         return self._remove_overlaps(coord)
 
-    def _count_cars_per_frame(self, cars, counting_line, vertical=False, prev_lane_status):
+    def _count_cars_per_frame(self, cars, prev_lane_status, counting_line, vertical=False):
         no_of_lanes = len(self.lanes)
         car_pass_lane = [False] * no_of_lanes
 
@@ -86,7 +90,7 @@ class Andrew(TrafficAlgorithm):
                 _coord.append(_c)
 
             car_pass_lane = self._count_cars_per_frame(
-                coord, count_line, vertical, gap_in)
+                coord, gap_in, count_line, vertical)
 
             for i in range(no_of_lanes):
                 if car_pass_lane[i]:

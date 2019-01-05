@@ -126,8 +126,6 @@ class DetectorOptions:
                 options.pbLoad = old_pb_path
                 options.metaLoad = old_meta_path
                 old = True
-        
-        print(options)
 
         self.tfnet = TFNet(options)
         if not old:
