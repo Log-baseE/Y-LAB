@@ -21,6 +21,7 @@ const styles = theme => ({
   },
   mediaFrame: {
     width: '100%',
+    position: 'relative'
   },
   dropzone: {
     width: `calc(100% - ${theme.spacing.unit * 4}px)`,
@@ -33,6 +34,19 @@ const styles = theme => ({
     border: 'dashed 1px',
     borderColor: theme.palette.primary.light,
     cursor: 'pointer',
+  },
+  roiOverlay: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%',
+    minHeight: 50,
+  },
+  roiPolygon: {
+    fill: 'rgba(255,255,255,.25)',
+    stroke: 'yellow',
+    strokeWidth: 2,
   },
   uploadIcon: {
     marginBottom: theme.spacing.unit * 2,
@@ -145,14 +159,28 @@ class Preview extends Component {
       <Card className={classes.root} key="preview-card" id="preview-card">
         {
           state.file ?
-          <CardMedia
-            id="video"
-            src={'file://' + state.file.path}
-            component="video"
-            onTimeUpdate={this.handleSeekbar}
-            onEnded={this.handleEnded}
-            onLoadedMetadata={handleMetaData}
-          /> :
+          <div className={classes.mediaFrame}>
+            <CardMedia
+              id="video"
+              src={'file://' + state.file.path}
+              component="video"
+              onTimeUpdate={this.handleSeekbar}
+              onEnded={this.handleEnded}
+              onLoadedMetadata={handleMetaData}
+             />
+             {
+               state.meta && state.roiType === "custom" ? 
+               <div className={classes.roiOverlay}>
+               <svg width="100%" viewBox={`0 0 ${state.meta.res.width} ${state.meta.res.height}`}>
+                 <polygon 
+                   points={`${state.roi.topLeft.x},${state.roi.topLeft.y} ${state.roi.topRight.x},${state.roi.topRight.y} ${state.roi.bottomRight.x},${state.roi.bottomRight.y} ${state.roi.bottomLeft.x},${state.roi.bottomLeft.y}`} 
+                   className={classes.roiPolygon}
+                   />
+               </svg>
+              </div> : ''
+             }
+          </div>
+          :
           <Dropzone accept="video/mp4" onDrop={handleFileDrop} className={classes.dropzone}>
             <UploadVideoIcon className={classes.uploadIcon}/>
             <Typography variant="h6" color="textSecondary">

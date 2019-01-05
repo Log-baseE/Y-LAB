@@ -104,8 +104,8 @@ class AdvancedSettings extends Component {
                     <FormControlLabel
                       value="custom"
                       control={<CustomRadio />}
-                      label={`Custom: (feature in construction)`}
-                      disabled
+                      label={state.file === null ? `Custom: (select a file to edit)` : `Custom`}
+                      disabled={state.file === null}
                     />
                   </RadioGroup>
                   {state.roiType === "custom" ? (

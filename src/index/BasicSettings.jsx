@@ -112,8 +112,7 @@ class BasicSettings extends Component {
                 <FormControlLabel
                   value="traffic"
                   control={<CustomRadio />}
-                  label="Traffic (feature in construction)"
-                  disabled
+                  label="Traffic"
                 />
               </RadioGroup>
             </Grid>

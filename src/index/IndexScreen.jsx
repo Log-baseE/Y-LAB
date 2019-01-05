@@ -185,6 +185,11 @@ class IndexScreen extends Component {
   };
 
   handleMetaData = event => {
+    if(this.state.meta && (
+      this.state.meta.duration === event.target.duration ||
+      this.state.meta.res.width === event.target.videoWidth ||
+      this.state.meta.res.height === event.target.videoHeight
+    )) return;
     this.setState({
       meta: {
         duration: event.target.duration,
