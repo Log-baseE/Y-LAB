@@ -67,7 +67,7 @@ class ROIInput extends Component {
         <ButtonBase focusRipple className={classes.background}>
           <div className={classes.border}>
             <Typography variant="body2">
-              Click to edit directly on the preview frame
+              Edit any of the x,y input fields to move the corresponding corner of the desired region of interest (ROI). You can preview the ROI directly on the video preview
             </Typography>
           </div>
         </ButtonBase>
