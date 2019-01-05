@@ -10,6 +10,7 @@ from videodetector.options import DetectorOptions
 from videodetector.object import ObjectDetector
 from videodetector.traffic import TrafficDetector
 from videodetector.algorithms import Madeleine
+from videodetector.algorithms import Andrew
 
 
 def main(args):
@@ -88,6 +89,7 @@ def main(args):
     roi = data.get("roi", None)
     label_filter = data.get("filter", None)
     traffic = data.get("traffic", False)
+    lanes = data.get("lanes", None)
 
     """Initialize options"""
     options = DetectorOptions()
@@ -118,6 +120,17 @@ def main(args):
                 normal_size=300
             )
         )
+        # results = detector.detect(
+        #     videopath,
+        #     destination_directory="D:\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\.ylab",
+        #     options=options,
+        #     algorithm=Andrew(
+        #         pixel_threshold=pixel_threshold, 
+        #         time_threshold=time_threshold,
+        #         normal_size=300,
+        #         lanes=lanes
+        #     )
+        # )
     else:
         detector = ObjectDetector(verbose_level=verbose_level)
         results = detector.detect(videopath, destination_directory="D:\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\.ylab", options=options)

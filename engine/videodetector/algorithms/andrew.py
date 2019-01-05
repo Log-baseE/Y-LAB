@@ -1,10 +1,9 @@
 from . import TrafficAlgorithm
 from videodetector import point_calculate
-import itertools
 
 
-class Madeleine(TrafficAlgorithm):
-    def __init__(self, pixel_threshold: int, time_threshold: int, normal_size: int):
+class Andrew(TrafficAlgorithm):
+    def __init__(self, pixel_threshold: int, time_threshold: int, normal_size: int, lanes: tuple):
         if pixel_threshold < 0:
             raise ValueError(
                 "'pixel_threshold' must be a non-negative integer")
@@ -15,6 +14,7 @@ class Madeleine(TrafficAlgorithm):
         self.pixel_threshold = pixel_threshold
         self.time_threshold = time_threshold
         self.normal_size = normal_size
+        self.lanes = lanes
 
     def _is_normal_size(self, x1, y1, x2, y2):
         return abs(x1-x2) <= self.normal_size
@@ -47,51 +47,36 @@ class Madeleine(TrafficAlgorithm):
 
         return self._remove_overlaps(coord)
 
-    def _count_cars_per_frame(self, frame_index, current_cars, previous_cars, counting_line, vertical=False):
-        print("curr:", current_cars)
-        print("prev:", previous_cars)
-        for prev_car in previous_cars:
-            if frame_index - prev_car[6] > self.time_threshold:
-                previous_cars.remove(prev_car)
+    def _count_cars_per_frame(self, cars, counting_line, vertical=False, prev_lane_status):
+        no_of_lanes = len(self.lanes)
+        car_pass_lane = [False] * no_of_lanes
 
-        new_cars = []
-        count = 0
-
-        for curr_car in current_cars:
+        for curr_car in cars:
             # collision with counting line
             if point_calculate.collision(curr_car[0], curr_car[1], curr_car[2], curr_car[3], counting_line, vertical):
-                new_cars.append(curr_car)
+                # check which lane car belongs to
+                for i in range(no_of_lanes):
+                    if not prev_lane_status[i] and not car_pass_lane[i]:
+                        lane_min, lane_max = point_calculate.sort_order(self.lanes[i])
 
-                unique_car = True
-                for prev_car in previous_cars:
-                    # tl.x, tl.y, br.x, br.y
-                    prev_car_point = (
-                        (prev_car[0] + prev_car[2])/2, (prev_car[1] + prev_car[3])/2)
-                    new_car_point = (
-                        (curr_car[0] + curr_car[2])/2, (curr_car[1] + curr_car[3])/2)
-
-                    if vertical:
-                        car_size = prev_car[3] - prev_car[1]
-                    else:
-                        car_size = prev_car[2] - prev_car[0]
-
-                    if point_calculate.boxDistance(prev_car_point[0], prev_car_point[1], new_car_point[0], new_car_point[1]) < (car_size//3 * (frame_index - prev_car[6])):
-                        # consider same car
-                        unique_car = False
-                        previous_cars.remove(prev_car)
-                        break
-
-                if unique_car:
-                    count += 1
-
-        return new_cars + previous_cars, count
+                        if point_calculate.in_between(curr_car[0], curr_car[1], curr_car[2], curr_car[3], lane_min, lane_max, vertical):
+                            car_pass_lane[i] = True
+                        
+        return car_pass_lane
 
     def count_cars(self, coords, roi, count_line, vertical=False):
         cars = []
         cars_per_frame = []
+        no_of_lanes = len(self.lanes)
+
+        gap_time = [0] * no_of_lanes
+        gap_in = [False] * no_of_lanes
+        gap_out = []
 
         for index, coord in enumerate(coords):
             _coord = []
+            count = 0
+
             for c in coord:
                 left, top = c['topleft']['x'], c['topleft']['y']
                 right, bot = c['bottomright']['x'], c['bottomright']['y']
@@ -100,9 +85,19 @@ class Madeleine(TrafficAlgorithm):
                 _c = (left, top, right, bot, label, conf, index)
                 _coord.append(_c)
 
-            cars, count = self._count_cars_per_frame(
-                index, _coord, cars, count_line, vertical)
-            print('cars:', cars)
+            car_pass_lane = self._count_cars_per_frame(
+                coord, count_line, vertical, gap_in)
+
+            for i in range(no_of_lanes):
+                if car_pass_lane[i]:
+                    gap_in[i] = True
+                    count += car_pass_lane[i]
+                if gap_in[i]:
+                    gap_time[i] += 1
+                if gap_time[i] > self.time_threshold:
+                    gap_in[i] = False
+                    gap_time[i] = 0
+            
             cars_per_frame.append(
                 count + (cars_per_frame[-1] if cars_per_frame else 0))
 
