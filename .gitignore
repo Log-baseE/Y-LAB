@@ -61,7 +61,7 @@ typings/
 .next
 
 # yolo files
-.built_graph
+built_graph
 
 # generated package-lock file
 package-lock.json
@@ -73,4 +73,6 @@ package-lock.json
 __pycache__
 
 .ylab
-*.example.json
+
+defaults.json
+options.json
