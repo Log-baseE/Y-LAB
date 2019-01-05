@@ -18,6 +18,7 @@ class ResultScreen extends Component {
     const { result } = this.props;
     if (result) {
       this.loadResult(result);
+      this.forceUpdate();
     }
   }
 
@@ -29,7 +30,6 @@ class ResultScreen extends Component {
         size: fs.statSync(result.file.path).size
       }
     }));
-    this.forceUpdate();
   };
 
   handleMetaData = event => {

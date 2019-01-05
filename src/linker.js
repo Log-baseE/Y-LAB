@@ -50,6 +50,9 @@ export const startDetect = (options, messageCallback, finishCallback) => {
   if (options.gpuType !== 'default') {
     opts.gpu = options.lastValidGpu / 100;
   }
+  if (options.pixelTresholdType !== 'default') {
+    opts.pixelTreshold = parseInt(options.pixelThreshold);
+  }
   var pyOptions = {
     scriptPath: path.join(remote.app.getAppPath(), './engine'),
     pythonPath: remote.process.env.PYTHON_PATH,
