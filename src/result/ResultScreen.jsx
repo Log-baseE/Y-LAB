@@ -29,6 +29,7 @@ class ResultScreen extends Component {
         size: fs.statSync(result.file.path).size
       }
     }));
+    this.forceUpdate();
   };
 
   handleMetaData = event => {
