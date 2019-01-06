@@ -40,10 +40,16 @@ class TrafficDetector(ObjectDetector):
 
         vertical = self._options.counting_line!='vertical'
         roi = self._options.roi
-        botleft = (roi['bottomLeft']['x'], roi['bottomLeft']['y'])
-        topleft = (roi['topLeft']['x'], roi['topLeft']['y'])
-        topright = (roi['topRight']['x'], roi['topRight']['y'])
-        botright = (roi['bottomRight']['x'], roi['bottomRight']['y'])
+        if roi:
+            botleft = (roi['bottomLeft']['x'], roi['bottomLeft']['y'])
+            topleft = (roi['topLeft']['x'], roi['topLeft']['y'])
+            topright = (roi['topRight']['x'], roi['topRight']['y'])
+            botright = (roi['bottomRight']['x'], roi['bottomRight']['y'])
+        else:
+            topleft = (0, 0)
+            botleft = (0, height)
+            topright = (width, 0)
+            botright = (width, height)
 
         if vertical:
             point_left = ((botleft[0]+topleft[0])/2, (botleft[1]+topleft[1])/2)
