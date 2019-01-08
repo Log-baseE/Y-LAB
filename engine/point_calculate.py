@@ -17,9 +17,9 @@ def AABB(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2):
 
 def in_between(left, top, right, bot, lane_min, lane_max, is_vertical):
     if is_vertical:
-        center = (top + bot) / 2
-    else:
         center = (left + right) / 2
+    else:
+        center = (top + bot) / 2
     return ((center <= lane_max) & (center >= lane_min))
 
 def sort_order(points):
