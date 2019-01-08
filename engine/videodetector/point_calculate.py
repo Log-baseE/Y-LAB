@@ -15,6 +15,19 @@ def AABB(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2):
     if(ax1 < bx2 and ax2 > bx1 and ay1 < by2 and ay2 > by1):
         return True
 
+def in_between(left, top, right, bot, lane_min, lane_max, is_vertical):
+    if is_vertical:
+        center = (left + right) / 2
+    else:
+        center = (top + bot) / 2
+    return ((center <= lane_max) & (center >= lane_min))
+
+def sort_order(points):
+    if(points[0] < points[1]):
+        return points[0], points[1]
+    else:
+        return points[1], points[0]
+
 def collision(left, top, right, bot, line, is_vertical):
     line_x, line_y = get_point((left+right)/2, (top+bot)/2, line)
     if is_vertical:
