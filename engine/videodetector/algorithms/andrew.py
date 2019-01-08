@@ -3,7 +3,7 @@ from videodetector import point_calculate
 
 
 class Andrew(TrafficAlgorithm):
-    def __init__(self, pixel_threshold: int, time_threshold: int, normal_size: int, lanes: tuple):
+    def __init__(self, pixel_threshold: int, time_threshold: int, normal_size: int, lanes):
         if pixel_threshold < 0:
             raise ValueError(
                 "'pixel_threshold' must be a non-negative integer")
@@ -52,29 +52,61 @@ class Andrew(TrafficAlgorithm):
         return self._remove_overlaps(coord)
 
     def _count_cars_per_frame(self, cars, prev_lane_status, counting_line, vertical=False):
-        no_of_lanes = len(self.lanes)
-        car_pass_lane = [False] * no_of_lanes
+        lane_count = len(self.lanes)
+        car_pass_lane = [False] * lane_count
 
         for curr_car in cars:
             # collision with counting line
             if point_calculate.collision(curr_car[0], curr_car[1], curr_car[2], curr_car[3], counting_line, vertical):
                 # check which lane car belongs to
-                for i in range(no_of_lanes):
+                for i in range(lane_count):
                     if not prev_lane_status[i] and not car_pass_lane[i]:
-                        lane_min, lane_max = point_calculate.sort_order(self.lanes[i])
+                        lane_min, lane_max = point_calculate.sort_order(
+                            self.lanes[i])
 
                         if point_calculate.in_between(curr_car[0], curr_car[1], curr_car[2], curr_car[3], lane_min, lane_max, vertical):
                             car_pass_lane[i] = True
-                        
+
         return car_pass_lane
 
-    def count_cars(self, coords, roi, count_line, vertical=False):
+    @staticmethod
+    def _get_lanes(count_line, lanes, vertical=True):
+        lane_count = lanes['count']
+        shoulder = lanes['shoulderSize']
+        scale = lanes['perspectiveScaling']
+
+        if scale == 1:
+            geom_sum = lane_count
+        else:
+            geom_sum = (scale**lane_count - 1)/(scale - 1)
+
+        start_pt = count_line[0][0 if vertical else 1]
+        last_pt = count_line[1][0 if vertical else 1]
+        width = last_pt - start_pt
+
+        base_lane = ((1-shoulder)*width)/geom_sum
+
+        lanes = (start_pt, )
+
+        if shoulder > 0:
+            lanes += (lanes[-1] + shoulder*width, )
+        for i in range(lane_count):
+            lanes += (lanes[-1] + base_lane*(scale**i), )
+        if shoulder < 0:
+            lanes += (lanes[-1] + shoulder*width, )
+
+        print(lanes)
+        return lanes
+
+    def count_cars(self, coords, roi, count_line, vertical=True):
         cars = []
         cars_per_frame = []
-        no_of_lanes = len(self.lanes)
+        lane_count = self.lanes['count']
 
-        gap_time = [0] * no_of_lanes
-        gap_in = [False] * no_of_lanes
+        self.lanes = self._get_lanes(count_line, self.lanes, vertical)
+
+        gap_time = [0] * lane_count
+        gap_in = [False] * lane_count
         gap_out = []
 
         for index, coord in enumerate(coords):
@@ -90,9 +122,9 @@ class Andrew(TrafficAlgorithm):
                 _coord.append(_c)
 
             car_pass_lane = self._count_cars_per_frame(
-                coord, gap_in, count_line, vertical)
+                _coord, gap_in, count_line, vertical)
 
-            for i in range(no_of_lanes):
+            for i in range(lane_count):
                 if car_pass_lane[i]:
                     gap_in[i] = True
                     count += car_pass_lane[i]
@@ -101,7 +133,7 @@ class Andrew(TrafficAlgorithm):
                 if gap_time[i] > self.time_threshold:
                     gap_in[i] = False
                     gap_time[i] = 0
-            
+
             cars_per_frame.append(
                 count + (cars_per_frame[-1] if cars_per_frame else 0))
 

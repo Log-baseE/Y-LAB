@@ -15,6 +15,11 @@ from videodetector.algorithms import Andrew
 
 def main(args):
     verbose_level = args.verbose or 0
+    invoker_path = os.getcwd()
+    target_dir = os.path.join(invoker_path, ".ylab")
+    if not os.path.exists(target_dir) or not os.path.isdir(target_dir):
+        os.mkdir(target_dir)
+    
     if verbose_level < 3:
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -57,6 +62,7 @@ def main(args):
     - filePath
     > Optional
     - traffic (boolean)
+    - algorithm (required if traffic = True)
     - roi
     - model
     - weights
@@ -65,6 +71,10 @@ def main(args):
     - confidenceThreshold
     - pixelThreshold
     - timeThreshold
+    - lanes (required if algorithm == "madeleine")
+        - count
+        - shoulderSize
+        - perspectiveScaling
     """
 
     if verbose_level == 1:
@@ -87,7 +97,6 @@ def main(args):
     roi = data.get("roi", None)
     label_filter = data.get("filter", None)
     traffic = data.get("traffic", False)
-    lanes = data.get("lanes", None)
 
     """Initialize options"""
     options = DetectorOptions()
@@ -108,30 +117,44 @@ def main(args):
     """Start detection"""
     if traffic:
         detector = TrafficDetector(verbose_level=verbose_level)
-        results = detector.detect(
-            videopath,
-            destination_directory="D:\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\.ylab",
-            options=options,
-            algorithm=Madeleine(
-                pixel_threshold=pixel_threshold, 
-                time_threshold=time_threshold,
-                normal_size=300
+        
+        try:
+            algorithm = data["algorithm"]
+        except KeyError as e:
+            sys.exit("Missing required parameters: '%s'" % e.args[0])
+        
+        if algorithm == "madeleine":
+            results = detector.detect(
+                videopath,
+                destination_directory=target_dir,
+                options=options,
+                algorithm=Madeleine(
+                    pixel_threshold=pixel_threshold, 
+                    time_threshold=time_threshold,
+                    normal_size=300
+                )
             )
-        )
-        # results = detector.detect(
-        #     videopath,
-        #     destination_directory="D:\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\.ylab",
-        #     options=options,
-        #     algorithm=Andrew(
-        #         pixel_threshold=pixel_threshold, 
-        #         time_threshold=time_threshold,
-        #         normal_size=300,
-        #         lanes=lanes
-        #     )
-        # )
+        elif algorithm == "andrew":
+            try:
+                lanes = data["lanes"]
+            except KeyError as e:
+                sys.exit("Required 'lanes' data not given")
+            results = detector.detect(
+                videopath,
+                destination_directory=target_dir,
+                options=options,
+                algorithm=Andrew(
+                    pixel_threshold=pixel_threshold, 
+                    time_threshold=time_threshold,
+                    normal_size=300,
+                    lanes=lanes,
+                )
+            )
+        else:
+            raise ValueError("'algorithm' can only be either 'madeleine' or 'andrew'")
     else:
         detector = ObjectDetector(verbose_level=verbose_level)
-        results = detector.detect(videopath, destination_directory="D:\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\.ylab", options=options)
+        results = detector.detect(videopath, destination_directory=target_dir, options=options)
 
     print("--- Finished in %s seconds ---" % (time.time() - start_time))
     if verbose_level == 1:
