@@ -80,20 +80,20 @@ class Andrew(TrafficAlgorithm):
         else:
             geom_sum = (scale**lane_count - 1)/(scale - 1)
 
-        start_pt = count_line[0][0 if vertical else 1]
-        last_pt = count_line[1][0 if vertical else 1]
-        width = last_pt - start_pt
+        start_pt = count_line[0]
+        last_pt = count_line[1]
+        dx, dy = last_pt[0] - start_pt[0], last_pt[1] - start_pt[1]
 
-        base_lane = ((1-shoulder)*width)/geom_sum
+        base_lane = (((1-shoulder)*dx)/geom_sum, ((1-shoulder)*dy)/geom_sum)
 
         lanes = (start_pt, )
 
         if shoulder > 0:
-            lanes += (lanes[-1] + shoulder*width, )
+            lanes += ((lanes[-1][0] + shoulder*dx, lanes[-1][1] + shoulder*dy), )
         for i in range(lane_count):
-            lanes += (lanes[-1] + base_lane*(scale**i), )
+            lanes += ((lanes[-1][0] + base_lane[0]*(scale**i), lanes[-1][1] + base_lane[1]*(scale**i)), )
         if shoulder < 0:
-            lanes += (lanes[-1] + shoulder*width, )
+            lanes += ((lanes[-1][0] + shoulder*dx, lanes[-1][1] + shoulder*dy), )
 
         print(lanes)
         return lanes
@@ -101,7 +101,8 @@ class Andrew(TrafficAlgorithm):
     def count_cars(self, coords, roi, count_line, vertical=True):
         cars = []
         cars_per_frame = []
-        lane_count = self.lanes['count']
+        shoulder = self.lanes['shoulderSize']
+        lane_count = self.lanes['count'] + 1 + (1 if shoulder != 0 else 0)
 
         self.lanes = self._get_lanes(count_line, self.lanes, vertical)
 
