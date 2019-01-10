@@ -17,8 +17,8 @@ class TrafficDetector(ObjectDetector):
         return result
 
     @staticmethod
-    def _draw_line(imgcv, line):
-        cv2.line(imgcv, (int(line[0][0]), int(line[0][1])), (int(line[1][0]), int(line[1][1])), (0, 255, 0), lineType=cv2.LINE_AA)
+    def _draw_line(imgcv, line, color):
+        cv2.line(imgcv, (int(line[0][0]), int(line[0][1])), (int(line[1][0]), int(line[1][1])), color, lineType=cv2.LINE_AA)
         return imgcv
 
     def _write_to_video(self, src_vid, dest_path):
@@ -64,6 +64,7 @@ class TrafficDetector(ObjectDetector):
         
         print("COUNTER", count_line)
         cars = self._algorithm.count_cars(self._results, self._options.roi, count_line, vertical=vertical)
+        add_lines = self._algorithm.get_additional_lines(roi=self._options.roi, vertical=vertical)
         self._cars = cars
 
         for idx, result in enumerate(self._results):
@@ -80,8 +81,11 @@ class TrafficDetector(ObjectDetector):
 
             )
             frame = self._draw_roi(frame, self._options.roi)
-            frame = self._draw_line(frame, count_line)
+            frame = self._draw_line(frame, count_line, (0,255,0))
             frame = self._draw_bounding_box(frame, result)
+            if add_lines:
+                for line in add_lines:
+                    frame = self._draw_line(frame, line, (0,0,255))
             out.write(frame)
 
         cap.release()
