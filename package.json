@@ -47,13 +47,16 @@
     "electron-util": "^0.10.2",
     "filesize": "^3.6.1",
     "node-sass": "^4.10.0",
+    "prop-types": "^15.6.2",
     "python-shell": "^1.0.6",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-dropzone": "^7.0.1",
     "react-joyride": "^2.0.0-15",
+    "react-number-format": "^4.0.6",
     "react-perfect-scrollbar": "^1.4.2",
     "react-scripts": "2.1.1",
-    "react-split-pane": "^0.1.84"
+    "react-split-pane": "^0.1.84",
+    "react-text-mask": "^5.4.3"
   }
 }

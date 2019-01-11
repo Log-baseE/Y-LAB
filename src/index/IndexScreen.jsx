@@ -23,6 +23,7 @@ class IndexScreen extends Component {
   state = {
     file: null,
     meta: null,
+    algorithm: "madeleine",
     type: "default",
     nnModel: "default",
     weights: "default",
@@ -35,10 +36,25 @@ class IndexScreen extends Component {
     pixelThresholdType: "default",
     pixelThreshold: 50,
     lastValidPixelThreshold: 50,
+    timeThresholdType: "default",
+    timeThreshold: 5,
+    direction: "vertical",
+    lastValidTimeThreshold: 5,
+    lanes: {
+      count: 5,
+      shoulderSize: 0,
+      perspectiveScaling: 1
+    },
     filterType: "all",
     filter: "",
     roiType: "all",
     roi: {
+      topLeft: { x: 0, y: 0 },
+      topRight: { x: 0, y: 0 },
+      bottomLeft: { x: 0, y: 0 },
+      bottomRight: { x: 0, y: 0 }
+    },
+    tempROI: {
       topLeft: { x: 0, y: 0 },
       topRight: { x: 0, y: 0 },
       bottomLeft: { x: 0, y: 0 },
@@ -102,7 +118,6 @@ class IndexScreen extends Component {
 
   tutorialCallback = (data) => {
     const { action, index, type } = data;
-    console.log(index);
     const { setTutorialIndex } = this.props;
     if ([EVENTS.STEP_AFTER, EVENTS.CLOSE, EVENTS.TARGET_NOT_FOUND].includes(type)) {
       setTutorialIndex(index + (action === ACTIONS.PREV ? -1 : 1));
@@ -134,7 +149,7 @@ class IndexScreen extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  handleSliderChange = (name, min, max) => (event, value) => {
+  handlePairedSliderChange = (name, min, max) => (event, value) => {
     this.setState({ [name]: value });
     if (!this.names[name]) {
       this.names[name] = `lastValid${name.charAt(0).toUpperCase() +
@@ -143,6 +158,20 @@ class IndexScreen extends Component {
     this.setState({
       [this.names[name]]: value
     });
+  };
+
+  handleSliderChange = (name) => (event, value) => {
+    let names = name.split('.');
+    if(names.length === 1) {
+      this.setState({ [names[0]]: value });
+    } else if(names.length === 2) {
+      this.setState({
+        [names[0]]: {
+          ...this.state[names[0]],
+          [names[1]]: value
+        }
+      })
+    }
   };
 
   handleNumberInputChange = (name, min, max) => event => {
@@ -162,9 +191,14 @@ class IndexScreen extends Component {
   };
 
   handleROIChange = (position, component) => event => {
-    let roi = Object.assign({}, this.state.roi);
-    roi[position][component] = event.target.value;
-    this.setState({ roi });
+    let tempROI = Object.assign({}, this.state.tempROI);
+    tempROI[position][component] = event.target.value;
+    this.setState({ tempROI });
+    if(!isNaN(parseFloat(event.target.value))){
+      let roi = Object.assign({}, this.state.roi);
+      roi[position][component] = parseFloat(event.target.value);
+      this.setState({ roi });
+    }
   };
 
   handleFileChange = event => {
@@ -203,6 +237,12 @@ class IndexScreen extends Component {
         topRight: {x: event.target.videoWidth, y: 0},
         bottomLeft: {x: 0, y: event.target.videoHeight},
         bottomRight: {x: event.target.videoWidth, y: event.target.videoHeight},
+      },
+      tempROI: {
+        topLeft: {x: 0, y: 0},
+        topRight: {x: event.target.videoWidth, y: 0},
+        bottomLeft: {x: 0, y: event.target.videoHeight},
+        bottomRight: {x: event.target.videoWidth, y: event.target.videoHeight},
       }
     })
   }
@@ -235,6 +275,7 @@ class IndexScreen extends Component {
             <PerfectScrollbar option={{ suppressScrollX: true }}>
               <Settings
                 state={this.state}
+                handlePairedSliderChange={this.handlePairedSliderChange}
                 handleSliderChange={this.handleSliderChange}
                 handleNumberInputChange={this.handleNumberInputChange}
                 handleChange={this.handleChange}

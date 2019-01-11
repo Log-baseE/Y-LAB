@@ -62,6 +62,7 @@ const styles = theme => ({
 class ROIInput extends Component {
   render() {
     const { classes } = this.props;
+    const { roi, handleROIChange } = this.props;
     return (
       <Paper className={classes.card} elevation={1}>
         <ButtonBase focusRipple className={classes.background}>
@@ -79,14 +80,15 @@ class ROIInput extends Component {
             <Grid item>
               <FormControl>
                 <TextField
+                  error={!/^-?\d+(\.\d+)?$/.test(roi.topLeft.x)}
                   label="x"
                   variant="outlined"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
                   InputLabelProps={{ shrink: true }}
-                  value={this.props.roi.topLeft.x}
-                  onChange={this.props.handleROIChange('topLeft', 'x')}
+                  value={roi.topLeft.x}
+                  onChange={handleROIChange('topLeft', 'x')}
                 />
               </FormControl>
             </Grid>
@@ -96,14 +98,15 @@ class ROIInput extends Component {
             <Grid item>
               <FormControl>
                 <TextField
+                  error={!/^-?\d+(\.\d+)?$/.test(roi.topLeft.y)}
                   variant="outlined"
                   label="y"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
                   InputLabelProps={{ shrink: true }}
-                  value={this.props.roi.topLeft.y}
-                  onChange={this.props.handleROIChange('topLeft', 'y')}
+                  value={roi.topLeft.y}
+                  onChange={handleROIChange('topLeft', 'y')}
                 />
               </FormControl>
             </Grid>
@@ -117,14 +120,15 @@ class ROIInput extends Component {
             <Grid item>
               <FormControl>
                 <TextField
+                  error={!/^-?\d+(\.\d+)?$/.test(roi.topRight.x)}
                   variant="outlined"
                   label="x"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
                   InputLabelProps={{ shrink: true }}
-                  value={this.props.roi.topRight.x}
-                  onChange={this.props.handleROIChange('topRight', 'x')}
+                  value={roi.topRight.x}
+                  onChange={handleROIChange('topRight', 'x')}
                 />
               </FormControl>
             </Grid>
@@ -134,14 +138,15 @@ class ROIInput extends Component {
             <Grid item>
               <FormControl>
                 <TextField
+                  error={!/^-?\d+(\.\d+)?$/.test(roi.topRight.y)}
                   variant="outlined"
                   label="y"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
                   InputLabelProps={{ shrink: true }}
-                  value={this.props.roi.topRight.y}
-                  onChange={this.props.handleROIChange('topRight', 'y')}
+                  value={roi.topRight.y}
+                  onChange={handleROIChange('topRight', 'y')}
                 />
               </FormControl>
             </Grid>
@@ -159,14 +164,15 @@ class ROIInput extends Component {
             <Grid item>
               <FormControl>
                 <TextField
+                  error={!/^-?\d+(\.\d+)?$/.test(roi.bottomLeft.x)}
                   variant="outlined"
                   label="x"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
                   InputLabelProps={{ shrink: true }}
-                  value={this.props.roi.bottomLeft.x}
-                  onChange={this.props.handleROIChange('bottomLeft', 'x')}
+                  value={roi.bottomLeft.x}
+                  onChange={handleROIChange('bottomLeft', 'x')}
                 />
               </FormControl>
             </Grid>
@@ -176,14 +182,15 @@ class ROIInput extends Component {
             <Grid item>
               <FormControl>
                 <TextField
+                  error={!/^-?\d+(\.\d+)?$/.test(roi.bottomLeft.y)}
                   variant="outlined"
                   label="y"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
                   InputLabelProps={{ shrink: true }}
-                  value={this.props.roi.bottomLeft.y}
-                  onChange={this.props.handleROIChange('bottomLeft', 'y')}
+                  value={roi.bottomLeft.y}
+                  onChange={handleROIChange('bottomLeft', 'y')}
                 />
               </FormControl>
             </Grid>
@@ -201,14 +208,15 @@ class ROIInput extends Component {
             <Grid item>
               <FormControl>
                 <TextField
+                  error={!/^-?\d+(\.\d+)?$/.test(roi.bottomRight.x)}
                   variant="outlined"
                   label="x"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
                   InputLabelProps={{ shrink: true }}
-                  value={this.props.roi.bottomRight.x}
-                  onChange={this.props.handleROIChange('bottomRight', 'x')}
+                  value={roi.bottomRight.x}
+                  onChange={handleROIChange('bottomRight', 'x')}
                 />
               </FormControl>
             </Grid>
@@ -218,14 +226,15 @@ class ROIInput extends Component {
             <Grid item>
               <FormControl>
                 <TextField
+                  error={!/^-?\d+(\.\d+)?$/.test(roi.bottomRight.y)}
                   variant="outlined"
                   label="y"
                   inputProps={{
                     className: classes.coordinateInput
                   }}
                   InputLabelProps={{ shrink: true }}
-                  value={this.props.roi.bottomRight.y}
-                  onChange={this.props.handleROIChange('bottomRight', 'y')}
+                  value={roi.bottomRight.y}
+                  onChange={handleROIChange('bottomRight', 'y')}
                 />
               </FormControl>
             </Grid>

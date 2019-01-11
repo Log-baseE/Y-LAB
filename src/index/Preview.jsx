@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Dropzone from 'react-dropzone'
 
 import { ReactComponent as UploadVideoIcon } from '../res/icon/svg/upload-video.svg';
+import ROIOverlay from './ROIOverlay';
 
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -46,6 +47,10 @@ const styles = theme => ({
   roiPolygon: {
     fill: 'rgba(255,255,255,.25)',
     stroke: 'yellow',
+    strokeWidth: 2,
+  },
+  countingLine: {
+    stroke: '#00ff00',
     strokeWidth: 2,
   },
   uploadIcon: {
@@ -168,17 +173,18 @@ class Preview extends Component {
               onEnded={this.handleEnded}
               onLoadedMetadata={handleMetaData}
              />
-             {
-               state.meta && state.roiType === "custom" ? 
-               <div className={classes.roiOverlay}>
-               <svg width="100%" viewBox={`0 0 ${state.meta.res.width} ${state.meta.res.height}`}>
-                 <polygon 
-                   points={`${state.roi.topLeft.x},${state.roi.topLeft.y} ${state.roi.topRight.x},${state.roi.topRight.y} ${state.roi.bottomRight.x},${state.roi.bottomRight.y} ${state.roi.bottomLeft.x},${state.roi.bottomLeft.y}`} 
-                   className={classes.roiPolygon}
-                   />
-               </svg>
-              </div> : ''
-             }
+            {
+              state.meta && state.roiType === "custom" ? 
+              <ROIOverlay 
+                viewBox={state.meta.res}
+                vertical={state.direction === "vertical"}
+                roi={state.roi}
+                traffic={state.type === "traffic"}
+                drawLanes={state.algorithm === "andrew"}
+                lanes={state.lanes}
+              />
+              : ''
+            }
           </div>
           :
           <Dropzone accept="video/mp4" onDrop={handleFileDrop} className={classes.dropzone}>

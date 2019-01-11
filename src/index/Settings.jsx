@@ -5,7 +5,7 @@ import AdvancedSettings from './AdvancedSettings';
 class Settings extends Component {
   render() {
     const { state } = this.props;
-    const { handleChange, handleNumberInputChange, handleSliderChange, handleROIChange, handleFileChange } = this.props;
+    const { handleChange, handleNumberInputChange, handlePairedSliderChange, handleSliderChange, handleROIChange, handleFileChange } = this.props;
     const { validateValue } = this.props;
     return ([
       <BasicSettings
@@ -17,6 +17,7 @@ class Settings extends Component {
         state={state}
         handleNumberInputChange={handleNumberInputChange}
         handleChange={handleChange}
+        handlePairedSliderChange={handlePairedSliderChange}
         handleSliderChange={handleSliderChange}
         handleROIChange={handleROIChange}
         validateValue={validateValue}
