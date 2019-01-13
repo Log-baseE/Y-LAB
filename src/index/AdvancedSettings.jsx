@@ -15,7 +15,8 @@ import {
   Grow,
   InputAdornment,
   Input,
-  FormHelperText
+  FormHelperText,
+  Link
 } from "@material-ui/core";
 import { Slider } from "@material-ui/lab";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -63,6 +64,7 @@ class AdvancedSettings extends Component {
     const { state } = this.props;
     const { handleChange, handleNumberInputChange, handleSliderChange, handlePairedSliderChange, handleROIChange } = this.props;
     const { validateValue } = this.props;
+    const { resetLanes } = this.props;
 
     return (
       <ExpansionPanel
@@ -424,6 +426,19 @@ class AdvancedSettings extends Component {
                             <Grid item md={3}>
                               <Typography variant="body1">{(state.lanes.perspectiveScaling + '×')}</Typography>
                             </Grid>
+                          </Grid>
+                        </Grid>
+                      </FormControl>
+                    </Grow>,
+                    <Grow in={state.algorithm === "andrew"} key="4" style={{transformOrigin: '50% 0 0'}}>
+                      <FormControl
+                        margin="dense"
+                        fullWidth
+                        className={classes.formControl}
+                      >
+                        <Grid container alignContent="flex-end">
+                          <Grid item md={12} style={{ paddingTop: 5 }}>
+                            <Link component="button" style={{ color: 'white'}} underline="always" onClick={resetLanes}>Reset lanes</Link>
                           </Grid>
                         </Grid>
                       </FormControl>

@@ -35,10 +35,10 @@
   ],
   "devDependencies": {
     "foreman": "^3.0.1",
-    "nodemon": "^1.18.8"
+    "nodemon": "^1.18.9"
   },
   "dependencies": {
-    "@material-ui/core": "^3.6.1",
+    "@material-ui/core": "^3.8.3",
     "@material-ui/icons": "^3.0.1",
     "@material-ui/lab": "^3.0.0-alpha.24",
     "classnames": "^2.2.6",
@@ -46,17 +46,17 @@
     "electron": "^3.0.10",
     "electron-util": "^0.10.2",
     "filesize": "^3.6.1",
-    "node-sass": "^4.10.0",
+    "node-sass": "^4.11.0",
     "prop-types": "^15.6.2",
-    "python-shell": "^1.0.6",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
+    "python-shell": "^1.0.7",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
     "react-dropzone": "^7.0.1",
-    "react-joyride": "^2.0.0-15",
+    "react-joyride": "^2.0.2",
     "react-number-format": "^4.0.6",
-    "react-perfect-scrollbar": "^1.4.2",
+    "react-perfect-scrollbar": "^1.4.4",
     "react-scripts": "2.1.1",
-    "react-split-pane": "^0.1.84",
+    "react-split-pane": "^0.1.85",
     "react-text-mask": "^5.4.3"
   }
 }

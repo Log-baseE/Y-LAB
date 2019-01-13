@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import { Grid } from '@material-ui/core';
-import { ACTIONS, EVENTS } from 'react-joyride/es/constants';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import SplitPane from "react-split-pane";
 import Settings from "./Settings";
 import Preview from "./Preview";
 import Topbar from "./Topbar";
-import Joyride from 'react-joyride';
+import Joyride, { ACTIONS, EVENTS } from 'react-joyride';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -247,6 +246,17 @@ class IndexScreen extends Component {
     })
   }
 
+  resetLanes = () => {
+    this.setState({
+      lanes: {
+        ...this.state.lanes,
+        count: 5,
+        shoulderSize: 0,
+        perspectiveScaling: 1
+      }
+    })
+  }
+
   render() {
     const { handleSubmit, handleSave } = this.props;
     const { runTutorial, tutorialIndex } = this.props;
@@ -282,6 +292,7 @@ class IndexScreen extends Component {
                 handleROIChange={this.handleROIChange}
                 handleFileChange={this.handleFileChange}
                 validateValue={this.validateValue}
+                resetLanes={this.resetLanes}
               />
             </PerfectScrollbar>
             <PerfectScrollbar>

@@ -6,7 +6,7 @@ class Settings extends Component {
   render() {
     const { state } = this.props;
     const { handleChange, handleNumberInputChange, handlePairedSliderChange, handleSliderChange, handleROIChange, handleFileChange } = this.props;
-    const { validateValue } = this.props;
+    const { validateValue, resetLanes } = this.props;
     return ([
       <BasicSettings
         state={state}
@@ -21,6 +21,7 @@ class Settings extends Component {
         handleSliderChange={handleSliderChange}
         handleROIChange={handleROIChange}
         validateValue={validateValue}
+        resetLanes={resetLanes}
         key={'advanced'}
       />,
     ]);
