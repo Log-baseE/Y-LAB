@@ -14,6 +14,7 @@ export const startDetect = (options, messageCallback, finishCallback) => {
   let opts = {
     filePath: options.file.path,
     traffic: options.type === 'traffic',
+    algorithm: options.algorithm,
   }
   if (options.roiType !== 'all') {
     opts.roi = {
@@ -52,6 +53,12 @@ export const startDetect = (options, messageCallback, finishCallback) => {
   }
   if (options.pixelTresholdType !== 'default') {
     opts.pixelThreshold = parseInt(options.pixelThreshold);
+  }
+  if (options.timeThresholdType !== 'default') {
+    opts.timeThreshold = parseInt(options.timeThreshold);
+  }
+  if (options.algorithm === "andrew") {
+    opts.lanes = options.lanes;
   }
   var pyOptions = {
     scriptPath: path.join(remote.app.getAppPath(), './engine'),

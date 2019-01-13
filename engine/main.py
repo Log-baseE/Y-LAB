@@ -31,6 +31,7 @@ def main(args):
     - DEFAULT_GPU: gpu usage percentage, floating point number between 0 and 1 inclusive
     - DEFAULT_PIXEL_THRESHOLD
     - DEFAULT_TIME_THRESHOLD
+    - DEFAULT_DIRECTION
     """
     dir_path = os.path.dirname(os.path.realpath(__file__))
     with open(os.path.join(dir_path, 'defaults.json')) as f:
@@ -43,6 +44,7 @@ def main(args):
         DEFAULT_GPU = defaults["DEFAULT_GPU"]
         DEFAULT_PIXEL_THRESHOLD = defaults["DEFAULT_PIXEL_THRESHOLD"]
         DEFAULT_TIME_THRESHOLD = defaults["DEFAULT_TIME_THRESHOLD"]
+        DEFAULT_DIRECTION = defaults["DEFAULT_DIRECTION"]
     except KeyError as e:
         sys.exit("Malformed default json file: missing key '%s'" % e.args[0])
 
@@ -71,10 +73,11 @@ def main(args):
     - confidenceThreshold
     - pixelThreshold
     - timeThreshold
-    - lanes (required if algorithm == "madeleine")
+    - lanes (required if algorithm == "andrew")
         - count
         - shoulderSize
         - perspectiveScaling
+    - direction
     """
 
     if verbose_level == 1:
@@ -97,6 +100,7 @@ def main(args):
     roi = data.get("roi", None)
     label_filter = data.get("filter", None)
     traffic = data.get("traffic", False)
+    direction = data.get("direction", DEFAULT_DIRECTION)
 
     """Initialize options"""
     options = DetectorOptions()
@@ -110,6 +114,8 @@ def main(args):
         options.set_roi(roi)
     if label_filter:
         options.set_filter(label_filter)
+    if traffic:
+        options.set_direction(direction)
 
     """Build model from set options"""
     options = options.build_model(verbose_level=verbose_level)

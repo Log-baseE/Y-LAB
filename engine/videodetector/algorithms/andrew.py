@@ -85,7 +85,7 @@ class Andrew(TrafficAlgorithm):
         last_pt = count_line[1][0 if vertical else 1]
         width = last_pt - start_pt
 
-        base_lane = ((1-shoulder)*width)/geom_sum
+        base_lane = ((1-abs(shoulder))*width)/geom_sum
 
         lanes = (start_pt, )
 
@@ -94,10 +94,10 @@ class Andrew(TrafficAlgorithm):
         for i in range(lane_count):
             lanes += (lanes[-1] + base_lane*(scale**i), )
         if shoulder < 0:
-            lanes += (lanes[-1] + shoulder*width, )
+            lanes += (lanes[-1] - shoulder*width, )
         
         _lanes = [(a,b) for a,b in zip(lanes, lanes[1:])]
-        print(_lanes)
+        print("LANES", _lanes)
         return _lanes
 
     def get_additional_lines(self, *args, **kwargs):
@@ -125,7 +125,7 @@ class Andrew(TrafficAlgorithm):
         bottomleft = (bottomleft['x'], bottomleft['y'])
 
         top_width = (topright[0] - topleft[0], topright[1] - topleft[1])
-        top_base = (((1-shoulder)*top_width[0])/geom_sum, ((1-shoulder)*top_width[1])/geom_sum)
+        top_base = (((1-abs(shoulder))*top_width[0])/geom_sum, ((1-abs(shoulder))*top_width[1])/geom_sum)
         top_lanes = (topleft, )
 
         if shoulder > 0:
@@ -133,10 +133,10 @@ class Andrew(TrafficAlgorithm):
         for i in range(lane_count):
             top_lanes += ((top_lanes[-1][0] + top_base[0]*(scale**i), top_lanes[-1][1] + top_base[1]*(scale**i)), )
         if shoulder < 0:
-            top_lanes += ((top_lanes[-1][0] + shoulder*top_width[0], top_lanes[-1][1] + shoulder*top_width[1]), )
+            top_lanes += ((top_lanes[-1][0] - shoulder*top_width[0], top_lanes[-1][1] - shoulder*top_width[1]), )
         
         bottom_width = (bottomright[0] - bottomleft[0], bottomright[1] - bottomleft[1])
-        bottom_base = (((1-shoulder)*bottom_width[0])/geom_sum, ((1-shoulder)*bottom_width[1])/geom_sum)
+        bottom_base = (((1-abs(shoulder))*bottom_width[0])/geom_sum, ((1-abs(shoulder))*bottom_width[1])/geom_sum)
         bottom_lanes = (bottomleft, )
 
         if shoulder > 0:
@@ -144,7 +144,7 @@ class Andrew(TrafficAlgorithm):
         for i in range(lane_count):
             bottom_lanes += ((bottom_lanes[-1][0] + bottom_base[0]*(scale**i), bottom_lanes[-1][1] + bottom_base[1]*(scale**i)), )
         if shoulder < 0:
-            bottom_lanes += ((bottom_lanes[-1][0] + shoulder*bottom_width[0], bottom_lanes[-1][1] + shoulder*bottom_width[1]), )
+            bottom_lanes += ((bottom_lanes[-1][0] - shoulder*bottom_width[0], bottom_lanes[-1][1] - shoulder*bottom_width[1]), )
         
         lanes = [(t,b) for t,b in zip(top_lanes[1:-1], bottom_lanes[1:-1])]
         return lanes
@@ -188,9 +188,5 @@ class Andrew(TrafficAlgorithm):
 
             cars_per_frame.append(
                 count + (cars_per_frame[-1] if cars_per_frame else 0))
-
-            print(cars_per_frame)
-            print(car_pass_lane)
-            print()
 
         return cars_per_frame

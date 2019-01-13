@@ -14,7 +14,7 @@ class DetectorOptions:
     DEFAULT_WEIGHTS = os.path.join(dir_path, "bin\\yolo.weights")
     DEFAULT_THRESHOLD = 0.1
     DEFAULT_GPU = 0.7
-    DEFAULT_COUNTING_LINE = "horizontal"
+    DEFAULT_DIRECTION = "horizontal"
     DEFAULT_NORMAL_BLOB_SIZE = 300
 
     def __init__(self):
@@ -23,7 +23,7 @@ class DetectorOptions:
         self.labels = DetectorOptions.DEFAULT_LABELS
         self.confidence_threshold = DetectorOptions.DEFAULT_THRESHOLD
         self.gpu = DetectorOptions.DEFAULT_GPU
-        self.counting_line = DetectorOptions.DEFAULT_COUNTING_LINE
+        self.direction = DetectorOptions.DEFAULT_DIRECTION
         self.normal_blob_size = DetectorOptions.DEFAULT_NORMAL_BLOB_SIZE
         self.tfnet = None
         self.roi = None
@@ -65,13 +65,13 @@ class DetectorOptions:
         self.roi = roi
         return self
 
-    def set_counting_line(self, type: str):
+    def set_direction(self, type: str):
         if self.tfnet:
             raise DetectorOptionsException("Neural network already built")
         if type not in ['vertical', 'horizontal']:
             raise ValueError(
                 "'type' must be either 'vertical' or 'horizontal'")
-        self.counting_line = type
+        self.direction = type
         return self
 
     def set_filter(self, labels: typing.List[str]):

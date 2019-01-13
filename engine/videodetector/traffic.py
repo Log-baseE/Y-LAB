@@ -38,7 +38,7 @@ class TrafficDetector(ObjectDetector):
         elif self.verbose_level >= 2:
             print("Rendering video...")
 
-        vertical = self._options.counting_line!='vertical'
+        vertical = self._options.direction == 'vertical'
         roi = self._options.roi
         if roi:
             botleft = (roi['bottomLeft']['x'], roi['bottomLeft']['y'])
