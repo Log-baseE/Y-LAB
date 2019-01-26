@@ -16,7 +16,8 @@ import {
   InputAdornment,
   Input,
   FormHelperText,
-  Link
+  Link,
+  Tooltip
 } from "@material-ui/core";
 import { Slider } from "@material-ui/lab";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -55,8 +56,32 @@ const styles = theme => ({
   subheading: {
     fontWeight: 'bold',
     marginTop: 24,
+  },
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: theme.palette.common.black,
+    paddingTop: 6,
+    paddingBottom: 6,
+    fontSize: 12,
+    lineHeight: 1.125,
   }
 });
+
+const tooltips = {
+  roi: `Region of interest is an area that is isolated from each frame of the video to be processed. Parts outside of it won't be processed.`,
+  filter: `Object filter specifies which objects should be detected from the video.`,
+  confidence: `The confidence threshold specifies the minimum confidence level required for an object to be labeled.`,
+  model: `The neural network model used for detecting objects from the video`,
+  weights: `The neural network weights used for detecting objects from the video`,
+  gpu: `Specifies how much of the GPU should be used for processing the video`,
+  algo: `Choose which algorithm should be used for counting vehicles passing by`,
+  flow: `If vehicles move from up to down or vice versa, use vertical. Use horizontal otherwise`,
+  pxThres: `The minimum number of pixels between two vehicles to be considered separate`,
+  timethres: `The minimum number of frames for a vehicle to be considered as a new one`,
+  lanes: `The number of road lanes inside the video`,
+  shoulder: `The percent of road width that is marked as a shoulder lane`,
+  perspective: `Slide this around to adjust the lane lines to the actual lanes in the video`,
+};
 
 class AdvancedSettings extends Component {
   render() {
@@ -88,10 +113,13 @@ class AdvancedSettings extends Component {
               margin="dense"
               fullWidth
               className={classes.formControl}
+              id="roi"
             >
               <Grid container>
                 <Grid item md={4} style={{ paddingTop: 5 }}>
-                  <FormLabel>Region of interest</FormLabel>
+                  <Tooltip title={tooltips.roi} placement="right" classes={{ tooltip: classes.tooltip }}>
+                    <FormLabel>Region of interest</FormLabel>
+                  </Tooltip>
                 </Grid>
                 <Grid item container md={8} alignItems="center" spacing={16}>
                   <RadioGroup
@@ -132,7 +160,9 @@ class AdvancedSettings extends Component {
             >
               <Grid container>
                 <Grid item md={4} style={{ paddingTop: 5 }}>
-                  <FormLabel>Object filter:</FormLabel>
+                  <Tooltip title={tooltips.filter} placement="right" classes={{ tooltip: classes.tooltip }}>
+                    <FormLabel>Object filter:</FormLabel>
+                  </Tooltip>
                 </Grid>
                 <Grid item container md={8} alignItems="center" spacing={16}>
                   <RadioGroup
@@ -190,7 +220,9 @@ class AdvancedSettings extends Component {
                 >
                   <Grid container>
                     <Grid item md={4} style={{ paddingTop: 5 }}>
-                      <FormLabel>Algorithm</FormLabel>
+                      <Tooltip title={tooltips.algo} placement="right" classes={{ tooltip: classes.tooltip }}>
+                        <FormLabel>Algorithm</FormLabel>
+                      </Tooltip>
                     </Grid>
                     <Grid item container md={8} alignItems="center" spacing={16}>
                       <RadioGroup
@@ -223,7 +255,9 @@ class AdvancedSettings extends Component {
                 >
                   <Grid container>
                     <Grid item md={4} style={{ paddingTop: 5 }}>
-                      <FormLabel>Traffic flow direction</FormLabel>
+                      <Tooltip title={tooltips.flow} placement="right" classes={{ tooltip: classes.tooltip }}>
+                        <FormLabel>Traffic flow direction</FormLabel>
+                      </Tooltip>
                     </Grid>
                     <Grid item container md={8} alignItems="center" spacing={16}>
                       <RadioGroup
@@ -256,7 +290,9 @@ class AdvancedSettings extends Component {
                 >
                   <Grid container>
                     <Grid item md={4} style={{ paddingTop: 5 }}>
-                      <FormLabel>Pixel distance threshold</FormLabel>
+                      <Tooltip title={tooltips.pxThres} placement="right" classes={{ tooltip: classes.tooltip }}>
+                        <FormLabel>Pixel distance threshold</FormLabel>
+                      </Tooltip>
                     </Grid>
                     <Grid item container md={8} alignItems="center" spacing={16}>
                       <RadioGroup
@@ -302,7 +338,9 @@ class AdvancedSettings extends Component {
                 >
                   <Grid container>
                     <Grid item md={4} style={{ paddingTop: 5 }}>
-                      <FormLabel>Frame distance threshold</FormLabel>
+                      <Tooltip title={tooltips.timethres} placement="right" classes={{ tooltip: classes.tooltip }}>
+                        <FormLabel>Frame distance threshold</FormLabel>
+                      </Tooltip>
                     </Grid>
                     <Grid item container md={8} alignItems="center" spacing={16}>
                       <RadioGroup
@@ -351,7 +389,9 @@ class AdvancedSettings extends Component {
                       >
                         <Grid container>
                           <Grid item md={4} style={{ paddingTop: 5 }}>
-                            <FormLabel>Lane count</FormLabel>
+                            <Tooltip title={tooltips.lanes} placement="right" classes={{ tooltip: classes.tooltip }}>
+                              <FormLabel>Lane count</FormLabel>
+                            </Tooltip>
                           </Grid>
                           <Grid item container md={8} alignItems="center" spacing={16}>
                             <Grid item md={9}>
@@ -379,7 +419,9 @@ class AdvancedSettings extends Component {
                       >
                         <Grid container>
                           <Grid item md={4} style={{ paddingTop: 5 }}>
-                            <FormLabel>Shoulder size</FormLabel>
+                            <Tooltip title={tooltips.shoulder} placement="right" classes={{ tooltip: classes.tooltip }}>
+                              <FormLabel>Shoulder size</FormLabel>
+                            </Tooltip>
                           </Grid>
                           <Grid item container md={8} alignItems="center" spacing={16}>
                             <Grid item md={9}>
@@ -410,7 +452,9 @@ class AdvancedSettings extends Component {
                       >
                         <Grid container>
                           <Grid item md={4} style={{ paddingTop: 5 }}>
-                            <FormLabel>Perspective Sizing</FormLabel>
+                            <Tooltip title={tooltips.perspective} placement="right" classes={{ tooltip: classes.tooltip }}>
+                              <FormLabel>Perspective Sizing</FormLabel>
+                            </Tooltip>
                           </Grid>
                           <Grid item container md={8} alignItems="center" spacing={16}>
                             <Grid item md={9}>
@@ -459,7 +503,9 @@ class AdvancedSettings extends Component {
             >
               <Grid container>
                 <Grid item md={4} style={{ paddingTop: 5 }}>
-                  <FormLabel>Confidence threshold</FormLabel>
+                  <Tooltip title={tooltips.confidence} placement="right" classes={{ tooltip: classes.tooltip }}>
+                    <FormLabel>Confidence threshold</FormLabel>
+                  </Tooltip>
                 </Grid>
                 <Grid item container md={8} alignItems="center" spacing={16}>
                   <RadioGroup
@@ -525,7 +571,9 @@ class AdvancedSettings extends Component {
             >
               <Grid container alignItems="center">
                 <Grid item md={4}>
-                  <FormLabel component="legend">Neural network model</FormLabel>
+                  <Tooltip title={tooltips.model} placement="right" classes={{ tooltip: classes.tooltip }}>
+                    <FormLabel component="legend">Neural network model</FormLabel>
+                  </Tooltip>
                 </Grid>
                 <Grid item container md={8} alignItems="center" spacing={16}>
                   <Select
@@ -548,7 +596,9 @@ class AdvancedSettings extends Component {
             >
               <Grid container alignItems="center">
                 <Grid item md={4}>
-                  <FormLabel>Weights</FormLabel>
+                  <Tooltip title={tooltips.weights} placement="right" classes={{ tooltip: classes.tooltip }}>
+                    <FormLabel>Weights</FormLabel>
+                  </Tooltip>
                 </Grid>
                 <Grid item container md={8} alignItems="center" spacing={16}>
                   <Select
@@ -571,7 +621,9 @@ class AdvancedSettings extends Component {
             >
               <Grid container>
                 <Grid item md={4} style={{ paddingTop: 5 }}>
-                  <FormLabel>GPU use (%)</FormLabel>
+                  <Tooltip title={tooltips.gpu} placement="right" classes={{ tooltip: classes.tooltip }}>
+                    <FormLabel>GPU use (%)</FormLabel>
+                  </Tooltip>
                 </Grid>
                 <Grid item container md={8} alignItems="center" spacing={16}>
                   <RadioGroup
