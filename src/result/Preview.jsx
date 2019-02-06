@@ -102,6 +102,7 @@ class Preview extends Component {
     const { classes } = this.props;
     const { state } = this.props;
     const { handleMetaData } = this.props;
+    const { rand } = this.props;
 
     return ([
       <Card className={classes.root} key="preview-card">
@@ -112,6 +113,7 @@ class Preview extends Component {
           onTimeUpdate={this.handleSeekbar}
           onEnded={this.handleEnded}
           onLoadedMetadata={handleMetaData}
+          rand={rand}
         />
         <Slider 
           id="seek-bar"

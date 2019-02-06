@@ -103,7 +103,7 @@ class TrafficDetector(ObjectDetector):
         elif self.verbose_level >= 2:
             print("Video finished rendering")
     
-    def _write_to_json(self, dest_path):
+    def _write_to_json(self, vid_path, dest_path):
         labels = set()
         total_objects = 0
         serializable_frames = []
@@ -130,7 +130,10 @@ class TrafficDetector(ObjectDetector):
             "frames": serializable_frames,
             "count_per_frame": float('%.2f' % (total_objects / self._frame_count)),
             "type": "traffic",
-            "car_count": self._cars[-1]
+            "car_count": self._cars[-1],
+            "file": {
+                "path": vid_path
+            }
         }
 
         with open(dest_path, 'w') as f:

@@ -7,6 +7,7 @@ import numpy as np
 import os
 import json
 import ffmpeg
+from datetime import datetime
 
 class ObjectDetector:
     def __init__(self, verbose_level=0):
@@ -147,7 +148,7 @@ class ObjectDetector:
         temp_results = [self._process_frame_result(frame_result) for frame_result in self._results]
         return temp_results
 
-    def _write_to_json(self, dest_path):
+    def _write_to_json(self, vid_path, dest_path):
         labels = set()
         total_objects = 0
         serializable_frames = []
@@ -173,7 +174,10 @@ class ObjectDetector:
             "objects": list(labels),
             "frames": serializable_frames,
             "count_per_frame": float('%.2f' % (total_objects / self._frame_count)),
-            "type": "default"
+            "type": "default",
+            "file": {
+                "path": vid_path
+            }
         }
 
         with open(dest_path, 'w') as f:
@@ -194,11 +198,14 @@ class ObjectDetector:
 
         self._results = self._postprocess_results()
 
-        vid_path = os.path.join(dest_dir, "out_video.mp4")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = timestamp.replace(":","-")
+        vid_file = "result_{}.mp4".format(timestamp)
+        vid_path = os.path.join(dest_dir, vid_file)
         data_path = os.path.join(dest_dir, "data.json")
 
         self._write_to_video(src_vid=videopath, dest_path=vid_path)
-        self._write_to_json(dest_path=data_path)
+        self._write_to_json(vid_path=vid_path, dest_path=data_path)
 
     def detect(self, videopath: str, destination_directory: str, options: DetectorOptions) -> Tuple[str, str]:
         self._options = options

@@ -30,6 +30,7 @@ class ResultScreen extends Component {
         size: fs.statSync(result.file.path).size
       }
     }));
+    this.forceUpdate();
   };
 
   handleMetaData = event => {
@@ -78,6 +79,7 @@ class ResultScreen extends Component {
               <Preview
                 state={this.state}
                 handleMetaData={this.handleMetaData}
+                rand={Math.random()}
               />
             </PerfectScrollbar>
             <PerfectScrollbar option={{ suppressScrollX: true }}>

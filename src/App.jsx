@@ -52,8 +52,7 @@ class App extends Component {
     let result = JSON.parse(
       fs.readFileSync(fileName, "utf8")
     );
-    result['file'] = {};
-    result.file['path'] = path.join(remote.app.getAppPath(), "./.ylab/out_video.mp4")
+    console.log(result)
     this.setState({
       stage: 2,
       result: result

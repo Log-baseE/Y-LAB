@@ -25,6 +25,7 @@ const styles = theme => ({
 
 class Details extends Component {
   handleSave = event => {
+    const { state } = this.props;
     dialog.showSaveDialog(
       remote.getCurrentWindow(),
       {
@@ -36,7 +37,7 @@ class Details extends Component {
           console.log("save cancelled");
           return;
         }
-        let src = path.join(remote.app.getAppPath(), "./.ylab/out_video.mp4");
+        let src = state.file.path;
         fs.copyFile(src, fileName, err => {
           if (err) {
             alert(
