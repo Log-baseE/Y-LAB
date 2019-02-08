@@ -320,7 +320,7 @@ class AdvancedSettings extends Component {
                                 margin="none"
                                 className={classes.numberInput}
                                 disabled={state.pixelThresholdType !== "custom"}
-                                onChange={handleNumberInputChange("pixelThreshold", 0, 1)}
+                                onChange={handleNumberInputChange("pixelThreshold", null, null)}
                                 inputComponent={IntegerInput}
                                 endAdornment={<InputAdornment position="end">px</InputAdornment>}
                               />
@@ -368,7 +368,7 @@ class AdvancedSettings extends Component {
                                 margin="none"
                                 className={classes.numberInput}
                                 disabled={state.timeThresholdType !== "custom"}
-                                onChange={handleNumberInputChange("timeThreshold", 0, 1)}
+                                onChange={handleNumberInputChange("timeThreshold", null, null)}
                                 endAdornment={<InputAdornment position="end">frames</InputAdornment>}
                               />
                             </Grid>

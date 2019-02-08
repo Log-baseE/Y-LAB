@@ -22,16 +22,21 @@ const styles = theme => ({
     laneLine: {
         stroke: '#ff0000',
         strokeWidth: 2
+    },
+    pixelLine: {
+        stroke: '#00ffff',
+        strokeWidth: 2
     }
 });
 
 class ROIOverlay extends Component {
     constructor(props) {
         super(props)
-        const { roi, lanes, vertical } = props;
+        const { roi, lanes, vertical, px, viewBox } = props;
         this.state = {
             countline: this.calculateCountingLine(roi, vertical),
-            lanes: this.calculateLanes(roi, lanes, vertical)
+            lanes: this.calculateLanes(roi, lanes, vertical),
+            pixelLine: this.generatePixelLine(px, viewBox)
         }
     }
     componentDidUpdate = (prevProps) => {
@@ -46,6 +51,21 @@ class ROIOverlay extends Component {
             this.setState({ 
                 lanes:  this.calculateLanes(roi, lanes, vertical)
             });
+        }
+        console.log(this.props.px, prevProps.px)
+        if(this.props.px !== prevProps.px) {
+            const { viewBox, px } = this.props;
+            this.setState({
+                pixelLine: this.generatePixelLine(px, viewBox)
+            })
+        }
+    }
+    generatePixelLine = (px, viewBox) => {
+        return {
+            x1: viewBox.height / 20,
+            y1: viewBox.height / 20,
+            x2: viewBox.height / 20 + px,
+            y2: viewBox.height / 20,
         }
     }
     calculateCountingLine = (roi, vertical) => {
@@ -144,8 +164,14 @@ class ROIOverlay extends Component {
         return (
             <div className={classes.root} {...other}>
                 <svg width="100%" viewBox={`0 0 ${viewBox.width} ${viewBox.height}`}>
+                    <defs>
+                        <marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5">
+                            <circle cx="5" cy="5" r="5" fill="#00ffff" />
+                        </marker>
+                    </defs>
                     { traffic && drawLanes ? this.renderLanes() : '' }
                     { traffic ? <line {...this.state.countline} className={classes.countingLine} /> : ''}
+                    { traffic ? <line className={classes.pixelLine} {...this.state.pixelLine} markerEnd="url(#dot)" markerStart="url(#dot)"/> : ''}
                     <polygon
                         points={`${roi.topLeft.x},${roi.topLeft.y} ${roi.topRight.x},${roi.topRight.y} ${roi.bottomRight.x},${roi.bottomRight.y} ${roi.bottomLeft.x},${roi.bottomLeft.y}`} 
                         className={classes.roiPolygon}

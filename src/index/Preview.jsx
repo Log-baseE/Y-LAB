@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Card, CardActions, CardMedia, IconButton, Typography, Grid, Tooltip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
+import { Button, Card, CardActions, CardMedia, FormLabel, IconButton, Typography, Grid, Tooltip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Grow } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
 import Dropzone from 'react-dropzone'
 
@@ -66,8 +66,9 @@ const styles = theme => ({
   tooltip: {
     transform: 'translateX(100%)',
   },
-  action: {
+  footer: {
     paddingRight: theme.spacing.unit * 2,
+    paddingLeft: theme.spacing.unit * 2,
   }
 });
 
@@ -140,7 +141,7 @@ class Preview extends Component {
       play: false,
     })
     video.pause();
-    video.currentTime = video.duration - 1e-9; 
+    video.currentTime = video.duration - 1e-9;
   }
 
   handleConfirmOpen = event => {
@@ -174,14 +175,15 @@ class Preview extends Component {
               onLoadedMetadata={handleMetaData}
              />
             {
-              state.meta && state.roiType === "custom" ? 
-              <ROIOverlay 
+              state.meta && state.roiType === "custom" ?
+              <ROIOverlay
                 viewBox={state.meta.res}
                 vertical={state.direction === "vertical"}
                 roi={state.roi}
                 traffic={state.type === "traffic"}
                 drawLanes={state.algorithm === "andrew"}
                 lanes={state.lanes}
+                px={state.pixelThresholdType === "default" ? 50 : state.lastValidPixelThreshold}
               />
               : ''
             }
@@ -197,7 +199,7 @@ class Preview extends Component {
             </Typography>
           </Dropzone>
         }
-        <Slider 
+        <Slider
           id="seek-bar"
           min={0}
           max={1}
@@ -258,51 +260,90 @@ class Preview extends Component {
           </Tooltip>
         </CardActions>
       </Card>,
-      <Grid container className={classes.action} key="action">
-        <Dialog
-          open={this.state.confirmOpen}
-          onClose={this.handleConfirmClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Process video?"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Process the video with the chosen settings. If you wish
-              to change something, you can press cancel at anytime.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleConfirmClose} color="default">
-              Cancel
-            </Button>
-            <Button onClick={handleSubmit(state)} color="default" variant="outlined" autoFocus>
-              Go!
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Button
-          component="span"
-          className={classes.save}
-          color="default"
-          onClick={handleSave(state)}
-          disabled={state.file === null}
-        >
-          Save options
-        </Button>
-        <Button
-          variant="contained"
-          component="span"
-          className={classes.submit}
-          color="primary"
-          onClick={this.handleConfirmOpen}
-          disabled={state.file === null}
-          id="submit-button"
-        >
-          LOOKS GOOD!
-        </Button>
+      <Grid container key="action" justify='flex-end' className={classes.footer}>
+        <Grid item xs={4}>
+          {
+            state.roiType === 'custom' ?
+            <Grow in={state.roiType === 'custom'}>
+              <Typography variant='body2' color='textSecondary'>Lines in video:</Typography>
+            </Grow>
+            : ""
+          }
+          {
+            state.roiType === 'custom' ?
+            <Grow in={state.roiType === 'custom'}>
+              <Typography variant='body2' color='textSecondary'><span style={{ color: 'yellow' }}>&#9632;</span> ROI border</Typography>
+            </Grow>
+            : ""
+          }
+          {
+            state.roiType === 'custom' && state.type === 'traffic' ?
+            <Grow in={state.roiType === 'custom' && state.type === 'traffic'}>
+              <Typography variant='body2' color='textSecondary'><span style={{ color: 'cyan' }}>&#9632;</span> Pixel threshold size</Typography>
+            </Grow>
+            : ""
+          }
+          {
+            state.roiType === 'custom' && state.algorithm === 'andrew' ?
+            <Grow in={state.roiType === 'custom' && state.algorithm === 'andrew'}>
+              <Typography variant='body2' color='textSecondary'><span style={{ color: 'red' }}>&#9632;</span> Road lane lines</Typography>
+            </Grow>
+            : ""
+          }
+          {
+            state.roiType === 'custom' && state.type === 'traffic' ?
+            <Grow in={state.roiType === 'custom' && state.type === 'traffic'}>
+              <Typography variant='body2' color='textSecondary'><span style={{ color: 'lime' }}>&#9632;</span> Counting line</Typography>
+            </Grow>
+            : ""
+          }
+        </Grid>
+        <Grid item container xs={8} justify='flex-end' alignItems='flex-start'>
+          <Dialog
+            open={this.state.confirmOpen}
+            onClose={this.handleConfirmClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Process video?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Process the video with the chosen settings. If you wish
+                to change something, you can press cancel at anytime.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleConfirmClose} color="default">
+                Cancel
+              </Button>
+              <Button onClick={handleSubmit(state)} color="default" variant="outlined" autoFocus>
+                Go!
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Button
+            component="span"
+            className={classes.save}
+            color="default"
+            onClick={handleSave(state)}
+            disabled={state.file === null}
+          >
+            Save options
+          </Button>
+          <Button
+            variant="contained"
+            component="span"
+            className={classes.submit}
+            color="primary"
+            onClick={this.handleConfirmOpen}
+            disabled={state.file === null}
+            id="submit-button"
+          >
+            LOOKS GOOD!
+          </Button>
+        </Grid>
       </Grid>
     ]);
   }

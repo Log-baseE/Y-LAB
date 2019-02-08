@@ -177,7 +177,7 @@ class IndexScreen extends Component {
     this.setState({ [name]: event.target.value });
     if (!isNaN(parseFloat(event.target.value))) {
       var val = parseFloat(event.target.value);
-      if (val >= min && val <= max) {
+      if (val >= min && val <= max || min === null || max === null) {
         this.setState({
           [`lastValid${name.charAt(0).toUpperCase() + name.slice(1)}`]: val
         });
