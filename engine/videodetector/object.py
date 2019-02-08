@@ -7,6 +7,7 @@ import numpy as np
 import os
 import json
 import ffmpeg
+import shutil
 from datetime import datetime
 
 class ObjectDetector:
@@ -203,6 +204,10 @@ class ObjectDetector:
         vid_file = "result_{}.mp4".format(timestamp)
         vid_path = os.path.join(dest_dir, vid_file)
         data_path = os.path.join(dest_dir, "data.json")
+
+        if os.path.exists(dest_dir):
+            shutil.rmtree(dest_dir)
+        os.makedirs(dest_dir)
 
         self._write_to_video(src_vid=videopath, dest_path=vid_path)
         self._write_to_json(vid_path=vid_path, dest_path=data_path)
