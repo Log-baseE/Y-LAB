@@ -51,6 +51,9 @@ class Madeleine(TrafficAlgorithm):
 
         return self._remove_overlaps(coord)
 
+    def get_additional_lines(self, *args, **kwargs):
+        return None
+    
     def _count_cars_per_frame(self, frame_index, current_cars, previous_cars, counting_line, vertical=False):
         for prev_car in previous_cars:
             if frame_index - prev_car[6] > self.time_threshold:
