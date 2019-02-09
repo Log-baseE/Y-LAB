@@ -27,8 +27,7 @@ const styles = theme => ({
 class ResultDetails extends Component {
   render() {
     const { classes } = this.props;
-    const { state } = this.props;
-
+    const { options, result } = this.props;
     return (
       <Paper className={classes.root} elevation={1}>
         <Typography variant="h6" className={classes.heading}>
@@ -37,43 +36,19 @@ class ResultDetails extends Component {
         <FormGroup>
           <Grid container>
             <Grid item md={4} style={{ paddingTop: 7 }}>
-              <FormLabel>Detection type</FormLabel>
-            </Grid>
-            <Grid item container md={8} alignItems="center">
-              <Grid item>
-                <Typography
-                  component="small"
-                  style={{
-                    margin: "8px 0"
-                  }}
-                >
-                  {state.type}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-        </FormGroup>
-        <FormGroup>
-          <Grid container>
-            <Grid item md={4} style={{ paddingTop: 7 }}>
               <FormLabel>Detected objects</FormLabel>
             </Grid>
             <Grid item container md={8} alignItems="center">
               <Grid item>
-                <Typography
-                  component="small"
-                  style={{
-                    margin: "8px 0"
-                  }}
-                >
-                  {state.objects.join(', ')}
+                <Typography component="small" style={{ margin: "8px 0" }}>
+                  {result.objects.join(', ')}
                 </Typography>
               </Grid>
             </Grid>
           </Grid>
         </FormGroup>
         {
-          state.type === 'traffic' ? 
+          options.type === 'traffic' ? 
           <FormGroup>
             <Grid container>
               <Grid item md={4} style={{ paddingTop: 7 }}>
@@ -81,13 +56,8 @@ class ResultDetails extends Component {
               </Grid>
               <Grid item container md={8} alignItems="center">
                 <Grid item>
-                  <Typography
-                    component="small"
-                    style={{
-                      margin: "8px 0"
-                    }}
-                  >
-                    {state.car_count}
+                  <Typography component="small" style={{ margin: "8px 0" }}>
+                    {result.car_count}
                   </Typography>
                 </Grid>
               </Grid>
@@ -101,13 +71,8 @@ class ResultDetails extends Component {
               </Grid>
               <Grid item container md={8} alignItems="center">
                 <Grid item>
-                  <Typography
-                    component="small"
-                    style={{
-                      margin: "8px 0"
-                    }}
-                  >
-                    {state.count_per_frame}
+                  <Typography component="small" style={{ margin: "8px 0" }}>
+                    {result.count_per_frame}
                   </Typography>
                 </Grid>
               </Grid>

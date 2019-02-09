@@ -28,12 +28,11 @@ const styles = theme => ({
 class VideoDetails extends Component {
   render() {
     const { classes } = this.props;
-    const { state } = this.props;
-
+    const { result } = this.props;
     return (
       <Paper className={classes.root} elevation={1}>
         <Typography variant="h6" className={classes.heading}>
-          VIDEO DETAILS
+          OUTPUT VIDEO DETAILS
         </Typography>
         <FormGroup>
           <Grid container>
@@ -48,7 +47,7 @@ class VideoDetails extends Component {
                     margin: "8px 0"
                   }}
                 >
-                  {state.file.path}
+                  {result.file.path}
                 </Typography>
               </Grid>
             </Grid>
@@ -67,13 +66,13 @@ class VideoDetails extends Component {
                     margin: "8px 0"
                   }}
                 >
-                  {filesize(state.file.size)}
+                  {filesize(result.file.size)}
                 </Typography>
               </Grid>
             </Grid>
           </Grid>
         </FormGroup>
-        {state.meta
+        {result.meta
           ? [
               <FormGroup key="1">
                 <Grid container>
@@ -88,7 +87,7 @@ class VideoDetails extends Component {
                           margin: "8px 0"
                         }}
                       >
-                        {state.meta.duration.toFixed(2)} s
+                        {result.meta.duration.toFixed(2)} s
                       </Typography>
                     </Grid>
                   </Grid>
@@ -107,7 +106,7 @@ class VideoDetails extends Component {
                           margin: "8px 0"
                         }}
                       >
-                        {state.meta.res.width} x {state.meta.res.height}
+                        {result.meta.res.width} x {result.meta.res.height}
                       </Typography>
                     </Grid>
                   </Grid>

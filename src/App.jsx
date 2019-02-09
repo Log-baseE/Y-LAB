@@ -18,15 +18,6 @@ class App extends Component {
     result: null,
     runTutorial: true,
     tutorialIndex: 0,
-    // result: {
-    //   file: {
-    //     path: `C:\\Users\\Nicky\\Documents\\Kuliah\\Term 7\\HCI\\YOLO\\y-lab\\.ylab\\out_video.mp4`,
-    //     size: 100,
-    //   },
-    //   objects: ['a','b','c'],
-    //   count_per_frame: 10.37,
-    //   type: 'default',
-    // },
   };
 
   componentDidMount() {
@@ -74,7 +65,7 @@ class App extends Component {
         defaultPath: "*/options.json",
         filters: [{ name: "JSON file", extensions: ["json"] }]
       },
-      function(fileName) {
+      function (fileName) {
         if (fileName === undefined) {
           console.log("save cancelled");
           return;
@@ -116,6 +107,7 @@ class App extends Component {
         key="progress"
       />,
       <ResultScreen
+        options={this.state.options}
         result={this.state.result}
         handleRestart={this.handleRestart}
         key="results"

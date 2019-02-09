@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import VideoDetails from './VideoDetails';
 import ResultDetails from './ResultDetails';
+import ParameterDetails from './ParameterDetails';
 import { Button, Grid } from "@material-ui/core";
 
 const electron = window.require("electron");
@@ -13,6 +14,7 @@ const { dialog } = remote;
 const styles = theme => ({
   action: {
     paddingRight: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2,
   },
   save: {
     marginLeft: "auto",
@@ -57,11 +59,16 @@ class Details extends Component {
     const { handleRestart } = this.props;
     return ([
       <ResultDetails 
-        state={state}
+        options={state.options}
+        result={state.result}
         key={'resultdetails'}
       />,
+      <ParameterDetails
+        options={state.options}
+        key={'parameterdetails'}
+      />,
       <VideoDetails
-        state={state}
+        result={state.result}
         key={'videodetails'} 
       />,
       <Grid container className={classes.action}>
@@ -70,7 +77,7 @@ class Details extends Component {
           className={classes.save}
           color="default"
           onClick={this.handleSave}
-          disabled={state.file === null}
+          disabled={state.result.file === null}
         >
           Save video
         </Button>
@@ -80,7 +87,7 @@ class Details extends Component {
           className={classes.submit}
           color="default"
           onClick={handleRestart}
-          disabled={state.file === null}
+          disabled={state.result.file === null}
         >
           Try again
         </Button>

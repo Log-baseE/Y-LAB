@@ -90,7 +90,7 @@ class ProgressScreen extends Component {
 
   appendLog = log => {
     this.setState(prevState => ({
-      logs: [...prevState.logs, log]
+      logs: [...prevState.logs.slice(-Math.min(prevState.logs.length, 100)), log]
     }));
   };
 

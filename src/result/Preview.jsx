@@ -100,15 +100,15 @@ class Preview extends Component {
 
   render() {
     const { classes } = this.props;
-    const { state } = this.props;
+    const { result } = this.props;
     const { handleMetaData } = this.props;
     const { rand } = this.props;
-
+    console.log(result)
     return ([
       <Card className={classes.root} key="preview-card">
         <CardMedia
           id="video"
-          src={'file://' + state.file.path}
+          src={'file://' + result.file.path}
           component="video"
           onTimeUpdate={this.handleSeekbar}
           onEnded={this.handleEnded}
@@ -128,16 +128,16 @@ class Preview extends Component {
             });
             video.currentTime = this.state.currentTime;
           }}
-          disabled={state.file === null}
+          disabled={result.file === null}
         />
         <CardActions className={classes.videoControls}>
           <Tooltip title="Previous" placement="bottom">
-            <IconButton aria-label="Previous" onClick={this.handleSkipPrevious} disabled={state.file === null}>
+            <IconButton aria-label="Previous" onClick={this.handleSkipPrevious} disabled={result.file === null}>
               <SkipPreviousIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Toggle repeat" placement="bottom">
-            <IconButton aria-label="Toggle repeat" onClick={this.handleToggleRepeat} disabled={state.file === null}>
+            <IconButton aria-label="Toggle repeat" onClick={this.handleToggleRepeat} disabled={result.file === null}>
               {
                 this.state.repeat ?
                 <RepeatOneIcon /> :
@@ -146,7 +146,7 @@ class Preview extends Component {
             </IconButton>
           </Tooltip>
           <Tooltip title={this.state.play ? "Pause" : "Play"} placement="bottom">
-            <IconButton aria-label="Play/pause" onClick={this.handlePlayPause} disabled={state.file === null}>
+            <IconButton aria-label="Play/pause" onClick={this.handlePlayPause} disabled={result.file === null}>
               {
                 this.state.play ?
                 <PauseIcon /> :
@@ -155,12 +155,12 @@ class Preview extends Component {
             </IconButton>
           </Tooltip>
           <Tooltip title="Stop" placement="bottom">
-            <IconButton aria-label="Stop" onClick={this.handleSkipPrevious} disabled={state.file === null}>
+            <IconButton aria-label="Stop" onClick={this.handleSkipPrevious} disabled={result.file === null}>
               <StopIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Next" placement="bottom">
-            <IconButton aria-label="Next" onClick={this.handleSkipNext} disabled={state.file === null}>
+            <IconButton aria-label="Next" onClick={this.handleSkipNext} disabled={result.file === null}>
               <SkipNextIcon />
             </IconButton>
           </Tooltip>

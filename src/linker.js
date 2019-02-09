@@ -35,6 +35,25 @@ export const startDetect = (options, messageCallback, finishCallback) => {
         y: parseInt(options.roi.bottomRight.y)
       },
     };
+  } else {
+    opts.roi = {
+      topLeft: {
+        x: 0,
+        y: 0
+      },
+      topRight: {
+        x: parseInt(options.meta.res.width),
+        y: 0
+      },
+      bottomLeft: {
+        x: 0,
+        y: parseInt(options.meta.res.height)
+      },
+      bottomRight: {
+        x: parseInt(options.meta.res.width),
+        y: parseInt(options.meta.res.height)
+      },
+    };
   }
   if (options.nnModel !== 'default') {
     opts.model = 'path';

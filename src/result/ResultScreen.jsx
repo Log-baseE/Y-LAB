@@ -15,40 +15,60 @@ class ResultScreen extends Component {
   state = {};
 
   componentWillMount() {
-    const { result } = this.props;
-    if (result) {
-      this.loadResult(result);
+    const { result, options } = this.props;
+    if (result && options) {
+      this.loadState(result, options);
       this.forceUpdate();
     }
   }
 
-  loadResult = result => {
-    this.setState(result);
+  loadState = (result, options) => {
+    this.setState({
+      result: result,
+    });
     this.setState(prevState => ({
-      file: {
-        ...prevState.file,
-        size: fs.statSync(result.file.path).size
+      result: {
+        ...prevState.result,
+        file: {
+          ...prevState.result.file,
+          size: fs.statSync(result.file.path).size
+        }
       }
     }));
-    this.forceUpdate();
+    this.setState({
+      options: {
+        source: options.file.path,
+        type: options.type,
+        model: options.nnModel,
+        weights: options.weights,
+        gpu: options.lastValidGpu,
+        algorithm: options.algorithm,
+        roi: options.roi,
+        lanes: options.lanes.count,
+        pixelThreshold: options.lastValidPixelThreshold,
+        timeThreshold: options.lastValidTimeThreshold,
+        direction: options.direction,
+        confidenceThreshold: options.lastValidThreshold
+      },
+    });
   };
 
   handleMetaData = event => {
-    this.setState({
-      meta: {
-        duration: event.target.duration,
-        res: {
-          width: event.target.videoWidth,
-          height: event.target.videoHeight
+    let duration = event.target.duration;
+    let width = event.target.videoWidth;
+    let height = event.target.videoHeight;
+    this.setState(prevState => ({
+      result: {
+        ...prevState.result,
+        meta: {
+          duration: duration,
+          res: {
+            width: width,
+            height: height 
+          }
         }
-      },
-      roi: {
-        topLeft: { x: 0, y: 0 },
-        topRight: { x: event.target.videoWidth, y: 0 },
-        bottomLeft: { x: 0, y: event.target.videoHeight },
-        bottomRight: { x: event.target.videoWidth, y: event.target.videoHeight }
       }
-    });
+    }));
   };
 
   render() {
@@ -77,7 +97,7 @@ class ResultScreen extends Component {
           >
             <PerfectScrollbar option={{ suppressScrollX: true }}>
               <Preview
-                state={this.state}
+                result={this.state.result}
                 handleMetaData={this.handleMetaData}
                 rand={Math.random()}
               />
