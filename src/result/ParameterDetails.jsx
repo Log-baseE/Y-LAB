@@ -167,6 +167,20 @@ class ParameterDetails extends Component {
         <FormGroup>
           <Grid container>
             <Grid item md={4} style={{ paddingTop: 7 }}>
+              <FormLabel>Confidence Threshold</FormLabel>
+            </Grid>
+            <Grid item container md={8} alignItems="center">
+              <Grid item>
+                <Typography component="small" style={{ margin: "8px 0" }}>
+                  {options.confidenceThreshold}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </FormGroup>
+        <FormGroup>
+          <Grid container>
+            <Grid item md={4} style={{ paddingTop: 7 }}>
               <FormLabel>Neural network model</FormLabel>
             </Grid>
             <Grid item container md={8} alignItems="center">
